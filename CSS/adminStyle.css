@@ -1,0 +1,75 @@
+*{
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+body{
+    margin: 0px;
+    padding:0px;
+}
+.adminNavBar{
+    background-color: rgb(97, 166, 212);
+}
+.navHead{
+    font-size: 30px;
+    font-weight: 700;
+    color: white;
+}
+.adminMainDiv{
+    
+}
+.categoriesDivision{
+    width: 30vw;
+    border: 1px solid rgb(180, 180, 180);
+    box-shadow: 1px 1px 1px;
+    padding: 10px;
+}
+.categoriesAdd{
+    border: transparent;
+    background-color: rgb(81, 156, 255);
+    border-radius: 3px;
+}
+.eachCategory{
+    display: flex;
+    justify-content: space-between;
+    background-color: rgb(160, 201, 255);
+    padding:10px ;
+    border-radius: 10px;
+}
+.categoriesButton{
+    background-color: transparent;
+    border: whitesmoke 1px solid;
+    border-radius: 5px;
+}
+.loginMainDiv{
+    width: 50vw;
+    text-align: center;
+    padding: 20px;
+    box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
+    margin-top: 10vh;
+    border-radius: 10px;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(126, 181, 233);
+}
+.adminLoginHead{
+    font-size: 26px;
+    font-weight: 600;
+}
+.adminLoginButton{
+    border-radius: 5px;
+    width: 10vw;
+    border: transparent;
+    color: white;
+    background-color: rgb(48, 116, 204);
+    font-weight: 500;
+    border: 1px solid rgb(48, 116, 204);
+}
+.adminLoginInput{
+    border:1px solid rgb(142, 178, 228);
+    width: 100%;
+    border-radius: 5px;
+    height: 7vh;
+}
+.warning{
+    font-size: 12px;
+    font-weight: 700;
+    color: crimson;
+}
