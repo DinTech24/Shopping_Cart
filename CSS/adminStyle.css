@@ -13,9 +13,7 @@ body{
     font-weight: 700;
     color: white;
 }
-.adminMainDiv{
-    
-}
+
 .categoriesDivision{
     width: 30vw;
     border: 1px solid rgb(180, 180, 180);
@@ -38,6 +36,9 @@ body{
     background-color: transparent;
     border: whitesmoke 1px solid;
     border-radius: 5px;
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
 }
 .loginMainDiv{
     width: 50vw;
@@ -72,4 +73,21 @@ body{
     font-size: 12px;
     font-weight: 700;
     color: crimson;
+}
+
+.backToCategories{
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.productDivision{
+    width: 40vw;
+    border: 1px solid rgb(180, 180, 180);
+    box-shadow: 1px 1px 1px;
+    padding: 10px;
+}
+
+.productsDivision{
+    background-color: rgb(160, 201, 255);
+    border-radius: 10px;
 }

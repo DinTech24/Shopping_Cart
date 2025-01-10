@@ -17,15 +17,15 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="staticBackdropLabel">Add New Categories</h5>
+                                <h5 class="modal-title" id="staticBackdropLabel"></h5>
                             </div>
                             <div class="modal-body">
-                                <input type="text" class="form-control border-dark" id="categoryId" name="category" placeholder="Add new category">
+                                <input type="text" class="form-control border-dark" id="categoryId" name="category" placeholder="Enter new category name">
                                 <div class="warning" id="addcategoryWarning"></div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" onclick="closeAdminModal()" data-bs-dismiss="modal">Close</button>
-                                <button type="button" name="categorySubmit" onclick="categoryValidation()" class="btn btn-primary">Submit</button>
+                                <button type="button" id="categorySubmitButton" onclick="categoryValidation()" class="btn btn-primary">Submit</button>
                             </div>
                         </div>
                     </div>
@@ -44,19 +44,25 @@
                 <div class="categoriesDivision  mx-auto">
                     <div class="my-2">
                         <span>Categories</span>
-                        <button class="categoriesAdd" data-bs-toggle="modal" data-bs-target="##staticBackdrop">Add +</button>
+                        <button class="categoriesAdd" data-bs-toggle="modal" onclick="createCategory()" data-bs-target="##staticBackdrop">Add +</button>
                     </div>
                     <div>
                         <cfset categoriesResult = adminHomeObject.getCategories()>
                             <cfloop query="categoriesResult">
                                 <div class="eachCategory mb-2">
                                     <div>
-                                        <span>#categoriesResult.fldCategoryName#</span>
+                                        <span id="categoryEdit#categoriesResult.fldCategory_ID#">#categoriesResult.fldCategoryName#</span>
                                     </div>
                                     <div>
-                                        <button class="categoriesButton"><i class="fa-solid fa-pen-to-square"></i></button>
-                                        <button class="categoriesButton"><i class="fa-solid fa-trash"></i></button>
-                                        <button class="categoriesButton"><i class="fa-solid fa-chevron-right"></i></button>
+                                        <button class="categoriesButton" value="#categoriesResult.fldCategory_ID#" onclick="editCategory(this)" data-bs-toggle="modal" data-bs-target="##staticBackdrop">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                                        <button class="categoriesButton" value="#categoriesResult.fldCategory_ID#" onclick="deleteCategory(this)">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                        <a class="categoriesButton px-2" href="./adminHomeSubcategory.cfm?categoryId=#categoriesResult.fldCategory_ID#">
+                                            <i class="fa-solid fa-chevron-right"></i>
+                                        </a>
                                     </div>
                                 </div>
                             </cfloop>

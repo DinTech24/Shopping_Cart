@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Admin_Page</title>
+        <link rel="stylesheet" href="./CSS/adminStyle.css">
+        <link rel="stylesheet" href="./Bootstrap/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    </head>
+    <body>
+        <cfoutput>
+            <div class="adminNavBar d-flex justify-content-between align-items-center p-3 mb-3">
+                <div>
+                    <span>ShoppingCart</span>
+                    <span>ADMIN</span>
+                </div>
+                <div>
+                    <button href="">Logout</button>
+                </div>
+            </div>
+            <div class="adminMainDiv w-100">
+                <div class="productDivision  mx-auto">
+                    <div class="my-2">
+                        <span></span>
+                        <button class="categoriesAdd">Add +</button>
+                    </div>
+                    <div class="productsDivision">
+                        <div class="eachCategory">
+                            <div>
+                                <span>Products</span>
+                            </div>
+                            <div>
+                                <button class="categoriesButton"><i class="fa-solid fa-pen-to-square"></i></button>
+                                <button class="categoriesButton"><i class="fa-solid fa-trash"></i></button>
+                                <button class="categoriesButton"><i class="fa-solid fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+                        <div class="w-100">
+                            <img class='mx-auto w-50'src="" alt="ProductImage">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </cfoutput>
+    </body>
+</html>
