@@ -28,6 +28,7 @@ body{
 .eachCategory{
     display: flex;
     justify-content: space-between;
+    align-items: center;
     background-color: rgb(160, 201, 255);
     padding:10px ;
     border-radius: 10px;
@@ -87,7 +88,43 @@ body{
     padding: 10px;
 }
 
-.productsDivision{
-    background-color: rgb(160, 201, 255);
-    border-radius: 10px;
+.productData{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.productName{
+    font-size: 30px;
+    font-weight: 600;
+}
+
+.productBrand{
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 500;
+}
+
+.productPrice{
+    font-size: large;
+    font-size: 24px;
+    font-weight: 700;
+    color: crimson;
+}
+
+.imagePoint{
+    cursor: pointer;
+}
+
+.carousalimageButton{
+    border: transparent;
+    color: transparent;
+}
+
+.carousel{
+    background-color: rgb(179, 179, 179);
+}
+
+.carousel-inner{
+    margin-left: 5vw;
 }

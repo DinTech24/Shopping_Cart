@@ -11,10 +11,10 @@
     <body>
         <cfoutput>
             <cfset adminSubCateObject = new Component.adminComponent()>
-            <cfset subcategoriesResult = adminSubCateObject.listSubcategories("#url.categoryId#")>
             <cfif structKeyExists(form,"subcatgoryEdit")>
                 <cfset subcategoryEditResult = adminSubCateObject.editSubCategoryFunction(editSubCategory,form.categorySelect,form.subcatgoryEdit)>
             </cfif>
+            <cfset subcategoriesResult = adminSubCateObject.listSubcategories("#url.categoryId#")>
             <!---Add Modal --->
             <div class="modal fade" id="staticBackdropAdd" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <form method="POST" id="adminCategoryForm">
@@ -93,7 +93,7 @@
                                 <button class="categoriesButton" value="#subcategoriesResult.fldSubCategory_ID#" onclick="deleteSubCategory(this)">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
-                                <a class="categoriesButton px-2" href="">
+                                <a class="categoriesButton px-2" href="./adminHomeProduct.cfm?categoryId=#url.categoryId#&subCategoryId=#subcategoriesResult.fldSubCategory_ID#">
                                     <i class="fa-solid fa-chevron-right"></i>
                                 </a>
                             </div>

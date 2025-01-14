@@ -78,8 +78,7 @@ function subCategoryValidation(){
 }
 
 function closeAdminModal(){
-    document.getElementById("adminCategoryForm").reset();
-    document.getElementById("addcategoryWarning").innerHTML = ""
+    document.getElementById("adminProductForm").reset();
 }
 
 function deleteCategory(categoryId){
@@ -135,12 +134,125 @@ function deleteSubCategory(subcategoryId){
         $.ajax({
             type:"POST",
             url:"Component/adminComponent.cfc?method=deleteSubcategory",
-            data:{subcategoryId:subcategoryId.value},
-            success:function(){
-                    location.reload()
-            }
+            data:{subcategoryId:subcategoryId.value}
+
         })
     }
+}
+
+function deleteProduct(productId){
+    if(confirm("Confirm to delete")){
+        document.getElementById(productId.value+"product").remove();
+        $.ajax({
+            type:"POST",
+            url:"Component/adminComponent.cfc?method=deleteproduct",
+            data:{productId:productId.value}
+        })
+    }
+}
+
+function getSubCategoriesFunction(){
+    var categoryId = document.getElementById("categoriesSelect").value;
+    var subcategoriesSelect = document.getElementById("subcategoriesSelect");
+    $.ajax({
+        type:"POST",
+        url:"Component/adminComponent.cfc?method=listAllSubcategories",
+        data:{categoryId:categoryId},
+        success:function(result){
+            if(result)
+            {
+                subcategoryDetails=JSON.parse(result)
+                while (subcategoriesSelect.options.length) {
+                    subcategoriesSelect.remove(0);
+                }
+                for (var key in subcategoryDetails) {
+                    if (subcategoryDetails.hasOwnProperty(key)) {
+                      var option = document.createElement('option');
+                      option.value = key; 
+                      option.textContent = subcategoryDetails[key];
+                      subcategoriesSelect.appendChild(option);
+                    }
+                }
+            }
+        }
+    })
+}
+
+function openProductModal(categoryId,subcategoryId){
+    document.getElementById("adminProductForm").reset();
+    document.getElementById("staticBackdropLabel").innerHTML = "Add New Product"
+    document.getElementById(categoryId+"cate").selected = true;
+    document.getElementById(subcategoryId+"subcate").selected = true;
+    document.getElementById("productSubmitButton").name = "productSubmit"
+    document.getElementById("productImageId").required = true;
+}
+
+function updateProductFunction(productId,categoryId,subcategoryId){
+    document.getElementById("staticBackdropLabel").innerHTML = "Edit Product"
+    document.getElementById(categoryId+"cate").selected = true;
+    document.getElementById(subcategoryId+"subcate").selected = true;
+    $.ajax({
+        type:"POST",
+        url:"Component/adminComponent.cfc?method=getProducts",
+        data:{subcategoryId:subcategoryId,jscall:true,productId:productId.value},
+        success:function(result){
+            var editData = JSON.parse(result)
+            document.getElementById("productNameId").value = editData.productname
+            document.getElementById(editData.brandid+"brand").selected = true;
+            document.getElementById("productdescriptionId").value = editData.productdesc;
+            document.getElementById("productPriceId").value = editData.productprice;
+            document.getElementById("producttaxId").value = editData.fldtax;
+            document.getElementById("productSubmitButton").name = "productEdit"
+            document.getElementById("productSubmitButton").value = productId.value;
+            document.getElementById("productImageId").required = false;
+        }
+    })
+}
+
+function addcarousalImage(productId){
+    $.ajax({
+        type:"POST",
+        url:"Component/adminComponent.cfc?method=getProductImages",
+        data:{productId:productId.value},
+        success:function(result){
+            productImages=JSON.parse(result)
+            var active = 1;
+            for (var key in productImages) {
+                if (productImages.hasOwnProperty(key)) {
+                    var sliderBody = document.createElement('div');
+                    var sliderImage = document.createElement('img');
+                    document.getElementById("carousel-button").innerHTML = ""
+                    if (active == 1) {
+                        sliderBody.classList.add("active");
+                        active=0;
+                    }
+                    var deleteButton = document.createElement('button')
+                    deleteButton.classList.add("btn")
+                    deleteButton.classList.add("btn-danger")
+                    deleteButton.classList.add("mt-2")
+                    deleteButton.type = "button"
+                    deleteButton.value = key;
+                    deleteButton.innerHTML = "Delete";
+                    deleteButton.id = key+"delete";
+                    deleteButton.onclick="deleteProductImage(this)";
+                    document.getElementById("carousel-button").appendChild(deleteButton)
+                    sliderBody.classList.add("carousel-item");
+                    sliderImage.src="./Assets/ProductImages/"+productImages[key];
+                    sliderImage.width=350;
+                    sliderBody.appendChild(sliderImage)
+                    document.getElementById("carousel-inner").appendChild(sliderBody)
+                }
+            }
+        }
+    })
+}
+
+function deleteProductImage(image){
+    alert(Hai)
+}
+
+function closeAdminImageModal(){
+    document.getElementById("carousel-inner").innerHTML = ""
 }
 
 if ( window.history.replaceState ) {
