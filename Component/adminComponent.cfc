@@ -210,6 +210,20 @@
                 WHERE 
                 fldProduct_ID = <cfqueryparam value = '#arguments.editDataStructure.productEdit#' cfsqltype = "cf_sql_integer">
             </cfquery>
+            <cffile action="uploadall"
+            destination="#expandPath('./Assets/ProductImages')#"
+            result="local.productImages"
+            nameconflict="makeunique">
+            <cfloop array="#local.productImages#" item="item">
+                <cfquery name="insertImages">
+                    INSERT INTO tblProductImages(fldProductId,fldImageFileName,fldCreatedBy)
+                    VALUES(
+                        <cfqueryparam value = '#arguments.editDataStructure.productEdit#' cfsqltype = "cf_sql_integer">,
+                        <cfqueryparam value = '#item.serverfile#' cfsqltype = "cf_sql_varchar">,
+                        <cfqueryparam value = '#session.adminUserId#' cfsqltype = "cf_sql_varchar">
+                    )
+                </cfquery>
+            </cfloop>
     </cffunction>
 
     <cffunction  name="getProducts" access="remote" returnFormat="JSON">
@@ -270,6 +284,28 @@
         </cfif>
     </cffunction>
 
+    <cffunction  name="setDefaultImage" access="remote">
+        <cfargument  name="imageId">
+        <cfargument  name="productId">
+        <cfquery name="setDefaultImageQuery">
+            UPDATE 
+                tblProductImages
+            SET
+                fldDefaultImage = <cfqueryparam value = '1' cfsqltype = "cf_sql_varchar">
+            WHERE 
+                fldProductImage_ID = <cfqueryparam value = '#arguments.imageId#' cfsqltype = "cf_sql_integer">
+        </cfquery>
+        <cfquery name="unsetDefaultImageQuery">
+            UPDATE 
+                tblProductImages
+            SET
+                fldDefaultImage = <cfqueryparam value = '0' cfsqltype = "cf_sql_varchar">
+            WHERE 
+                NOT fldProductImage_ID = <cfqueryparam value = '#arguments.imageId#' cfsqltype = "cf_sql_integer">
+                AND fldProductId = <cfqueryparam value = '#arguments.productId#' cfsqltype = "cf_sql_integer">
+        </cfquery>
+    </cffunction>
+
     <cffunction  name="editSubCategoryFunction">
         <cfargument name="newSubCategory">
         <cfargument name="selectedCategory">
@@ -309,6 +345,8 @@
     <cffunction  name="getProductImages" access="remote" returnFormat="JSON">
         <cfargument  name="productId">
         <cfset imageStructure = structNew()>
+        <cfset imageDefaultStruct = structNew()>
+        <cfset imageinnerStruct = structNew()>
         <cfquery name="getProductImageQuery">
             SELECT 
                 fldImageFileName,fldProductImage_ID,fldDefaultImage
@@ -318,9 +356,24 @@
                 fldProductId = <cfqueryparam value = '#arguments.productId#' cfsqltype = "cf_sql_integer">
         </cfquery>
         <cfloop query="getProductImageQuery">
-            <cfset imageStructure[getProductImageQuery.fldProductImage_ID] = getProductImageQuery.fldImageFileName>
+            <cfif getProductImageQuery.fldDefaultImage EQ 1>
+                <cfset imageStructure["imageDefaultStruct"][getProductImageQuery.fldProductImage_ID] = getProductImageQuery.fldImageFileName>
+                <cfelse>
+                    <cfset imageStructure["imageinnerStruct"][getProductImageQuery.fldProductImage_ID] = getProductImageQuery.fldImageFileName>
+            </cfif>
         </cfloop>
         <cfreturn imageStructure>
+    </cffunction>
+
+    <cffunction  name="deleteProductImage" access="remote">
+        <cfargument  name="imageId">
+        <cfquery name="deleteImageQuery">
+            DELETE
+            FROM
+                tblProductImages  
+            WHERE
+                fldProductImage_ID = <cfqueryparam value = '#arguments.imageId#' cfsqltype = "cf_sql_integer">
+        </cfquery>
     </cffunction>
 
     <cffunction name="adminLogout" access="remote">

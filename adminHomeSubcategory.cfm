@@ -69,7 +69,7 @@
                     <span>ADMIN</span>
                 </div>
                 <div>
-                    <button onclick="logout()">Logout</button>
+                    <button onclick="logout()" class="logoutButton">Logout</button>
                 </div>
             </div>
             <div class="adminMainDiv w-100">

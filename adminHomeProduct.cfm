@@ -33,17 +33,18 @@
                             <div class="modal-body">
                                 <!--- Carousal --->
                                 <div id="carouselControls" class="carousel slide" data-bs-ride="carousel">
-                                    <div class="carousel-inner" id="carousel-inner"></div>
+                                    <div class="carousel-inner" id="carousel-inner">
+                                        <div id="carousel-button"></div>
+                                    </div>
                                     <button class="carousel-control-prev carousalcontrol" type="button" data-bs-target="##carouselControls" data-bs-slide="prev">
                                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                         <span class="visually-hidden">Previous</span>
                                     </button>
-                                    <button class="carousel-control-next carousalcontrol" type="button" data-bs-target="##carouselControls" data-bs-slide="next">
+                                    <button class="carousel-control-next carousalcontrol " type="button" data-bs-target="##carouselControls" data-bs-slide="next">
                                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                         <span class="visually-hidden">Next</span>
                                     </button>
                                 </div>
-                                <div id="carousel-button"></div>
                                 <!--- Carousal --->
                             </div>
                             <div class="modal-footer">
@@ -97,11 +98,11 @@
                                 </div>
                                 <div class="productData">
                                     <label>Product Price</label>
-                                    <input name="pricename" id="productPriceId" type="text" placeholder="Product Price">
+                                    <input name="pricename" id="productPriceId" type="number" placeholder="Product Price">
                                 </div>
                                 <div class="productData">
                                     <label>Product Tax</label>
-                                    <input name="taxname" required id="producttaxId" type="text" placeholder="Product Tax">
+                                    <input name="taxname" required id="producttaxId" type="number" placeholder="Product Tax">
                                 </div>
                                 <div id="productImageDivId">
                                     <label>Product Image</label>
@@ -122,7 +123,7 @@
                     <span>ADMIN</span>
                 </div>
                 <div>
-                    <button href="">Logout</button>
+                    <button class="logoutButton"  onclick="logout()">Logout</button>
                 </div>
             </div>
             <div class="adminMainDiv w-100">

@@ -1,0 +1,86 @@
+*{
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+body{
+    margin: 0px;
+    padding:0px;
+}
+.inputStyle{
+    margin-top: 2.5vh;
+    border: 1px solid rgb(240, 237, 237);
+    border-radius: 6px;
+    width: 30vw;
+    height: 6vh;
+    border: 1px solid grey;
+}
+.accessPageHead{
+    background-color: #5190c7;
+    color: white;
+    top:0px;
+    z-index: 1;
+    position: sticky;
+    height: 8vh;
+}
+
+.accessPageHead a{
+    color: white;
+    text-decoration: none;
+}
+
+.accessBodyMainDiv{
+    height: 100%;
+}
+
+.addressLogoMainDiv{
+    background-color: #3b517a;
+    height: 100%;
+    border-radius: 10px;
+}
+
+.addressLoginMainDiv{
+    background-color: #536a96;
+    height: 100%;
+    border-radius: 10px;
+}
+
+.addressLogoDiv{
+    display: flex;
+    justify-content: center;
+    width: 18vw;
+}
+
+.accessNames{
+    text-decoration: none;
+    color: white;
+}
+
+.accessMainDiv{
+    background-color: white;
+    border-radius:10px ;
+    border: 1px solid rgb(0, 0, 0);
+    box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
+}
+
+.accessButton{
+    border: transparent;
+    background-color: #5190c7;
+    width: 15vw;
+    border: 1px slid #162e41;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    color: white;
+}
+
+.accessHeading{
+    font-size: 28px;
+    font-weight: 600;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-bottom: 2vh;
+    margin-top:2vh;
+}
+
+.registerWarning{
+    font-size: 12px;
+    color: crimson;
+    font-weight: 600;
+}

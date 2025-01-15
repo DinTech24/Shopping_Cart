@@ -216,39 +216,79 @@ function addcarousalImage(productId){
         data:{productId:productId.value},
         success:function(result){
             productImages=JSON.parse(result)
-            var active = 1;
-            for (var key in productImages) {
-                if (productImages.hasOwnProperty(key)) {
-                    var sliderBody = document.createElement('div');
-                    var sliderImage = document.createElement('img');
-                    document.getElementById("carousel-button").innerHTML = ""
-                    if (active == 1) {
-                        sliderBody.classList.add("active");
-                        active=0;
-                    }
-                    var deleteButton = document.createElement('button')
-                    deleteButton.classList.add("btn")
-                    deleteButton.classList.add("btn-danger")
-                    deleteButton.classList.add("mt-2")
-                    deleteButton.type = "button"
-                    deleteButton.value = key;
-                    deleteButton.innerHTML = "Delete";
-                    deleteButton.id = key+"delete";
-                    deleteButton.onclick="deleteProductImage(this)";
-                    document.getElementById("carousel-button").appendChild(deleteButton)
-                    sliderBody.classList.add("carousel-item");
-                    sliderImage.src="./Assets/ProductImages/"+productImages[key];
-                    sliderImage.width=350;
-                    sliderBody.appendChild(sliderImage)
-                    document.getElementById("carousel-inner").appendChild(sliderBody)
-                }
+            defaultKey=Object.keys(productImages.imageDefaultStruct)
+            var sliderBody = document.createElement('div');
+            var sliderImage = document.createElement('img');
+            sliderBody.classList.add("carousel-item");
+            sliderImage.src="./Assets/ProductImages/"+productImages.imageDefaultStruct[defaultKey];
+            sliderImage.width=350;
+            sliderImage.height=350;
+            sliderBody.appendChild(sliderImage)
+            sliderBody.classList.add("active");
+            document.getElementById("carousel-inner").appendChild(sliderBody)
+            for (var key in productImages.imageinnerStruct) {
+                var sliderImage = document.createElement('img');
+                var sliderBody = document.createElement('div');
+                sliderBody.classList.add("carousel-item");
+                sliderImage.src="./Assets/ProductImages/"+productImages.imageinnerStruct[key];
+                sliderImage.width=350;
+                sliderImage.height=350;
+                sliderBody.appendChild(sliderImage);
+                var deleteButton = document.createElement('button')
+                deleteButton.classList.add("btn")
+                deleteButton.classList.add("btn-danger")
+                deleteButton.classList.add("mt-2")
+                deleteButton.classList.add("w-25")
+                deleteButton.type = "button"
+                deleteButton.value = key;
+                deleteButton.innerHTML = "Delete";
+                deleteButton.id = key+"delete";
+                deleteButton.onclick = function() {
+                    deleteProductImage(this);
+                };
+                sliderBody.appendChild(deleteButton)
+                var setDefaultButton = document.createElement('button')
+                setDefaultButton.classList.add("btn")
+                setDefaultButton.classList.add("btn-success")
+                setDefaultButton.classList.add("w-50")
+                setDefaultButton.value = key
+                setDefaultButton.type = "button"
+                setDefaultButton.innerHTML = "Set as Default";
+                setDefaultButton.classList.add("mt-2")
+                setDefaultButton.classList.add("ms-1")
+                setDefaultButton.onclick = function() {
+                    setDefaultImage(this,productId.value);
+                };
+                sliderBody.appendChild(setDefaultButton)
+                document.getElementById("carousel-inner").appendChild(sliderBody)
             }
         }
     })
 }
 
-function deleteProductImage(image){
-    alert(Hai)
+function deleteProductImage(imageId){
+    if(confirm("Confirm to delete")){
+        $.ajax({
+            type:"POST",
+            url:"Component/adminComponent.cfc?method=deleteProductImage",
+            data:{imageId:imageId.value},
+            success:function(){
+                alert("Image Succesfully deleted");
+                location.reload()
+            }
+        })
+    }
+}
+
+function setDefaultImage(imageId,productId){
+    $.ajax({
+        type:"POST",
+        url:"Component/adminComponent.cfc?method=setDefaultImage",
+        data:{imageId:imageId.value,productId:productId},
+        success:function(){
+            location.reload()
+        }
+    })
 }
 
 function closeAdminImageModal(){
