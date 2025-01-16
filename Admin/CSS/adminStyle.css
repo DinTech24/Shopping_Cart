@@ -140,3 +140,24 @@ body{
     padding: 5px;
 
 }
+
+.toolti {
+    position: relative;
+}
+
+.toolti .tooltiptext {
+    visibility: hidden;
+    width:20vw;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    position: absolute;
+    opacity: 0.8;
+    z-index: 1;
+}
+  
+.toolti:hover .tooltiptext {
+    visibility: visible;
+  }

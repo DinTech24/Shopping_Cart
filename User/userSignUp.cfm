@@ -23,7 +23,7 @@
             </div>
             <div class="row w-100 mainBody">
                 <div class="col-4"></div>
-                <div class="col-4 mt-5 mb-5 text-center accessMainDiv">
+                <div class="col-4 mt-5 mb-2 text-center accessMainDiv">
                     <div class="accessHeading">SIGN UP</div>
                     <form action="" method="POST">
                         <div>
@@ -61,15 +61,9 @@
             <cfif structKeyExists(form,"signUpButton")>
                 <cfset userRegisterObject = new Component.userComponent()>
                 <cfset result = userRegisterObject.addUser(registerStructure = form)>
-                <cfif result EQ true>
-                    <div class="text-center">
-                        <div class="text-success fw-bold">User Registered Successfully<div>
-                    <div>
-                    <cfelse>
-                        <div class="text-center">
-                            <div class="text-danger fw-bold">PhoneNumber or email already exists<div>
-                        <div>
-                </cfif>
+                <div class="text-center">
+                    <div class=" fw-bold" style="color:#result['messagetype']#;">#result['message']#<div>
+                <div>
             </cfif>
         </cfoutput>
     <script src="./Script/userPage.js"></script>

@@ -24,14 +24,14 @@ function categoryValidation(){
     var modalType = document.getElementById("categorySubmitButton").name;
     if(newcategory.trim().length == 0){
         document.getElementById("addcategoryWarning").innerHTML = "enter category name"
-        return false;
     }else if(modalType === "categoryCreateSubmit"){
         $.ajax({
             type:"POST",
             data:{newCategory:newcategory},
             url:"Component/adminComponent.cfc?method=insertCategories",
             success:function(result){
-                if(result){
+                result = JSON.parse(result)
+                if(result == true){
                     alert("Same Category Exists")
                 }else{
                     location.reload()
@@ -45,7 +45,8 @@ function categoryValidation(){
             url:"Component/adminComponent.cfc?method=editCategory",
             data:{categoryId:categoryId,newcategory:newcategory},
             success:function(result){
-                if(result){
+                result = JSON.parse(result)
+                if(result == true){
                     alert("Same Category Exists")
                 }else{
                     location.reload()
@@ -67,13 +68,24 @@ function subCategoryValidation(){
             url:"Component/adminComponent.cfc?method=addSubCategory",
             data:{categoryId:categoryId,newsubCategory:newsubCategory},
             success:function(result){
-                if(result){
+                result = JSON.parse(result)
+                if(result == true){
                     alert("Same Sub-category Exists")
                 }else{
                     location.reload()
                 }
             }
         })
+    }
+}
+
+function validateSubcate(){
+    var newsubcategory = document.getElementById("editSubCategoryId").value
+    if(newsubcategory.trim().length == 0){
+        document.getElementById("addDiffcategoryWarning").innerHTML = "enter Sub-Category name"
+        return false;
+    }else{
+        return true;
     }
 }
 
@@ -110,6 +122,7 @@ function logout(){
 function createCategory(){
     document.getElementById("staticBackdropLabel").innerHTML = "Add new Category";
     document.getElementById("categorySubmitButton").name = "categoryCreateSubmit"
+    document.getElementById("categoryId").value = "";
 }
 
 function editCategory(categoryId){
@@ -124,7 +137,7 @@ function editSubcategoryModal(subCategoryId,categoryId){
     document.getElementById("editSubCategoryId").value = subCategoryName;
     document.getElementById(categoryId+"Category").selected = true;
     document.getElementById("subcategorySubmitButton").value = subCategoryId.value;
-
+    document.getElementById("addDiffcategoryWarning").innerHTML = "";
 }
 
 
@@ -220,7 +233,7 @@ function addcarousalImage(productId){
             var sliderBody = document.createElement('div');
             var sliderImage = document.createElement('img');
             sliderBody.classList.add("carousel-item");
-            sliderImage.src="./Assets/ProductImages/"+productImages.imageDefaultStruct[defaultKey];
+            sliderImage.src="../Assets/ProductImages/"+productImages.imageDefaultStruct[defaultKey];
             sliderImage.width=350;
             sliderImage.height=350;
             sliderBody.appendChild(sliderImage)
@@ -230,7 +243,7 @@ function addcarousalImage(productId){
                 var sliderImage = document.createElement('img');
                 var sliderBody = document.createElement('div');
                 sliderBody.classList.add("carousel-item");
-                sliderImage.src="./Assets/ProductImages/"+productImages.imageinnerStruct[key];
+                sliderImage.src="../Assets/ProductImages/"+productImages.imageinnerStruct[key];
                 sliderImage.width=350;
                 sliderImage.height=350;
                 sliderBody.appendChild(sliderImage);

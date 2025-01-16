@@ -31,9 +31,7 @@
             <div>
                 <cfif structKeyExists(form,"adminLoginButton")>
                     <cfset adminLoginResult = adminLoginObject.adminLogin(form.adminUser,form.adminPass)>
-                    <cfif NOT adminLoginResult>
-                        <div class="text-danger text-center fw-bold">Check your credentials</div>
-                    </cfif>
+                    <div class="text-danger text-center fw-bold">#adminLoginResult["exception"]#</div>
                 </cfif>
             </div>
         </cfoutput>

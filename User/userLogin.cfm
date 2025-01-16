@@ -18,7 +18,7 @@
                 </div>
                 <div class="d-flex me-5">
                     <div class="me-4"><a class="accessNames" href="./userSignUp.cfm"><img src=""> Sign Up</a></div>
-                    <div><a class="accessNames" href="/userLogin.cfm"><img height="20" src=""> Login</a></div>
+                    <div><a class="accessNames" href="./userLogin.cfm"><img height="20" src=""> Login</a></div>
                 </div>
             </div>
             <div class="row w-100 mainBody">
@@ -44,19 +44,13 @@
                 <div class="col-4"></div>
             </div>
             <cfif structKeyExists(form,"loginButton")>
-            <cfset userLoginObject = new Component.userComponent()>
+                <cfset userLoginObject = new Component.userComponent()>
                 <cfset result = userLoginObject.loginUser(form.emailId,form.password)>
-                <cfif result EQ true>
-                    <div class="text-center">
-                        <div class="text-success fw-bold">User Login Successfully<div>
-                    <div>
-                    <cfelse>
-                        <div class="text-center">
-                            <div class="text-danger fw-bold">Invalid Credentials!<div>
-                        <div>
-                </cfif>
+                <div class="text-center">
+                    <div class="text-danger fw-bold">#result["message"]#</div>
+                </div>
             </cfif>
         </cfoutput>
-    <script src="./Script/userPage.js"></script>
+        <script src="./Script/userPage.js"></script>
     </body>
 </html>

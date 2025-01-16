@@ -98,11 +98,11 @@
                                 </div>
                                 <div class="productData">
                                     <label>Product Price</label>
-                                    <input name="pricename" id="productPriceId" type="number" placeholder="Product Price">
+                                    <input name="pricename" step="0.01" id="productPriceId" type="number" placeholder="Product Price">
                                 </div>
                                 <div class="productData">
                                     <label>Product Tax</label>
-                                    <input name="taxname" required id="producttaxId" type="number" placeholder="Product Tax">
+                                    <input name="taxname" step="0.01" required id="producttaxId" type="number" placeholder="Product Tax">
                                 </div>
                                 <div id="productImageDivId">
                                     <label>Product Image</label>
@@ -149,7 +149,7 @@
                                 </div>
                                 <div class="imagePoint">
                                     <button class="carousalimageButton " onclick="addcarousalImage(this)" value="#getProductData.fldProduct_ID#">
-                                        <img height="100"   src="./Assets/ProductImages/#getProductData.fldImageFileName#" alt="ProductImage" data-bs-toggle="modal" data-bs-target="##staticProductImageModal">
+                                        <img height="100"   src="../Assets/ProductImages/#getProductData.fldImageFileName#" alt="ProductImage" data-bs-toggle="modal" data-bs-target="##staticProductImageModal">
                                     </button>
                                 </div>
                                 <div>

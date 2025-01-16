@@ -17,29 +17,27 @@
             <cfset subcategoriesResult = adminSubCateObject.listSubcategories("#url.categoryId#")>
             <!---Add Modal --->
             <div class="modal fade" id="staticBackdropAdd" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <form method="POST" id="adminCategoryForm">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="staticBackdropLabel">Add New Subcategories</h5>
-                            </div>
-                            <div class="modal-body">
-                                <input type="text" class="form-control border-dark" id="subCategoryId" name="category" placeholder="Enter new sub-category name">
-                                <div class="warning" id="addcategoryWarning"></div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" onclick="closeAdminModal()" data-bs-dismiss="modal">Close</button>
-                                <button type="button" id="categorySubmitButton" value="#url.categoryId#" onclick="subCategoryValidation()" class="btn btn-primary">Submit</button>
-                            </div>
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">Add New Subcategories</h5>
+                        </div>
+                        <div class="modal-body">
+                            <input type="text" class="form-control border-dark" id="subCategoryId" name="category" placeholder="Enter new sub-category name">
+                            <div class="warning" id="addcategoryWarning"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" onclick="closeAdminModal()" data-bs-dismiss="modal">Close</button>
+                            <button type="button" id="categorySubmitButton" value="#url.categoryId#" onclick="subCategoryValidation()" class="btn btn-primary">Submit</button>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
 
             <!---Edit Modal --->
             <cfset editSubcategoriesResult = adminSubCateObject.getCategories()>
             <div class="modal fade" id="staticBackdropEdit" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <form method="POST" id="adminSubCategoryForm">
+                <form method="POST" id="adminProductForm">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -47,17 +45,16 @@
                             </div>
                             <div class="modal-body">
                                 <input type="text" class="form-control" name="editSubCategory" id="editSubCategoryId" name="category" placeholder="Enter new sub-category name">
-                                <div class="warning" id="addcategoryWarning"></div>
-                                    <select class="form-control mt-3" name="categorySelect">
-                                        <cfloop query="editSubcategoriesResult">
-                                            <option id='#editSubcategoriesResult.fldCategory_ID#Category' value="#editSubcategoriesResult.fldCategory_ID#">#editSubcategoriesResult.fldCategoryName#</option>
-                                        </cfloop>
-                                    </select>
-                                <div class="warning" id="addcategoryWarning"></div>
+                                <div class="warning" id="addDiffcategoryWarning"></div>
+                                <select class="form-control mt-3" name="categorySelect">
+                                    <cfloop query="editSubcategoriesResult">
+                                        <option id='#editSubcategoriesResult.fldCategory_ID#Category' value="#editSubcategoriesResult.fldCategory_ID#">#editSubcategoriesResult.fldCategoryName#</option>
+                                    </cfloop>
+                                </select>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" onclick="closeAdminModal()" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" id="subcategorySubmitButton" name="subcatgoryEdit" class="btn btn-primary">Submit</button>
+                                <button type="submit" id="subcategorySubmitButton" onclick="return validateSubcate()" name="subcatgoryEdit" class="btn btn-primary">Submit</button>
                             </div>
                         </div>
                     </div>
@@ -93,8 +90,9 @@
                                 <button class="categoriesButton" value="#subcategoriesResult.fldSubCategory_ID#" onclick="deleteSubCategory(this)">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
-                                <a class="categoriesButton px-2" href="./adminHomeProduct.cfm?categoryId=#url.categoryId#&subCategoryId=#subcategoriesResult.fldSubCategory_ID#">
+                                <a class="categoriesButton toolti px-2" href="./adminHomeProduct.cfm?categoryId=#url.categoryId#&subCategoryId=#subcategoriesResult.fldSubCategory_ID#">
                                     <i class="fa-solid fa-chevron-right"></i>
+                                    <span class="tooltiptext">Go to Product Page</span>
                                 </a>
                             </div>
                         </div>

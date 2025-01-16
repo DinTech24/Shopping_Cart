@@ -13,7 +13,7 @@
             <cfset adminHomeObject = new Component.adminComponent()>
             <!--- Modal --->
             <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <form method="POST" id="adminCategoryForm">
+                <form method="POST" id="adminProductForm">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -60,8 +60,9 @@
                                         <button class="categoriesButton" value="#categoriesResult.fldCategory_ID#" onclick="deleteCategory(this)">
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
-                                        <a class="categoriesButton px-2" href="./adminHomeSubcategory.cfm?categoryId=#categoriesResult.fldCategory_ID#">
+                                        <a class="categoriesButton toolti px-2" href="./adminHomeSubcategory.cfm?categoryId=#categoriesResult.fldCategory_ID#">
                                             <i class="fa-solid fa-chevron-right"></i>
+                                            <span class="tooltiptext">Go to Sub-category</span>
                                         </a>
                                     </div>
                                 </div>
