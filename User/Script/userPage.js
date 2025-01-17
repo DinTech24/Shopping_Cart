@@ -67,3 +67,65 @@ function registerUser(){
     return flag;
 }
 
+function logoutFunction(){
+    if(confirm("Confirm to logout")){
+        $.ajax({
+            type:"POST",
+            url:"Component/userComponent.cfc?method=logoutUser",
+            success:function(){
+                    location.reload()
+                }
+        })
+    }
+}
+
+function closeUserModal(){
+    document.getElementById("userLoginForm").reset();
+}
+
+function loginModal(){
+    document.getElementById("passWarning").innerHTML = ""
+    document.getElementById("emailWarning").innerHTML = ""
+    var emailId = document.getElementById("emailIds").value;
+    var password = document.getElementById("passwordId").value;
+    var flag = true;
+    if(emailId.trim() === ""){
+        document.getElementById("emailWarning").innerHTML = "EmailId is required"
+        flag = false;
+    }else{
+        document.getElementById("emailWarning").innerHTML = ""
+    }
+    if(password.trim() === ""){
+        document.getElementById("passWarning").innerHTML = "Password is required"
+        flag = false;
+    }else{
+        document.getElementById("passWarning").innerHTML = ""
+    }
+    if(flag)
+        var jsCall = true;
+        $.ajax({
+            type:"POST",
+            url:"Component/userComponent.cfc?method=loginUser",
+            data:{enteredId:emailId,enteredPassword:password,jsCall:jsCall},
+            success:function(result){
+                if(result){
+                    result = JSON.parse(result);
+                    event.preventDefault();
+                    if(result["Message"] == "true"){
+                        location.reload();
+                    }else{
+                        document.getElementById("passWarning").innerHTML = result["Message"]
+                    }
+                    
+                }
+            }
+        })
+    
+}
+
+function modalClear(){
+    document.getElementById("userLoginForm").reset();
+    document.getElementById("passWarning").innerHTML = ""
+    document.getElementById("emailWarning").innerHTML = ""
+}
+

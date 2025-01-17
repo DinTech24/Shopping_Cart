@@ -222,8 +222,8 @@
                 fldProductName = <cfqueryparam value = '#arguments.editDataStructure.productname#' cfsqltype = "varchar">,
                 fldBrandId = <cfqueryparam value = '#arguments.editDataStructure.brandname#' cfsqltype = "integer">,
                 fldDescription = <cfqueryparam value = '#arguments.editDataStructure.descriptionname#' cfsqltype = "varchar">,
-                fldPrice = <cfqueryparam value = '#arguments.editDataStructure.pricename#' cfsqltype = "integer">,
-                fldTax = <cfqueryparam value = '#arguments.editDataStructure.taxname#' cfsqltype = "integer">,
+                fldPrice = <cfqueryparam value = '#arguments.editDataStructure.pricename#' scale="2" cfsqltype = "decimal">,
+                fldTax = <cfqueryparam value = '#arguments.editDataStructure.taxname#' scale="2" cfsqltype = "decimal">,
                 fldupdatedBy = <cfqueryparam value = '#session.adminUserId#' cfsqltype = "integer">,
                 fldUpdatedDate = <cfqueryparam value = '#now()#' cfsqltype = "timestamp">
                 WHERE 

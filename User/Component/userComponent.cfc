@@ -1,6 +1,6 @@
 <cfcomponent>
 
-    <cffunction  name="addUser">
+    <cffunction  name="addUser" returnType="struct">
         <cfargument  name="registerStructure">
         <cfset exceptionStruct = structNew()>
         <cfset exceptionStruct["messageType"] = "Red">
@@ -37,7 +37,7 @@
         <cfreturn exceptionStruct>
     </cffunction>
 
-    <cffunction  name="isUserExist">
+    <cffunction  name="isUserExist" returnType="boolean">
         <cfargument  name="emailId">
         <cfargument  name="phonenumber">
         <cfquery name="getUserQuery">
@@ -58,9 +58,10 @@
         </cfif>
     </cffunction>
 
-    <cffunction  name="loginUser" returnType="struct">
+    <cffunction  name="loginUser" returnType="struct" access="remote" returnFormat="JSON">
         <cfargument  name="enteredId">
         <cfargument  name="enteredPassword">
+        <cfargument  name="jsCall" default = "false">
         <cfset loginExcepetion = structNew()>
         <cfif trim(arguments.enteredId) EQ "" OR trim(arguments.enteredPassword) EQ "">
             <cfset loginExcepetion["Message"] = "Empty Fields are not alllowed!">
@@ -93,7 +94,11 @@
                 <cfset session.userId = local.checkUser.fldUser_ID>
                 <cfset session.username = local.checkUser.fldFirstName>
                 <cfset session.email = local.checkUser.fldEmail>
-                <cfset loginExcepetion["Message"] = "Successfully Login">
+                <cfif jscall EQ true>
+                    <cfset loginExcepetion["Message"] = "true">
+                    <cfelse>
+                        <cflocation url="../User/userhomePage.cfm" addToken="no">
+                </cfif>
                 <cfelse>
                     <cfset loginExcepetion["Message"] = "Incorrect Password">
             </cfif>
@@ -104,28 +109,31 @@
         <cfreturn loginExcepetion>
     </cffunction>
 
-    <cffunction  name="listCategories">
+    <cffunction  name="listCategories" returnType="query">
+        <cfargument  name="categoryId" default = 0>
         <cfquery name="local.getCategoryQuery">
-            SELECT 
+            SELECT TOP 9
                 fldcategory_ID,fldcategoryName 
             FROM 
                 tblCategory 
             WHERE 
                 fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
+                <cfif arguments.categoryId NEQ 0>
+                    AND fldCategory_ID = <cfqueryparam value = '#arguments.categoryId#' cfsqltype = "integer">
+                </cfif>
         </cfquery>
         <cfreturn local.getCategoryQuery>
     </cffunction>
 
-    <cffunction  name="listSubCategories">
+    <cffunction  name="listSubCategories" returnType="query">
         <cfargument  name="categoryId">
         <cfquery name="local.getSubCategoryQuery">
             SELECT 
-                fldsubCategory_ID,fldsubCategoryName 
+                fldsubCategory_ID,fldsubCategoryName,fldCategoryId 
             FROM 
                 tblSubCategory 
             WHERE 
-                fldcategoryId = <cfqueryparam value = '#arguments.categoryId#' cfsqltype = "integer">
-                AND fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
+                fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
         </cfquery>
         <cfreturn local.getSubCategoryQuery>
     </cffunction>
@@ -134,6 +142,7 @@
         <cfquery name="local.getproductsQuery">
             SELECT TOP 12 
                 fldProduct_ID,
+                fldSubCategoryId,
                 fldProductName,
                 fldDescription,
                 fldBrandId,
@@ -152,11 +161,14 @@
             WHERE 
                 tblProductImages.fldDefaultImage = 1
                 AND tblProduct.fldActive = 1
-                AND tblbrands.fldActive = 1
             ORDER BY 
                 NEWID();
         </cfquery>
         <cfreturn local.getproductsQuery>
+    </cffunction>
+
+    <cffunction  name="logoutUser" access="remote" returnType="void">
+        <cfset structClear(session)>
     </cffunction>
 
 </cfcomponent>

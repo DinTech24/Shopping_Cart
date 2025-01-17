@@ -97,6 +97,11 @@ body{
     z-index: 1;
 }
 
+.userNavBar a{
+    text-decoration: none;
+    color: white;
+}
+
 .logoutButton{
     background-color: transparent;
     color: white;
@@ -113,7 +118,7 @@ body{
 .subcategoryBar{
     background-color: rgb(196, 217, 255);
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
 }
 
 .subCategoryEach{
@@ -125,7 +130,7 @@ body{
 
 .mainImage{
     width: 100%;
-    height: 50vh;
+    height: 60vh;
 }
 
 .randomProductsHead{
@@ -150,11 +155,12 @@ body{
 .randProductbody{
     text-align: center;
     border-top: rgb(211, 208, 208) 1px solid;
+    padding: 0px;
 }
 
 .randProductImage{
     width: 100%;
-    height: 35vh;
+    height:28vh;
 }
 
 .randProductPrice{
@@ -174,6 +180,11 @@ body{
     cursor: pointer; 
 }
 
+.subCategoryEach a{
+    text-decoration: none;
+    color: black;
+}
+
 .subCategoryEach .toolTipData{
     visibility: hidden;
     width:10vw;
@@ -185,11 +196,37 @@ body{
     position: absolute;
     z-index: 1;
     top: 100%;
-    left: 80%;
-    right: 80%;
+    left: 50%;
     margin-left: -60px;
 }
   
 .subCategoryEach:hover .toolTipData{
     visibility: visible;
+}
+
+.subcategories{
+    width: 10VW;
+}
+
+.subcategories:hover{
+    background-color: rgba(7, 7, 7, 0.3);
+}
+
+
+.footerDiv{
+    border-top: rgb(214, 214, 214) 1px solid;
+    background-color: rgb(228, 236, 243);
+}
+
+.LoginButton{
+    background-color: rgba(0, 0, 0, 0.7);
+    border: transparent;
+    border-radius: 10px;
+    color: white;
+}
+
+.createAccount{
+    font-size: 14px;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
 }
