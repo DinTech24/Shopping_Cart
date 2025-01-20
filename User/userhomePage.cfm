@@ -10,34 +10,6 @@
     </head>
     <body>
         <cfoutput>
-            <div class="modal fade" id="staticBackdropLogin" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <form method="POST" id="userLoginForm">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="staticBackdropLabel">Login User</h5>
-                            </div>
-                            <div class="modal-body">
-                                <div>
-                                    <div>Enter your EmailId/Phone Number</div>
-                                    <input name="emailId" id="emailIds" class="inputStyle" type="text" placeholder="Enter Email ID or Phone Number">
-                                    <div id="emailWarning" class="registerWarning"></div>
-                                </div>
-                                <div>
-                                    <div class="mt-3">Enter your Password</div>
-                                    <input name="password" id="passwordId" class="inputStyle " type="password" placeholder="Enter Password">
-                                    <div id="passWarning" class="registerWarning"></div>
-                                </div>
-                                <div class="mt-3 createAccount">Don't have an account?<a href="./userSignUp.cfm">create one</a></div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary py-2" onclick="closeUserModal()" data-bs-dismiss="modal">Close</button>
-                                <button name="loginButton" onclick="loginModal()" type="button" class="accessButton py-2">LOGIN</button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
             <cfset userHomeObject = new Component.userComponent()>
             <cfset categoryResult = userHomeObject.listCategories()>
             <cfset randomProductsResult = userHomeObject.getRandomProducts()>

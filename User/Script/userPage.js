@@ -129,3 +129,51 @@ function modalClear(){
     document.getElementById("emailWarning").innerHTML = ""
 }
 
+function getFilterResult(subCategoryId){
+    var flag = false;
+    minVal = document.getElementById("minVal").value;
+    maxVal = document.getElementById("maxVal").value;
+    for(i=1;i<=4;i++){
+        if(document.getElementById("filterRadio"+i).checked){
+            flag = true
+            var filterRangeVal = document.getElementById("filterRadio"+i).value;
+            break;
+        }else{
+            if((i==4)&&(flag == false)){
+                var filterRangeVal=`["${minVal}","${maxVal}"]`
+                flag=true
+            }
+        }
+    }
+    if(flag==true){
+        console.log(filterRangeVal)
+        $.ajax({
+            type:"POST",
+            url:"Component/userComponent.cfc?method=selectPriceRange",
+            data:{filterRange:filterRangeVal,subCategoryId:subCategoryId},
+            success:function(result){
+                var result = JSON.parse(result)
+                document.getElementById("randomProductsMainDivId").innerHTML = ""
+                for(j=0;j<result.length;j++){
+                    var eachProducts = 
+                    `<div class="card randomProductCard" style="width: 13rem;">
+                        <a href="${result[j].fldImageFileName}">
+                            <img src="../Assets/ProductImages/${result[j].fldImageFileName}" class="card-img-top randProductImage" alt="Product Image">
+                        </a>
+                        <div class="card-body randProductbody">
+                            <div class="card-text randProductName">${result[j].fldProductName}</div>
+                            <div>${result[j].fldBrandName}</div>
+                            <div class="card-text randProductPrice">
+                                <i class="fa-solid fa-indian-rupee-sign"></i>
+                                ${result[j].fldPrice + result[j].fldTax}
+                            </div>
+                        </div>
+                    </div>`
+                    $("#randomProductsMainDivId").append(eachProducts);
+                }
+            }
+        })
+    }
+}
+
+

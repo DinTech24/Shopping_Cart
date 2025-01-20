@@ -1,7 +1,7 @@
 <cfcomponent>
 
     <cffunction  name="addUser" returnType="struct">
-        <cfargument  name="registerStructure">
+        <cfargument  name="registerStructure" type="struct">
         <cfset exceptionStruct = structNew()>
         <cfset exceptionStruct["messageType"] = "Red">
         <cfset local.isUserExists = isUserExist(arguments.registerStructure.emailId,arguments.registerStructure.phonenumber)>
@@ -38,8 +38,8 @@
     </cffunction>
 
     <cffunction  name="isUserExist" returnType="boolean">
-        <cfargument  name="emailId">
-        <cfargument  name="phonenumber">
+        <cfargument  name="emailId" type="string">
+        <cfargument  name="phonenumber" type="string">
         <cfquery name="getUserQuery">
             SELECT
                 fldEmail
@@ -59,8 +59,8 @@
     </cffunction>
 
     <cffunction  name="loginUser" returnType="struct" access="remote" returnFormat="JSON">
-        <cfargument  name="enteredId">
-        <cfargument  name="enteredPassword">
+        <cfargument  name="enteredId" type="string">
+        <cfargument  name="enteredPassword" type="string">
         <cfargument  name="jsCall" default = "false">
         <cfset loginExcepetion = structNew()>
         <cfif trim(arguments.enteredId) EQ "" OR trim(arguments.enteredPassword) EQ "">
@@ -110,7 +110,7 @@
     </cffunction>
 
     <cffunction  name="listCategories" returnType="query">
-        <cfargument  name="categoryId" default = 0>
+        <cfargument  name="categoryId" default = 0 type="numeric">
         <cfquery name="local.getCategoryQuery">
             SELECT TOP 9
                 fldcategory_ID,fldcategoryName 
@@ -126,7 +126,7 @@
     </cffunction>
 
     <cffunction  name="listSubCategories" returnType="query">
-        <cfargument  name="categoryId">
+        <cfargument  name="categoryId" type="numeric">
         <cfquery name="local.getSubCategoryQuery">
             SELECT 
                 fldsubCategory_ID,fldsubCategoryName,fldCategoryId 
@@ -138,9 +138,15 @@
         <cfreturn local.getSubCategoryQuery>
     </cffunction>
 
-    <cffunction  name="getRandomProducts" access="remote" returnFormat="JSON" returnType="any">
+    <cffunction  name="getRandomProducts" returnType="any">
+        <cfargument  name="sort" default="false">
+        <cfargument  name="filterArray" default="false">
+        <cfargument  name="subCategoryId" default="false">
         <cfquery name="local.getproductsQuery">
-            SELECT TOP 12 
+            SELECT 
+                <cfif arguments.sort EQ "false">
+                    TOP 12 
+                </cfif>
                 fldProduct_ID,
                 fldSubCategoryId,
                 fldProductName,
@@ -158,13 +164,45 @@
             LEFT JOIN 
                 tblProductImages 
                 ON tblProductImages.fldProductId = tblProduct.fldProduct_ID
-            WHERE 
-                tblProductImages.fldDefaultImage = 1
-                AND tblProduct.fldActive = 1
-            ORDER BY 
-                NEWID();
+            WHERE
+                tblProductImages.fldDefaultImage = <cfqueryparam value = '1' cfsqltype = "integer">
+                AND tblProduct.fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
+                <cfif IsArray(arguments.filterArray)>
+                    AND fldPrice >  <cfqueryparam value = '#val(arguments.filterArray[1])#' cfsqltype = "decimal">
+                    AND fldPrice <  <cfqueryparam value = '#val(arguments.filterArray[2])#' cfsqltype = "decimal">
+                    AND fldSubCategoryId = <cfqueryparam value = '#arguments.subCategoryId#' cfsqltype = "integer">;
+                    <cfelse>
+                        ORDER BY
+                        <cfif arguments.sort EQ "false">
+                            NEWID();
+                            <cfelse>
+                                fldPrice + fldTax #arguments.sort#;
+                        </cfif> 
+                </cfif> 
         </cfquery>
         <cfreturn local.getproductsQuery>
+    </cffunction>
+
+    <cffunction  name="selectPriceRange" access="remote" returnFormat="JSON">
+        <cfargument name="filterRange">
+        <cfargument  name="subCategoryId">
+        <cfset local.filterArray = DeserializeJSON(arguments.filterRange)>
+        <cfset randomProductsRange = getRandomProducts(sort=true,filterArray= local.filterArray,subCategoryId=arguments.subCategoryId)>
+        <cfset rangeProductArray = []>
+        <cfloop query="randomProductsRange">
+            <cfset tempStruct = structNew()>
+            <cfset tempStruct["fldProduct_ID"] = randomProductsRange.fldProduct_ID>
+            <cfset tempStruct["fldSubCategoryId"] = randomProductsRange.fldSubCategoryId>
+            <cfset tempStruct["fldProductName"] = randomProductsRange.fldProductName>
+            <cfset tempStruct["fldDescription"] = randomProductsRange.fldDescription>
+            <cfset tempStruct["fldBrandId"] = randomProductsRange.fldBrandId>
+            <cfset tempStruct["fldBrandName"] = randomProductsRange.fldBrandName>
+            <cfset tempStruct["fldPrice"] = randomProductsRange.fldPrice>
+            <cfset tempStruct["fldTax"] = randomProductsRange.fldTax>
+            <cfset tempStruct["fldImageFileName"] = randomProductsRange.fldImageFileName>
+            <cfset arrayAppend(rangeProductArray, tempStruct)>
+        </cfloop>
+        <cfreturn rangeProductArray>
     </cffunction>
 
     <cffunction  name="logoutUser" access="remote" returnType="void">
