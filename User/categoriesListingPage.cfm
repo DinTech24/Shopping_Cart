@@ -27,7 +27,7 @@
                                 <cfloop query="randomProductsResult">
                                     <cfif randomProductsResult.fldSubCategoryId EQ subCategoryResult.fldsubCategory_ID>
                                         <div class="card randomProductCard" style="width: 13rem;">
-                                            <a href="#randomProductsResult.fldImageFileName#">
+                                            <a href="./productPage.cfm?productId=#randomProductsResult.fldProduct_ID#">
                                                 <img src="../Assets/ProductImages/#randomProductsResult.fldImageFileName#" class="card-img-top randProductImage" alt="Product Image">
                                             </a>
                                             <div class="card-body randProductbody">

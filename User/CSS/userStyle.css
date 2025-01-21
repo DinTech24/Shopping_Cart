@@ -269,3 +269,111 @@ body{
 .filterInput{
     margin-right: 5px;
 }
+
+/*  */
+.screenDivision {
+    display: flex;
+    padding-left: 1rem;
+}
+.productImageDivision {
+    display: flex;
+    justify-content: center;
+}
+
+.productMainImage {
+    max-width: 100%;
+    height: auto;
+}
+.buttonClassDivion {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+}
+.screenDivisionButton1,
+.screenDivisionButton2 {
+    padding: 0.5rem 1rem;
+    border: none;
+    cursor: pointer;
+    margin-right: 1rem;
+    font-weight: bold;
+}
+.screenDivisionButton1 {
+    background-color: #3f8d56;
+    color: white;
+    border-radius: 5px;
+}
+.screenDivisionButton2 {
+    background-color: #2a6ba7;
+    color: white;
+    border-radius: 5px;
+}
+.screenSection2 {
+    padding-left: 1rem;
+}
+.pathAndShare {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+.pageFullPath {
+    font-size: 0.9rem;
+    color: rgb(102, 101, 101);
+}
+
+.pageFullPath a{
+    text-decoration: none;
+    color: rgb(102, 101, 101);
+}
+
+.productName {
+    font-size: 28px;
+    font-weight: bolder;
+    margin-bottom: 0.5rem;
+    margin-top: 6vh;
+}
+.productNametag {
+    font-size: 15px;
+    color: #ff6f61;
+    margin-left: 0.5rem;
+}
+
+.specialPriceSpan {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #ff6f61;
+    margin-right: 0.5rem;
+}
+.productDiscountedPrice {
+    font-size: 20px;
+    margin-top: 4vh;
+    color: black;
+}
+
+.discountedPriceSpan{
+    color:white;
+    background-color: #134999;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: bolder;
+}
+
+.badge{
+    font-family:cursive;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.carousel{
+    width: 38vw;
+    height:34vw;
+    background-color: #c5c6c7;
+    border-radius: 20px;
+    border: #c5c6c7 1px solid;
+}
+
+.productAllImages1 {
+    width: 30vw;
+    height:34vw;
+    margin-left: 4vw;
+}

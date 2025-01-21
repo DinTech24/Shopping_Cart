@@ -16,78 +16,108 @@
                 <cfset randomProductsResult = userCateObject.getRandomProducts(sort = highSort)>
                 <cfelseif structKeyExists(form, "lowSort")>
                     <cfset randomProductsResult = userCateObject.getRandomProducts(sort = lowSort)>
+                <cfelseif structKeyExists(url, "searchKeyword")>
+                    <cfset randomProductsResult = userCateObject.getRandomProducts(searchKeyword = url.searchKeyword)>
                 <cfelse>
                     <cfset randomProductsResult = userCateObject.getRandomProducts()>
             </cfif>
             <cfinclude  template="./userHeader.cfm">
-            <cfloop query="subCategoryResult">
-                <cfif subCategoryResult.fldSubCategory_ID EQ url.subCategoryId>
-                    <div class="p-3 d-flex justify-content-between px-2">
-                        <h2>#subCategoryResult.fldSubcategoryName# - All Products</h2>
-                        <form method="POST">
-                            <div class="d-flex">
-                                <div class="me-3">
-                                    <span class="sortText">Sort :</span>
-                                    <button class="sortArrow text-success" value="ASC" name="highSort">
-                                        <i class="fa-solid fa-arrow-up"></i>
-                                    </button>
-                                    <button class="sortArrow text-danger" value="DESC" name="lowSort">
-                                        <i class="fa-solid fa-arrow-down"></i>
-                                    </button>
-                                </div>
-                                <div class="filterMainClass">
-                                    <div class="sortText filterClass mt-1">Filter<i class="fa-solid fa-filter"></i></div>
-                                    <div class="d-grid filterInner">
-                                        <div>Select Price Range :</div>
-                                        <div class="d-flex">
-                                            <input type="radio" id="filterRadio1" value='["0","1000"]' class="filterInput" name="filter">
-                                            <label>upto 1000</label>
-                                        </div>
-                                        <div class="d-flex">
-                                            <input type="radio" id="filterRadio2" value='["1000","10000"]'class="filterInput" name="filter">
-                                            <label>1000 to 10000</label>
-                                        </div>
-                                        <div class="d-flex">
-                                            <input type="radio" id="filterRadio3" value='["10000","25000"]' class="filterInput" name="filter">
-                                            <label>10000 to 25000</label>
-                                        </div>
-                                        <div class="d-flex">
-                                            <input type="radio" id="filterRadio4" value='["25000","100000"]' class="filterInput" name="filter">
-                                            <label>above 25000</label>
-                                        </div>
-                                        <div class="text-center">
-                                            <div class="mt-2">
-                                                <input type="text" id="minVal" placeholder="MIN" class="selectRange form-control border-danger">
-                                                <div class="text-center fw-bold">Select Range</div>
-                                                <input type="text" id="maxVal" placeholder="MAX" class="selectRange form-control border-success">
+            <cfif NOT structKeyExists(url, "searchKeyword")>
+                <cfloop query="subCategoryResult">
+                    <cfif subCategoryResult.fldSubCategory_ID EQ url.subCategoryId>
+                        <div class="p-3 d-flex justify-content-between px-2">
+                            <h2>#subCategoryResult.fldSubcategoryName# - All Products</h2>
+                            <form method="POST">
+                                <div class="d-flex">
+                                    <div class="me-3">
+                                        <span class="sortText">Sort :</span>
+                                        <button class="sortArrow text-success" value="ASC" name="highSort">
+                                            <i class="fa-solid fa-arrow-up"></i>
+                                        </button>
+                                        <button class="sortArrow text-danger" value="DESC" name="lowSort">
+                                            <i class="fa-solid fa-arrow-down"></i>
+                                        </button>
+                                    </div>
+                                    <div class="filterMainClass">
+                                        <div class="sortText filterClass mt-1">Filter<i class="fa-solid fa-filter"></i></div>
+                                        <div class="d-grid filterInner">
+                                            <div>Select Price Range :</div>
+                                            <div class="d-flex">
+                                                <input type="radio" id="filterRadio1" onclick="disableInputs()" value='["0","1000"]' class="filterInput" name="filter">
+                                                <label>upto 1000</label>
                                             </div>
-                                            <button type="button" class="btn btn-primary mt-2" onclick="getFilterResult(#url.subCategoryId#)">Show result</button>
+                                            <div class="d-flex">
+                                                <input type="radio" id="filterRadio2" onclick="disableInputs()" value='["1000","10000"]'class="filterInput" name="filter">
+                                                <label>1000 to 10000</label>
+                                            </div>
+                                            <div class="d-flex">
+                                                <input type="radio" id="filterRadio3" onclick="disableInputs()" value='["10000","25000"]' class="filterInput" name="filter">
+                                                <label>10000 to 25000</label>
+                                            </div>
+                                            <div class="d-flex">
+                                                <input type="radio" id="filterRadio4" onclick="disableInputs()" value='["25000","100000"]' class="filterInput" name="filter">
+                                                <label>above 25000</label>
+                                            </div>
+                                            <div class="d-flex">
+                                                <input type="radio" id="filterRadio5" onclick="enableInputs()" value='range' class="filterInput" name="filter">
+                                                <label>Custom Range</label>
+                                            </div>
+                                            <div class="text-center">
+                                                <div class="mt-2">
+                                                    <input type="text" disabled id="minVal" placeholder="MIN" class="selectRange form-control border-danger">
+                                                    <div class="text-center fw-bold">Select Range</div>
+                                                    <input type="text" disabled id="maxVal" placeholder="MAX" class="selectRange form-control border-success">
+                                                </div>
+                                                <button type="button" class="btn btn-primary mt-2" onclick="getFilterResult(#url.subCategoryId#)">Show result</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        <form>
-                    </div>
-                </cfif>
-            </cfloop>
+                            <form>
+                        </div>
+                    </cfif>
+                </cfloop>
+                <cfelse>
+                    <cfif queryRecordCount(randomProductsResult)>
+                            <h4 class="m-3">Results for your search "#url.searchKeyword#"</h4>
+                        <cfelse>
+                        <h4 class="m-3">No result based on your search "#url.searchKeyword#"</h4>
+                    </cfif>
+            </cfif>
             <div>
                 <div>
                     <div class="randomProductsMainDiv" id="randomProductsMainDivId">
                         <cfloop query="randomProductsResult">
-                            <cfif randomProductsResult.fldSubCategoryId EQ url.subCategoryId>
-                                <div class="card randomProductCard" style="width: 13rem;">
-                                    <a href="#randomProductsResult.fldImageFileName#">
-                                        <img src="../Assets/ProductImages/#randomProductsResult.fldImageFileName#" class="card-img-top randProductImage" alt="Product Image">
-                                    </a>
-                                    <div class="card-body randProductbody">
-                                        <div class="card-text randProductName">#randomProductsResult.fldProductName#</div>
-                                        <div>#randomProductsResult.fldBrandName#</div>
-                                        <div class="card-text randProductPrice">
-                                            <i class="fa-solid fa-indian-rupee-sign"></i>
-                                            #randomProductsResult.fldPrice + randomProductsResult.fldTax#
+                            <cfif structKeyExists(url, "subCategoryId")>
+                                <cfif randomProductsResult.fldSubCategoryId EQ url.subCategoryId>
+                                    <div class="card randomProductCard" style="width: 13rem;">
+                                        <a href="./productPage.cfm?productId=#randomProductsResult.fldProduct_ID#">
+                                            <img src="../Assets/ProductImages/#randomProductsResult.fldImageFileName#" class="card-img-top randProductImage" alt="Product Image">
+                                        </a>
+                                        <div class="card-body randProductbody">
+                                            <div class="card-text randProductName">#randomProductsResult.fldProductName#</div>
+                                            <div>#randomProductsResult.fldBrandName#</div>
+                                            <div class="card-text randProductPrice">
+                                                <i class="fa-solid fa-indian-rupee-sign"></i>
+                                                #randomProductsResult.fldPrice + randomProductsResult.fldTax#
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                </cfif>
+                                <cfelse>
+                                    <div class="card randomProductCard" style="width: 13rem;">
+                                        <a href="./productPage.cfm?productId=#randomProductsResult.fldProduct_ID#">
+                                            <img src="../Assets/ProductImages/#randomProductsResult.fldImageFileName#" class="card-img-top randProductImage" alt="Product Image">
+                                        </a>
+                                        <div class="card-body randProductbody">
+                                            <div class="card-text randProductName">#randomProductsResult.fldProductName#</div>
+                                            <div>#randomProductsResult.fldBrandName#</div>
+                                            <div class="card-text randProductPrice">
+                                                <i class="fa-solid fa-indian-rupee-sign"></i>
+                                                #randomProductsResult.fldPrice + randomProductsResult.fldTax#
+                                            </div>
+                                        </div>
+                                    </div>
                             </cfif>
                         </cfloop>
                     </div>

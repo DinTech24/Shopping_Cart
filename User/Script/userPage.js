@@ -129,7 +129,18 @@ function modalClear(){
     document.getElementById("emailWarning").innerHTML = ""
 }
 
+function enableInputs(){
+    document.getElementById("minVal").disabled = false;
+    document.getElementById("maxVal").disabled = false;
+}
+
+function disableInputs(){
+    document.getElementById("minVal").disabled = true;
+    document.getElementById("maxVal").disabled = true;
+}
+
 function getFilterResult(subCategoryId){
+
     var flag = false;
     minVal = document.getElementById("minVal").value;
     maxVal = document.getElementById("maxVal").value;
@@ -140,13 +151,16 @@ function getFilterResult(subCategoryId){
             break;
         }else{
             if((i==4)&&(flag == false)){
-                var filterRangeVal=`["${minVal}","${maxVal}"]`
-                flag=true
+                if((minVal=="")&&(maxVal=="")){
+                    alert("Select a Range to continue")
+                }else{
+                    var filterRangeVal=`["${minVal}","${maxVal}"]`
+                    flag=true
+                }
             }
         }
     }
     if(flag==true){
-        console.log(filterRangeVal)
         $.ajax({
             type:"POST",
             url:"Component/userComponent.cfc?method=selectPriceRange",
@@ -157,7 +171,7 @@ function getFilterResult(subCategoryId){
                 for(j=0;j<result.length;j++){
                     var eachProducts = 
                     `<div class="card randomProductCard" style="width: 13rem;">
-                        <a href="${result[j].fldImageFileName}">
+                        <a href="./productPage.cfm?productId=${result[j].fldProduct_ID}">
                             <img src="../Assets/ProductImages/${result[j].fldImageFileName}" class="card-img-top randProductImage" alt="Product Image">
                         </a>
                         <div class="card-body randProductbody">

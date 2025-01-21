@@ -73,8 +73,8 @@
             FROM
                 tblUser 
             WHERE
-                (fldEmail = <cfqueryparam value = '#arguments.enteredId#' cfsqltype = "cf_sql_varchar">
-                OR fldPhone = <cfqueryparam value = '#arguments.enteredId#' cfsqltype = "cf_sql_varchar">)
+                (fldEmail = <cfqueryparam value = '#arguments.enteredId#' cfsqltype = "varchar">
+                OR fldPhone = <cfqueryparam value = '#arguments.enteredId#' cfsqltype = "varchar">)
         </cfquery>
         <cfif queryRecordCount(local.checkPassword)>
             <cfset local.givenPassword = hash("#arguments.enteredPassword#"&"#local.checkPassword.fldUserSaltString#","SHA-256","UTF-8")>
@@ -84,9 +84,9 @@
                 FROM
                     tblUser 
                 WHERE
-                    (fldEmail = <cfqueryparam value = '#arguments.enteredId#' cfsqltype = "cf_sql_varchar">
-                    OR fldPhone = <cfqueryparam value = '#arguments.enteredId#' cfsqltype = "cf_sql_varchar">)
-                    AND fldHashedPassword  = <cfqueryparam value = '#local.givenPassword#' cfsqltype = "cf_sql_varchar">
+                    (fldEmail = <cfqueryparam value = '#arguments.enteredId#' cfsqltype = "varchar">
+                    OR fldPhone = <cfqueryparam value = '#arguments.enteredId#' cfsqltype = "varchar">)
+                    AND fldHashedPassword  = <cfqueryparam value = '#local.givenPassword#' cfsqltype = "varchar">
                     AND fldActive = <cfqueryparam value = '1' cfsqltype = "cf_sql_integer">
             </cfquery>
             <cfif queryRecordCount(local.checkUser)>
@@ -127,6 +127,7 @@
 
     <cffunction  name="listSubCategories" returnType="query">
         <cfargument  name="categoryId" type="numeric">
+        <cfargument  name="subCategoryId" type="numeric" required="false">
         <cfquery name="local.getSubCategoryQuery">
             SELECT 
                 fldsubCategory_ID,fldsubCategoryName,fldCategoryId 
@@ -134,14 +135,19 @@
                 tblSubCategory 
             WHERE 
                 fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
+                <cfif structKeyExists(arguments, "subCategoryId")>
+                    AND fldsubCategory_ID = <cfqueryparam value = '#arguments.subCategoryId#' cfsqltype = "integer">
+                </cfif>
         </cfquery>
         <cfreturn local.getSubCategoryQuery>
     </cffunction>
 
     <cffunction  name="getRandomProducts" returnType="any">
         <cfargument  name="sort" default="false">
-        <cfargument  name="filterArray" default="false">
-        <cfargument  name="subCategoryId" default="false">
+        <cfargument  name="filterArray" default="false" required = "false">
+        <cfargument  name="subCategoryId" default="false" required = "false">
+        <cfargument  name="productId" required = "false">
+        <cfargument  name="searchKeyword" required = "false">
         <cfquery name="local.getproductsQuery">
             SELECT 
                 <cfif arguments.sort EQ "false">
@@ -168,9 +174,15 @@
                 tblProductImages.fldDefaultImage = <cfqueryparam value = '1' cfsqltype = "integer">
                 AND tblProduct.fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
                 <cfif IsArray(arguments.filterArray)>
-                    AND fldPrice >  <cfqueryparam value = '#val(arguments.filterArray[1])#' cfsqltype = "decimal">
-                    AND fldPrice <  <cfqueryparam value = '#val(arguments.filterArray[2])#' cfsqltype = "decimal">
+                    AND fldPrice + fldTax >=  <cfqueryparam value = '#val(arguments.filterArray[1])#' cfsqltype = "decimal">
+                    AND fldPrice + fldTax <=  <cfqueryparam value = '#val(arguments.filterArray[2])#' cfsqltype = "decimal">
                     AND fldSubCategoryId = <cfqueryparam value = '#arguments.subCategoryId#' cfsqltype = "integer">;
+                    <cfelseif structKeyExists(arguments, "productId")>
+                        AND fldProduct_ID = <cfqueryparam value = '#arguments.productId#' cfsqltype = "integer">;
+                    <cfelseif structKeyExists(arguments, "searchKeyword")>
+                        AND (fldProductName LIKE <cfqueryparam value = '%#arguments.searchKeyword#%' cfsqltype = "varchar">
+                        OR fldBrandName LIKE <cfqueryparam value = '%#arguments.searchKeyword#%' cfsqltype = "varchar">
+                        OR fldDescription LIKE <cfqueryparam value = '%#arguments.searchKeyword#%' cfsqltype = "varchar">);
                     <cfelse>
                         ORDER BY
                         <cfif arguments.sort EQ "false">
@@ -181,6 +193,20 @@
                 </cfif> 
         </cfquery>
         <cfreturn local.getproductsQuery>
+    </cffunction>
+
+    <cffunction  name="getProductImages" returnType="query">
+        <cfargument  name="productId">
+        <cfquery name="ProductImages">
+            SELECT 
+                fldImageFileName,
+                fldDefaultImage
+            FROM 
+                tblProductImages
+            WHERE
+                fldProductId = <cfqueryparam value = '#arguments.productId#' cfsqltype = "integer">
+        </cfquery>
+        <cfreturn ProductImages>
     </cffunction>
 
     <cffunction  name="selectPriceRange" access="remote" returnFormat="JSON">

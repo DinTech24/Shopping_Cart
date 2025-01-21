@@ -3,13 +3,18 @@
         <div>
             <a href="./userhomePage.cfm" class="navHead">ShoppingCart</a>
         </div>
-        <div class="d-flex">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-dark me-3" type="submit">Search</button>
-        </div>
+        <form method="GET" action="./subCategoriesListingPage.cfm">
+            <div class="d-flex">
+                <input class="form-control me-2" name="searchKeyword" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-dark me-3" namae="searchButton" type="submit">Search</button>
+            </div>
+        </form>
         <div clas="d-flex">
-            <a href="" class="mx-2">
+            <a href="" class="mx-3 position-relative">
                 <i class="fa-solid fa-lg fa-cart-shopping"></i>
+                <span class="position-absolute mt-1 start-100 translate-middle badge rounded-circle bg-danger">
+                    3
+                </span>
             </a>
             <cfif structKeyExists(session, "userLogin") AND structKeyExists(session, "username")>
                 <a href="" class="mx-2">

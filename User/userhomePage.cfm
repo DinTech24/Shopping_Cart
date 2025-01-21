@@ -42,7 +42,7 @@
                     <div class="randomProductsMainDiv">
                         <cfloop query="randomProductsResult">
                             <div class="card randomProductCard" style="width: 13rem;">
-                                <a href="#randomProductsResult.fldImageFileName#">
+                                <a href="./productPage.cfm?productId=#randomProductsResult.fldProduct_ID#">
                                     <img src="../Assets/ProductImages/#randomProductsResult.fldImageFileName#" class="card-img-top randProductImage" alt="Product Image">
                                 </a>
                                 <div class="card-body randProductbody">
@@ -59,13 +59,6 @@
                     
                 </div>
             </div>
-<!---             <cfif structKeyExists(form,"loginButton")>
-                <cfset userHomeObject = new Component.userComponent()>
-                <cfset result = userHomeObject.loginUser(form.emailId,form.password)>
-                <div class="text-center">
-                    <div class="text-danger fw-bold">#result["message"]#</div>
-                </div>
-            </cfif> --->
             <cfinclude  template="./footer.cfm">
         </cfoutput>
         <script src="./Script/userPage.js"></script>
