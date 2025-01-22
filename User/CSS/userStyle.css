@@ -1,0 +1,410 @@
+*{
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+body{
+    margin: 0px;
+    padding:0px;
+    overflow-x:hidden;
+    overflow-y:scroll;
+}
+.inputStyle{
+    margin-top: 2.5vh;
+    border: 1px solid rgb(240, 237, 237);
+    border-radius: 6px;
+    width: 30vw;
+    height: 6vh;
+    border: 1px solid grey;
+}
+.accessPageHead{
+    background-color: #5190c7;
+    color: white;
+    top:0px;
+    z-index: 1;
+    position: sticky;
+    height: 8vh;
+}
+
+.accessPageHead a{
+    color: white;
+    text-decoration: none;
+}
+
+.accessBodyMainDiv{
+    height: 100%;
+}
+
+.addressLogoMainDiv{
+    background-color: #3b517a;
+    height: 100%;
+    border-radius: 10px;
+}
+
+.addressLoginMainDiv{
+    background-color: #536a96;
+    height: 100%;
+    border-radius: 10px;
+}
+
+.addressLogoDiv{
+    display: flex;
+    justify-content: center;
+    width: 18vw;
+}
+
+.accessNames{
+    text-decoration: none;
+    color: white;
+}
+
+.accessMainDiv{
+    background-color: white;
+    border-radius:10px ;
+    border: 1px solid rgb(0, 0, 0);
+    box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
+}
+
+.accessButton{
+    border: transparent;
+    background-color: #5190c7;
+    width: 15vw;
+    border: 1px slid #162e41;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    color: white;
+}
+
+.accessHeading{
+    font-size: 28px;
+    font-weight: 600;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-bottom: 2vh;
+    margin-top:2vh;
+}
+
+.registerWarning{
+    font-size: 12px;
+    color: crimson;
+    font-weight: 600;
+}
+
+
+.userNavBar{
+    display: flex;
+    justify-content: space-between;
+    background-color:#17879b;
+    top: 0px;
+    position: sticky;
+    z-index: 1;
+}
+
+.userNavBar a{
+    text-decoration: none;
+    color: white;
+}
+
+.logoutButton{
+    background-color: transparent;
+    color: white;
+    font-weight: 600;
+    border: transparent;
+}
+
+.navHead{
+    font-size: 24px;
+    color: white;
+    font-weight: 800
+}
+
+.subcategoryBar{
+    background-color: #59c9dda6;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.subCategoryEach{
+    font-size: 14px;
+    text-decoration: none;
+    color: black;
+}
+
+.mainImage{
+    width: 100%;
+    height: 60vh;
+}
+
+.randomProductsHead{
+    font-size: 20px;
+    font-weight: 600;
+    margin-left: 10px;
+    margin-top: 3vh;
+}
+
+.randomProductsMainDiv{
+    margin: 10px;
+    margin-right: 0px;
+    display: flex;
+    flex-wrap:wrap;
+}
+
+.randomProductCard{
+    margin-right: 15.1px;
+    margin-bottom: 15.1px;
+}
+
+.randProductbody{
+    text-align: center;
+    border-top: rgb(211, 208, 208) 1px solid;
+    padding: 0px;
+}
+
+.randProductImage{
+    width: 100%;
+    height:28vh;
+}
+
+.randProductPrice{
+    font-size: large;
+    color: rgb(182, 6, 21);
+    font-weight: bold;
+}
+
+.randProductName{
+    font-size: larger;
+    color:black;
+    font-weight: bolder;
+}
+
+.subCategoryEach{
+    position: relative;
+    cursor: pointer; 
+}
+
+.subCategoryEach a{
+    text-decoration: none;
+    color: black;
+}
+
+.subCategoryEach .toolTipData{
+    visibility: hidden;
+    width:10vw;
+    background-color: white;
+    color: black;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1;
+    top: 100%;
+    left: 50%;
+    margin-left: -60px;
+}
+  
+.subCategoryEach:hover .toolTipData{
+    visibility: visible;
+}
+
+.subcategories{
+    width: 10VW;
+}
+
+.subcategories:hover{
+    background-color: rgba(7, 7, 7, 0.3);
+}
+
+
+.footerDiv{
+    border-top: rgb(214, 214, 214) 1px solid;
+}
+
+.LoginButton{
+    background-color: rgba(0, 0, 0, 0.7);
+    border: transparent;
+    border-radius: 10px;
+    color: white;
+}
+
+.createAccount{
+    font-size: 14px;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.sortText{
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.sortArrow{
+    border: 1px solid rgb(214, 214, 214);
+    background-color: transparent;
+    border-radius: 6px;
+}
+
+.filterMainClass{
+    position: relative;
+    cursor: pointer; 
+}
+
+.filterMainClass .filterInner{
+    border: 1px solid rgb(226, 226, 226);
+    box-shadow: 1px 1px 1px black;
+    padding: 10px;
+    visibility: hidden;
+    width:20vw;
+    background-color: white;
+    color: black;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1;
+    top: 100%;
+    right:10%;
+}
+
+.filterMainClass:hover .filterInner{
+    visibility: visible;
+}
+
+.filterInput{
+    margin-right: 5px;
+}
+
+/*  */
+.screenDivision {
+    display: flex;
+    padding-left: 1rem;
+}
+.productImageDivision {
+    display: flex;
+    justify-content: center;
+}
+
+.productMainImage {
+    max-width: 100%;
+    height: auto;
+}
+.buttonClassDivion {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+}
+.screenDivisionButton1,
+.screenDivisionButton2 {
+    padding: 0.5rem 1rem;
+    border: none;
+    cursor: pointer;
+    margin-right: 1rem;
+    font-weight: bold;
+}
+.screenDivisionButton1 {
+    background-color: #3f8d56;
+    color: white;
+    border-radius: 5px;
+}
+.screenDivisionButton2 {
+    background-color: #2a6ba7;
+    color: white;
+    border-radius: 5px;
+}
+.screenSection2 {
+    padding-left: 1rem;
+}
+.pathAndShare {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+.pageFullPath {
+    font-size: 0.9rem;
+    color: rgb(102, 101, 101);
+}
+
+.pageFullPath a{
+    text-decoration: none;
+    color: rgb(102, 101, 101);
+}
+
+.productName {
+    font-size: 28px;
+    font-weight: bolder;
+    margin-bottom: 0.5rem;
+    margin-top: 3vh;
+}
+.productNametag {
+    font-size: 15px;
+    color: #ff6f61;
+    margin-left: 0.5rem;
+}
+
+.specialPriceSpan {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #ff6f61;
+    margin-right: 0.5rem;
+}
+.productDiscountedPrice {
+    font-size: 18px;
+    margin-top: 1vh;
+    color: black;
+}
+
+.discountedPriceSpan{
+    color:black;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: bolder;
+}
+
+.badge{
+    font-family:cursive;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.carousel{
+    width: 38vw;
+    height:34vw;
+    border-radius: 20px;
+    border: #c5c6c7 1px solid;
+}
+
+.carousalcontrol{
+    color: grey;
+}
+
+.productAllImages1 {
+    width: 30vw;
+    height:33.7vw;
+    margin-left: 4vw;
+}
+
+.productImageMainDiv{
+    display: flex;
+}
+
+.productImageSubDiv{
+    border: 1px solid rgb(194, 194, 194);
+    border-radius: 5px;
+    height: 20vw;
+    width: 18vw;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.productImagesSub{
+    height: 18vw;
+    width: 16vw;
+}
+
+.initialDivHeight{
+    max-height: 98vh;
+    overflow-y: hidden;
+}
+
+.viewMoreButton{
+    background-color: transparent;
+    border: 1px solid grey;
+    padding: 5px;
+    border-radius: 5px;
+}
