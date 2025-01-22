@@ -13,13 +13,16 @@
             <cfset userCateObject = new Component.userComponent()>
             <cfset subCategoryResult = userCateObject.listSubCategories()>
             <cfif structKeyExists(form, "highSort")>
-                <cfset randomProductsResult = userCateObject.getRandomProducts(sort = highSort)>
+                <cfset randomProductsResult = userCateObject.getRandomProducts(sort = form.highSort)>
                 <cfelseif structKeyExists(form, "lowSort")>
-                    <cfset randomProductsResult = userCateObject.getRandomProducts(sort = lowSort)>
+                    <cfset randomProductsResult = userCateObject.getRandomProducts(sort = form.lowSort)>
                 <cfelseif structKeyExists(url, "searchKeyword")>
-                    <cfset randomProductsResult = userCateObject.getRandomProducts(searchKeyword = url.searchKeyword)>
+                    <cfset randomProductsResult = userCateObject.getRandomProducts(
+                        searchKeyword = url.searchKeyword,
+                        sort = "true"
+                    )>
                 <cfelse>
-                    <cfset randomProductsResult = userCateObject.getRandomProducts()>
+                    <cfset randomProductsResult = userCateObject.getRandomProducts(sort="negative")>
             </cfif>
             <cfinclude  template="./userHeader.cfm">
             <cfif NOT structKeyExists(url, "searchKeyword")>
@@ -55,8 +58,8 @@
                                                 <label>10000 to 25000</label>
                                             </div>
                                             <div class="d-flex">
-                                                <input type="radio" id="filterRadio4" onclick="disableInputs()" value='["25000","100000"]' class="filterInput" name="filter">
-                                                <label>above 25000</label>
+                                                <input type="radio" id="filterRadio4" onclick="disableInputs()" value='["25000","200000"]' class="filterInput" name="filter">
+                                                <label>25000 to 200000</label>
                                             </div>
                                             <div class="d-flex">
                                                 <input type="radio" id="filterRadio5" onclick="enableInputs()" value='range' class="filterInput" name="filter">
@@ -86,7 +89,7 @@
             </cfif>
             <div>
                 <div>
-                    <div class="randomProductsMainDiv" id="randomProductsMainDivId">
+                    <div class="randomProductsMainDiv initialDivHeight" id="randomProductsMainDivId">
                         <cfloop query="randomProductsResult">
                             <cfif structKeyExists(url, "subCategoryId")>
                                 <cfif randomProductsResult.fldSubCategoryId EQ url.subCategoryId>
@@ -122,6 +125,12 @@
                         </cfloop>
                     </div>
                 </div>
+            </div>
+            <div class="text-center mb-3" id="viewMore">
+                <button type="button" class="viewMoreButton" onclick="removeHeightClass()">
+                    load more products
+                    <i class="fa-solid fa-sort-down"></i>
+                </button>
             </div>
             <cfinclude  template="./footer.cfm">
         </cfoutput>

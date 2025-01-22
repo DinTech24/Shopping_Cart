@@ -1,12 +1,15 @@
 <cfoutput>
-    <div class="userNavBar px-3 py-2">
+    <div class="userNavBar align-items-center px-3 py-1">
         <div>
-            <a href="./userhomePage.cfm" class="navHead">ShoppingCart</a>
+            <i class="fa-brands fa-shopify fs-1 text-dark"></i>
+            <a href="./userhomePage.cfm" class="navHead">eCart</a>
         </div>
         <form method="GET" action="./subCategoriesListingPage.cfm">
             <div class="d-flex">
                 <input class="form-control me-2" name="searchKeyword" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-dark me-3" namae="searchButton" type="submit">Search</button>
+                <button class="btn btn-outline-dark me-3" namae="searchButton" type="submit">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
             </div>
         </form>
         <div clas="d-flex">
@@ -19,6 +22,7 @@
             <cfif structKeyExists(session, "userLogin") AND structKeyExists(session, "username")>
                 <a href="" class="mx-2">
                     <i class="fa-solid fa-lg fa-user"></i>
+                    #session.username#
                 </a>
                 <button class="logoutButton" onclick="logoutFunction()">Logout</button>
                 <cfelse>

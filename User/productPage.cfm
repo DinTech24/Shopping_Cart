@@ -13,10 +13,19 @@
             <cfinclude  template="./userHeader.cfm">
             <cfset productObject = new Component.userComponent()>
             <cfset resultProductDetails = productObject.getRandomProducts(productId = url.productId)>
-            <cfset randomProductsResult = productObject.getRandomProducts()>
+            <cfset randomProductsResult = productObject.getRandomProducts(sort="negative")>
             <cfset resultProductImages = productObject.getProductImages(productId = url.productId)>
             <cfset subCategoryResult = productObject.listSubCategories(subCategoryId = resultProductDetails.fldSubCategoryId)>
             <cfset categoryResult = productObject.listCategories(categoryId = subCategoryResult.fldCategoryId)>
+            <cfset randomLabels = [
+                "Best Seller",
+                "Special Price",
+                "Best price ever",
+                "Lightning deal",
+                "Limited deal",
+                "Get 5% off",
+                "Get 10% off"
+            ]>
             <div class="screenDivision d-flex ps-3 my-3">
                 <div class="productImageDivision d-flex  justify-content-center">
                     <div>
@@ -32,12 +41,12 @@
                                     </div>
                                 </cfloop>
                             </div>
-                            <button class="carousel-control-prev carousalcontrol" type="button" data-bs-target="##carouselControls" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <button class="carousel-control-prev carousalcontro" type="button" data-bs-target="##carouselControls" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon btn btn-dark" aria-hidden="true"></span>
                                 <span class="visually-hidden">Previous</span>
                             </button>
-                            <button class="carousel-control-next carousalcontrol " type="button" data-bs-target="##carouselControls" data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <button class="carousel-control-next carousalcontrol" type="button" data-bs-target="##carouselControls" data-bs-slide="next">
+                                <span class="carousel-control-next-icon btn btn-dark" aria-hidden="true"></span>
                                 <span class="visually-hidden">Next</span>
                             </button>
                         </div>
@@ -61,9 +70,10 @@
                     </div>
                     <div class="productName">#resultProductDetails.fldProductName#</div>
                     <div class="productBrand">#resultProductDetails.fldBrandName#</div>
-                    <span class="specialPriceSpan mt-3">Special price</span>
+                    <span class="specialPriceSpan">#randomLabels[randRange(1, 7)]#</span>
+                    
                     <div>
-                        <div class="mt-3">
+                        <div class="mt-1">
                             #resultProductDetails.fldDescription#
                         </div>
                         <div class="productDiscountedPrice">
@@ -73,6 +83,14 @@
                                 #resultProductDetails.fldPrice+resultProductDetails.fldTax#
                             </span>
                         </div>
+                    </div>
+<!---                     <h5>Products's more images</h5> --->
+                    <div class="productImageMainDiv">
+                        <cfloop query="resultProductImages" endRow="3">
+                            <div class="me-3 productImageSubDiv">
+                                <img class="productImagesSub" src="../Assets/ProductImages/#resultProductImages.fldImageFileName#" alt="Productimages">
+                            </div>
+                        </cfloop>
                     </div>
                 </div>
             </div>
@@ -97,9 +115,10 @@
                     </cfif>
                 </cfloop>
             </div>
-            <cfinclude  template="./footer.cfm">
-            <link rel="stylesheet" href="./Script/userPage.js">
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+            <cfinclude template="./footer.cfm">
+        <script src="./Script/userPage.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
         </body>
    </cfoutput>
 </html>

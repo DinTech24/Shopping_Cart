@@ -230,7 +230,7 @@
                 fldProduct_ID = <cfqueryparam value = '#arguments.editDataStructure.productEdit#' cfsqltype = "integer">
             </cfquery>
             <cffile action="uploadall"
-            destination="#expandPath('./Assets/ProductImages')#"
+            destination="#expandPath('../Assets/ProductImages')#"
             result="local.productImages"
             nameconflict="makeunique">
             <cfloop array="#local.productImages#" item="item">

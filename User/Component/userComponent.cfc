@@ -2,56 +2,56 @@
 
     <cffunction  name="addUser" returnType="struct">
         <cfargument  name="registerStructure" type="struct">
-        <cfset exceptionStruct = structNew()>
-        <cfset exceptionStruct["messageType"] = "Red">
+        <cfset local.exceptionStruct = structNew()>
+        <cfset local.exceptionStruct["messageType"] = "Red">
         <cfset local.isUserExists = isUserExist(arguments.registerStructure.emailId,arguments.registerStructure.phonenumber)>
         <cfif trim(arguments.registerStructure.firstName) EQ "" OR
         trim(arguments.registerStructure.emailId) EQ "" OR
         trim(arguments.registerStructure.phonenumber) EQ "" OR
         trim(arguments.registerStructure.password) EQ "" >
-            <cfset exceptionStruct["message"] = "Enter Data">
-            <cfreturn exceptionStruct>
+            <cfset local.exceptionStruct["message"] = "Enter Data">
+            <cfreturn local.exceptionStruct>
             <cfelse>
                 <cfset local.saltString = generateSecretKey("AES",128)>
                 <cfset local.HashedPassword = hash("#arguments.registerStructure.password#"&"#local.saltString#","SHA-256","UTF-8")>
                 <cfif local.isUserExists>
-                    <cfset exceptionStruct["message"] = "User Already Exists">
+                    <cfset local.exceptionStruct["message"] = "User Already Exists">
                     <cfelse>
-                        <cfquery name="registerUserQuery">
+                        <cfquery name="local.registerUserQuery">
                             INSERT INTO
                                 tblUser(fldFirstName,fldLastName,fldEmail,fldPhone,fldRoleId,fldHashedPassword,fldUserSaltString)
                             values(
-                                <cfqueryparam value = '#arguments.registerStructure.firstName#' cfsqltype = "cf_sql_varchar">,
-                                <cfqueryparam value = '#arguments.registerStructure.lastName#' cfsqltype = "cf_sql_varchar">,
-                                <cfqueryparam value = '#arguments.registerStructure.emailId#' cfsqltype = "cf_sql_varchar">,
-                                <cfqueryparam value = '#arguments.registerStructure.phonenumber#' cfsqltype = "cf_sql_varchar">,
-                                <cfqueryparam value = '1' cfsqltype = "cf_sql_varchar">,
-                                <cfqueryparam value = '#local.HashedPassword#' cfsqltype = "cf_sql_varchar">,
-                                <cfqueryparam value = '#local.saltString#' cfsqltype = "cf_sql_varchar">
+                                <cfqueryparam value = '#arguments.registerStructure.firstName#' cfsqltype = "varchar">,
+                                <cfqueryparam value = '#arguments.registerStructure.lastName#' cfsqltype = "varchar">,
+                                <cfqueryparam value = '#arguments.registerStructure.emailId#' cfsqltype = "varchar">,
+                                <cfqueryparam value = '#arguments.registerStructure.phonenumber#' cfsqltype = "varchar">,
+                                <cfqueryparam value = '1' cfsqltype = "integer">,
+                                <cfqueryparam value = '#local.HashedPassword#' cfsqltype = "varchar">,
+                                <cfqueryparam value = '#local.saltString#' cfsqltype = "varchar">
                             )
                         </cfquery>
-                        <cfset exceptionStruct["message"] = "User Successfully Added">
-                        <cfset exceptionStruct["messageType"] = "green">
+                        <cfset local.exceptionStruct["message"] = "User Successfully Added">
+                        <cfset local.exceptionStruct["messageType"] = "green">
                 </cfif>
         </cfif>
-        <cfreturn exceptionStruct>
+        <cfreturn local.exceptionStruct>
     </cffunction>
 
     <cffunction  name="isUserExist" returnType="boolean">
         <cfargument  name="emailId" type="string">
         <cfargument  name="phonenumber" type="string">
-        <cfquery name="getUserQuery">
+        <cfquery name="local.getUserQuery">
             SELECT
                 fldEmail
             FROM
                 tblUser 
             WHERE
-                (fldEmail = <cfqueryparam value = '#arguments.emailId#' cfsqltype = "cf_sql_varchar">
-                OR fldPhone = <cfqueryparam value = '#arguments.phonenumber#' cfsqltype = "cf_sql_varchar">)
-                AND fldRoleId = <cfqueryparam value = '1' cfsqltype = "cf_sql_varchar">
-                AND fldActive = <cfqueryparam value = '1' cfsqltype = "cf_sql_integer">
+                (fldEmail = <cfqueryparam value = '#arguments.emailId#' cfsqltype = "varchar">
+                OR fldPhone = <cfqueryparam value = '#arguments.phonenumber#' cfsqltype = "varchar">)
+                AND fldRoleId = <cfqueryparam value = '1' cfsqltype = "integer">
+                AND fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
         </cfquery>
-        <cfif queryRecordCount(getUserQuery)>
+        <cfif queryRecordCount(local.getUserQuery)>
             <cfreturn true>
             <cfelse>
                 <cfreturn false>
@@ -62,10 +62,10 @@
         <cfargument  name="enteredId" type="string">
         <cfargument  name="enteredPassword" type="string">
         <cfargument  name="jsCall" default = "false">
-        <cfset loginExcepetion = structNew()>
+        <cfset local.loginExcepetion = structNew()>
         <cfif trim(arguments.enteredId) EQ "" OR trim(arguments.enteredPassword) EQ "">
-            <cfset loginExcepetion["Message"] = "Empty Fields are not alllowed!">
-            <cfreturn loginExcepetion>
+            <cfset local.loginExcepetion["Message"] = "Empty Fields are not alllowed!">
+            <cfreturn local.loginExcepetion>
         </cfif>
         <cfquery name="local.checkPassword">
             SELECT 
@@ -87,7 +87,7 @@
                     (fldEmail = <cfqueryparam value = '#arguments.enteredId#' cfsqltype = "varchar">
                     OR fldPhone = <cfqueryparam value = '#arguments.enteredId#' cfsqltype = "varchar">)
                     AND fldHashedPassword  = <cfqueryparam value = '#local.givenPassword#' cfsqltype = "varchar">
-                    AND fldActive = <cfqueryparam value = '1' cfsqltype = "cf_sql_integer">
+                    AND fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
             </cfquery>
             <cfif queryRecordCount(local.checkUser)>
                 <cfset session.userLogin = true>
@@ -95,24 +95,27 @@
                 <cfset session.username = local.checkUser.fldFirstName>
                 <cfset session.email = local.checkUser.fldEmail>
                 <cfif jscall EQ true>
-                    <cfset loginExcepetion["Message"] = "true">
+                    <cfset local.loginExcepetion["Message"] = "true">
                     <cfelse>
                         <cflocation url="../User/userhomePage.cfm" addToken="no">
                 </cfif>
                 <cfelse>
-                    <cfset loginExcepetion["Message"] = "Incorrect Password">
+                    <cfset local.loginExcepetion["Message"] = "Incorrect Password">
             </cfif>
             <cfelse>
-                <cfset loginExcepetion["Message"] = "Enter a valid phoneNumber or emailId">
-                <cfreturn loginExcepetion>
+                <cfset local.loginExcepetion["Message"] = "Enter a valid phoneNumber or emailId">
+                <cfreturn local.loginExcepetion>
         </cfif>
-        <cfreturn loginExcepetion>
+        <cfreturn local.loginExcepetion>
     </cffunction>
 
     <cffunction  name="listCategories" returnType="query">
-        <cfargument  name="categoryId" default = 0 type="numeric">
+        <cfargument  name="categoryId" default=0 type="numeric">
         <cfquery name="local.getCategoryQuery">
-            SELECT TOP 9
+            SELECT 
+            <cfif structKeyExists(arguments, "categoryId")>
+                TOP 9
+            </cfif>
                 fldcategory_ID,fldcategoryName 
             FROM 
                 tblCategory 
@@ -143,7 +146,7 @@
     </cffunction>
 
     <cffunction  name="getRandomProducts" returnType="any">
-        <cfargument  name="sort" default="false">
+        <cfargument  name="sort" default="false" required = "false">
         <cfargument  name="filterArray" default="false" required = "false">
         <cfargument  name="subCategoryId" default="false" required = "false">
         <cfargument  name="productId" required = "false">
@@ -184,11 +187,12 @@
                         OR fldBrandName LIKE <cfqueryparam value = '%#arguments.searchKeyword#%' cfsqltype = "varchar">
                         OR fldDescription LIKE <cfqueryparam value = '%#arguments.searchKeyword#%' cfsqltype = "varchar">);
                     <cfelse>
-                        ORDER BY
                         <cfif arguments.sort EQ "false">
-                            NEWID();
+                            ORDER BY NEWID();
+                            <cfelseif arguments.sort EQ "negative">
+                                ;
                             <cfelse>
-                                fldPrice + fldTax #arguments.sort#;
+                                ORDER BY fldPrice + fldTax #arguments.sort#;
                         </cfif> 
                 </cfif> 
         </cfquery>
@@ -197,7 +201,7 @@
 
     <cffunction  name="getProductImages" returnType="query">
         <cfargument  name="productId">
-        <cfquery name="ProductImages">
+        <cfquery name="local.ProductImages">
             SELECT 
                 fldImageFileName,
                 fldDefaultImage
@@ -206,29 +210,29 @@
             WHERE
                 fldProductId = <cfqueryparam value = '#arguments.productId#' cfsqltype = "integer">
         </cfquery>
-        <cfreturn ProductImages>
+        <cfreturn local.ProductImages>
     </cffunction>
 
     <cffunction  name="selectPriceRange" access="remote" returnFormat="JSON">
         <cfargument name="filterRange">
         <cfargument  name="subCategoryId">
         <cfset local.filterArray = DeserializeJSON(arguments.filterRange)>
-        <cfset randomProductsRange = getRandomProducts(sort=true,filterArray= local.filterArray,subCategoryId=arguments.subCategoryId)>
-        <cfset rangeProductArray = []>
-        <cfloop query="randomProductsRange">
-            <cfset tempStruct = structNew()>
-            <cfset tempStruct["fldProduct_ID"] = randomProductsRange.fldProduct_ID>
-            <cfset tempStruct["fldSubCategoryId"] = randomProductsRange.fldSubCategoryId>
-            <cfset tempStruct["fldProductName"] = randomProductsRange.fldProductName>
-            <cfset tempStruct["fldDescription"] = randomProductsRange.fldDescription>
-            <cfset tempStruct["fldBrandId"] = randomProductsRange.fldBrandId>
-            <cfset tempStruct["fldBrandName"] = randomProductsRange.fldBrandName>
-            <cfset tempStruct["fldPrice"] = randomProductsRange.fldPrice>
-            <cfset tempStruct["fldTax"] = randomProductsRange.fldTax>
-            <cfset tempStruct["fldImageFileName"] = randomProductsRange.fldImageFileName>
-            <cfset arrayAppend(rangeProductArray, tempStruct)>
+        <cfset local.randomProductsRange = getRandomProducts(sort=true,filterArray= local.filterArray,subCategoryId=arguments.subCategoryId)>
+        <cfset local.rangeProductArray = []>
+        <cfloop query="local.randomProductsRange">
+            <cfset local.tempStruct = structNew()>
+            <cfset local.tempStruct["fldProduct_ID"] = local.randomProductsRange.fldProduct_ID>
+            <cfset local.tempStruct["fldSubCategoryId"] = local.randomProductsRange.fldSubCategoryId>
+            <cfset local.tempStruct["fldProductName"] = local.randomProductsRange.fldProductName>
+            <cfset local.tempStruct["fldDescription"] = local.randomProductsRange.fldDescription>
+            <cfset local.tempStruct["fldBrandId"] = local.randomProductsRange.fldBrandId>
+            <cfset local.tempStruct["fldBrandName"] = local.randomProductsRange.fldBrandName>
+            <cfset local.tempStruct["fldPrice"] = local.randomProductsRange.fldPrice>
+            <cfset local.tempStruct["fldTax"] = local.randomProductsRange.fldTax>
+            <cfset local.tempStruct["fldImageFileName"] = local.randomProductsRange.fldImageFileName>
+            <cfset arrayAppend(local.rangeProductArray, local.tempStruct)>
         </cfloop>
-        <cfreturn rangeProductArray>
+        <cfreturn local.rangeProductArray>
     </cffunction>
 
     <cffunction  name="logoutUser" access="remote" returnType="void">

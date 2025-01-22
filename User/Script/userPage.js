@@ -168,26 +168,38 @@ function getFilterResult(subCategoryId){
             success:function(result){
                 var result = JSON.parse(result)
                 document.getElementById("randomProductsMainDivId").innerHTML = ""
-                for(j=0;j<result.length;j++){
-                    var eachProducts = 
-                    `<div class="card randomProductCard" style="width: 13rem;">
-                        <a href="./productPage.cfm?productId=${result[j].fldProduct_ID}">
-                            <img src="../Assets/ProductImages/${result[j].fldImageFileName}" class="card-img-top randProductImage" alt="Product Image">
-                        </a>
-                        <div class="card-body randProductbody">
-                            <div class="card-text randProductName">${result[j].fldProductName}</div>
-                            <div>${result[j].fldBrandName}</div>
-                            <div class="card-text randProductPrice">
-                                <i class="fa-solid fa-indian-rupee-sign"></i>
-                                ${result[j].fldPrice + result[j].fldTax}
+                if(result.length == 0){
+                    var emptyStatement = "No products to display in the price range"
+                    $("#randomProductsMainDivId").append(emptyStatement);
+                    document.getElementById("viewMore").style.display = "none"
+                }else{
+                    for(j=0;j<result.length;j++){
+                        var eachProducts = 
+                        `<div class="card randomProductCard" style="width: 13rem;">
+                            <a href="./productPage.cfm?productId=${result[j].fldProduct_ID}">
+                                <img src="../Assets/ProductImages/${result[j].fldImageFileName}" class="card-img-top randProductImage" alt="Product Image">
+                            </a>
+                            <div class="card-body randProductbody">
+                                <div class="card-text randProductName">${result[j].fldProductName}</div>
+                                <div>${result[j].fldBrandName}</div>
+                                <div class="card-text randProductPrice">
+                                    <i class="fa-solid fa-indian-rupee-sign"></i>
+                                    ${result[j].fldPrice + result[j].fldTax}
+                                </div>
                             </div>
-                        </div>
-                    </div>`
-                    $("#randomProductsMainDivId").append(eachProducts);
+                        </div>`
+                        $("#randomProductsMainDivId").append(eachProducts);
+                        document.getElementById("viewMore").style.display = "initial"
+                    }
                 }
             }
         })
     }
+}
+
+function removeHeightClass(){
+    document.getElementById("randomProductsMainDivId").classList.remove("initialDivHeight");
+    document.getElementById("viewMore").style.display = "none"
 }
 
 
