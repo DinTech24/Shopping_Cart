@@ -12,7 +12,7 @@
         <cfoutput>
             <cfset userCateObject = new Component.userComponent()>
             <cfset categoryResult = userCateObject.listCategories(url.categoryId)>
-            <cfset randomProductsResult = userCateObject.getRandomProducts()>
+            <cfset randomProductsResult = userCateObject.getRandomProducts(sort="negative")>
             <cfset subCategoryResult = userCateObject.listSubCategories()>
             <cfinclude  template="./userHeader.cfm">
             <div class="p-3">

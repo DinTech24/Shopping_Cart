@@ -50,10 +50,18 @@
                                 <span class="visually-hidden">Next</span>
                             </button>
                         </div>
-                        <div class="buttonClassDivion">
-                            <button class="screenDivisionButton1"><i class="fa-solid fa-cart-shopping text-white "></i> ADD TO CART</button>
-                            <button class="screenDivisionButton2 "><i class="fa-solid fa-bolt-lightning text-white"></i> BUY NOW</button>
-                        </div>
+                        <form method="POST">
+                            <div class="buttonClassDivion">
+                                <button class="screenDivisionButton1" name="addToCartButton">
+                                    <i class="fa-solid fa-cart-shopping text-white "></i> 
+                                    ADD TO CART
+                                </button>
+                                <button class="screenDivisionButton2" name="buyNowButton">
+                                    <i class="fa-solid fa-bolt-lightning text-white"></i> 
+                                    BUY NOW
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
                 <div class="screenSection2 ">
@@ -84,7 +92,6 @@
                             </span>
                         </div>
                     </div>
-<!---                     <h5>Products's more images</h5> --->
                     <div class="productImageMainDiv">
                         <cfloop query="resultProductImages" endRow="3">
                             <div class="me-3 productImageSubDiv">
@@ -115,10 +122,17 @@
                     </cfif>
                 </cfloop>
             </div>
+            <cfif structKeyExists(form, "addToCartButton")>
+                <cfif structKeyExists(session, "userLogin") AND structKeyExists(session, "username")>
+                    <cflocation  url="./userCartPage.cfm?productId=#url.productId#">
+                    <cfelse>
+                        <cflocation  url="./userLogin.cfm?productId=#url.productId#">
+                </cfif>
+            </cfif>
             <cfinclude template="./footer.cfm">
-        <script src="./Script/userPage.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+            <script src="./Script/userPage.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
         </body>
    </cfoutput>
 </html>

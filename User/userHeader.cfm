@@ -13,11 +13,13 @@
             </div>
         </form>
         <div clas="d-flex">
-            <a href="" class="mx-3 position-relative">
+            <a href="./userCartPage.cfm" class="mx-3 position-relative">
                 <i class="fa-solid fa-lg fa-cart-shopping"></i>
-                <span class="position-absolute mt-1 start-100 translate-middle badge rounded-circle bg-danger">
-                    3
-                </span>
+                <cfif structKeyExists(session, "userLogin") AND structKeyExists(session, "username")>
+                    <span  class="position-absolute mt-1 start-100 translate-middle badge rounded-circle bg-danger">
+                        #session.productQuantity# 
+                    </span>
+                </cfif>
             </a>
             <cfif structKeyExists(session, "userLogin") AND structKeyExists(session, "username")>
                 <a href="" class="mx-2">

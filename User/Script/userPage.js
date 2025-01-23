@@ -197,6 +197,62 @@ function getFilterResult(subCategoryId){
     }
 }
 
+function addProductQuantity(cartId){
+    var prQuantity = document.getElementById(cartId.value+"quantity").innerHTML;
+    document.getElementById(cartId.value+"quantity").innerHTML = Number(prQuantity) + 1
+    var prQuantity = document.getElementById(cartId.value+"quantity").innerHTML;
+    var price = document.getElementById(cartId.value+"unitprice").innerHTML;
+    var tax = document.getElementById(cartId.value+"unittax").innerHTML;
+    var totalprice = document.getElementById("totalprice").innerHTML;
+    var totaltax = document.getElementById("totaltax").innerHTML;
+    var totalamount = document.getElementById("totalamount").innerHTML;
+    document.getElementById("totalprice").innerHTML = Number(totalprice) + Number(price);
+    document.getElementById("totaltax").innerHTML = Number(totaltax) +Number(tax);
+    document.getElementById("totalamount").innerHTML = Number(totalamount) + Number(tax) + Number(price);
+    $.ajax({
+        type:"POST",
+        url:"Component/userComponent.cfc?method=updateCartQuantity",
+        data:{cartId:cartId.value,prQuantity:prQuantity}
+    })
+}
+
+function reduceProductQuantity(cartId,productQuantity){
+    var prQuantity = document.getElementById(cartId.value+"quantity").innerHTML;
+    document.getElementById(cartId.value+"quantity").innerHTML = Number(prQuantity) - 1
+    var prQuantity = document.getElementById(cartId.value+"quantity").innerHTML;
+    var price = document.getElementById(cartId.value+"unitprice").innerHTML;
+    var tax = document.getElementById(cartId.value+"unittax").innerHTML;
+    var totalprice = document.getElementById("totalprice").innerHTML;
+    var totaltax = document.getElementById("totaltax").innerHTML;
+    var totalamount = document.getElementById("totalamount").innerHTML;
+    document.getElementById("totalprice").innerHTML = Number(totalprice) - Number(price);
+    document.getElementById("totaltax").innerHTML = Number(totaltax) - Number(tax);
+    document.getElementById("totalamount").innerHTML = (Number(totalamount) - Number(tax)) - Number(price);
+    if(prQuantity == 0){
+        document.getElementById(cartId.value+"CartProduct").remove()
+
+    }
+    if(productQuantity == 0){
+        document.getElementById("cartPageMain").remove()
+    }
+    $.ajax({
+        type:"POST",
+        url:"Component/userComponent.cfc?method=updateCartQuantity",
+        data:{cartId:cartId.value,prQuantity:Number(prQuantity)}
+    })
+}
+
+function removeCart(cartId){
+    if(confirm("Are you sure to remove product from cart?")){
+        document.getElementById(cartId.value+"CartProduct").remove()
+        $.ajax({
+            type:"POST",
+            url:"Component/userComponent.cfc?method=deleteCart",
+            data:{cartId:cartId.value}
+        })
+    }
+}
+
 function removeHeightClass(){
     document.getElementById("randomProductsMainDivId").classList.remove("initialDivHeight");
     document.getElementById("viewMore").style.display = "none"

@@ -45,7 +45,18 @@
             </div>
             <cfif structKeyExists(form,"loginButton")>
                 <cfset userLoginObject = new Component.userComponent()>
-                <cfset result = userLoginObject.loginUser(form.emailId,form.password)>
+                <cfif structKeyExists(url, "productId")>
+                    <cfset result = userLoginObject.loginUser(
+                        enteredId = form.emailId,
+                        enteredPassword = form.password,
+                        productId = url.productId
+                        )>
+                    <cfelse>
+                        <cfset result = userLoginObject.loginUser(
+                            enteredId = form.emailId,
+                            enteredPassword = form.password
+                        )>
+                </cfif>
                 <div class="text-center">
                     <div class="text-danger fw-bold">#result["message"]#</div>
                 </div>

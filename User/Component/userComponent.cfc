@@ -62,6 +62,7 @@
         <cfargument  name="enteredId" type="string">
         <cfargument  name="enteredPassword" type="string">
         <cfargument  name="jsCall" default = "false">
+        <cfargument  name="productId" required="false">
         <cfset local.loginExcepetion = structNew()>
         <cfif trim(arguments.enteredId) EQ "" OR trim(arguments.enteredPassword) EQ "">
             <cfset local.loginExcepetion["Message"] = "Empty Fields are not alllowed!">
@@ -92,10 +93,14 @@
             <cfif queryRecordCount(local.checkUser)>
                 <cfset session.userLogin = true>
                 <cfset session.userId = local.checkUser.fldUser_ID>
+                <cfset cartData = displayCart()>
+                <cfset session.productQuantity = queryRecordCount(cartData)>
                 <cfset session.username = local.checkUser.fldFirstName>
                 <cfset session.email = local.checkUser.fldEmail>
                 <cfif jscall EQ true>
                     <cfset local.loginExcepetion["Message"] = "true">
+                    <cfelseif structKeyExists(arguments, "productId")>
+                        <cflocation url="../User/userCartPage.cfm?productId=#arguments.productId#" addToken="no">
                     <cfelse>
                         <cflocation url="../User/userhomePage.cfm" addToken="no">
                 </cfif>
@@ -110,18 +115,19 @@
     </cffunction>
 
     <cffunction  name="listCategories" returnType="query">
-        <cfargument  name="categoryId" default=0 type="numeric">
+        <cfargument  name="categoryId" type="numeric">
+        <cfargument  name="allData" type="numeric">
         <cfquery name="local.getCategoryQuery">
             SELECT 
-            <cfif structKeyExists(arguments, "categoryId")>
-                TOP 9
+            <cfif NOT structKeyExists(arguments, "allData")>
+                TOP 10
             </cfif>
                 fldcategory_ID,fldcategoryName 
             FROM 
                 tblCategory 
             WHERE 
                 fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
-                <cfif arguments.categoryId NEQ 0>
+                <cfif structKeyExists(arguments, "categoryId")>
                     AND fldCategory_ID = <cfqueryparam value = '#arguments.categoryId#' cfsqltype = "integer">
                 </cfif>
         </cfquery>
@@ -233,6 +239,74 @@
             <cfset arrayAppend(local.rangeProductArray, local.tempStruct)>
         </cfloop>
         <cfreturn local.rangeProductArray>
+    </cffunction>
+
+    <cffunction  name="addToCart">
+        <cfargument  name="productId">
+        <cfset isProductInCart = displayCart(arguments.productId)>
+        <cfif queryRecordCount(isProductInCart)>
+            <cfset updateCartQuantity(
+                CartId = isProductInCart.fldCart_ID,
+                prQuantity = isProductInCart.fldQuantity + 1
+            )>
+            <cfelse>
+                <cfset session.productQuantity = session.productQuantity + 1>
+                <cfquery name="addToCartQuery">
+                    INSERT INTO
+                        tblCart(fldUserId,fldProductId,fldQuantity)
+                    VALUES(
+                        <cfqueryparam value = '#session.userId#' cfsqltype = "integer">,
+                        <cfqueryparam value = '#arguments.productId#' cfsqltype = "integer">,
+                        <cfqueryparam value = 1 cfsqltype = "integer">
+                    )
+                </cfquery>
+        </cfif>
+    </cffunction>
+
+    <cffunction  name="displayCart">
+        <cfargument  name="productId">
+        <cfquery name="getCartQuery">
+            SELECT
+                fldCart_ID,
+                fldProductId,
+                fldQuantity
+            FROM
+                tblCart 
+            WHERE
+                fldUserId = <cfqueryparam value = '#session.userId#' cfsqltype = "integer">
+                <cfif structKeyExists(arguments, "productId")>
+                    AND fldProductId = <cfqueryparam value = '#arguments.productId#' cfsqltype = "integer">
+                </cfif>
+        </cfquery>
+        <cfreturn getCartQuery>
+    </cffunction>
+
+    <cffunction  name="updateCartQuantity" access="remote">
+        <cfargument  name="CartId">
+        <cfargument  name="prQuantity">
+        <cfif arguments.prQuantity EQ 0>
+            <cfset deleteCart(cartId = arguments.CartId)>
+            <cfelse>
+                <cfquery name="cartQuantityQuery">
+                    UPDATE
+                        tblCart
+                    SET
+                        fldQuantity = <cfqueryparam value = '#arguments.prQuantity#' cfsqltype = "integer">
+                    WHERE
+                        fldCart_ID = <cfqueryparam value = '#arguments.CartId#' cfsqltype = "integer">
+                </cfquery>
+        </cfif>
+    </cffunction>
+
+    <cffunction  name="deleteCart" access="remote">
+        <cfargument  name="CartId">
+        <cfquery name="deleteCartQuery">
+            DELETE FROM
+                tblCart
+            WHERE 
+                fldCart_ID = <cfqueryparam value = '#arguments.CartId#' cfsqltype = "integer">
+        </cfquery>
+        <cfset session.productQuantity = session.productQuantity - 1>
     </cffunction>
 
     <cffunction  name="logoutUser" access="remote" returnType="void">

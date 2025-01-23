@@ -11,7 +11,7 @@
     <body>
         <cfoutput>
             <cfset userCateObject = new Component.userComponent()>
-            <cfset categoryResult = userCateObject.listCategories()>
+            <cfset categoryResult = userCateObject.listCategories(allData = "1")>
             <cfinclude  template="./userHeader.cfm">
             <div class="p-3">
                 <h2>All Categories</h2>

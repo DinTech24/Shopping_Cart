@@ -6,8 +6,8 @@
     <cffunction  name="onRequestStart">
         <cfargument name="requestedPage" required="true">
         <cfset local.includedPages = [
-
-                                     ]>
+            "/Shopping Cart/User/userCartPage.cfm"
+        ]>
         <cfif arrayContains(local.includedPages,arguments.requestedPage) AND NOT structKeyExists(session, "userLogin") AND NOT structKeyExists(session, "username")>
             <cflocation url="/Shopping Cart/User/userLogin.cfm" addToken="no">
         </cfif>

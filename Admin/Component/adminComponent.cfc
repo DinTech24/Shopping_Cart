@@ -48,6 +48,8 @@
             FROM tblCategory
             WHERE 
                 fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
+            ORDER BY 
+                fldCategoryName ASC;
         </cfquery>
         <cfreturn local.getcategoriesQuery>
     </cffunction>
