@@ -44,13 +44,13 @@
                         <a href="./allcategoriesListingpage.cfm" class="text-reset">All categories</a>
                     </p>
                     <p>
-                        <a href="" class="text-reset">React</a>
+                        <a href="" class="text-reset">Deals</a>
                     </p>
                     <p>
-                        <a href="" class="text-reset">Vue</a>
+                        <a href="" class="text-reset">Returns</a>
                     </p>
                     <p>
-                        <a href="" class="text-reset">Laravel</a>
+                        <a href="" class="text-reset">Your Account</a>
                     </p>
                 </div>
                 <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
@@ -85,6 +85,6 @@
     </section>
     <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
         <i class="fa-regular fa-copyright"></i> 2024 Copyright:
-        <a class="text-reset fw-bold" href="https://mdbootstrap.com/">eCart.com</a>
+        <a class="text-reset fw-bold" href="./userhomePage.cfm">eCart.com</a>
     </div>
 </footer>

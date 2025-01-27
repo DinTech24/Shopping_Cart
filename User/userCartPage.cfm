@@ -22,7 +22,7 @@
             <cfset quantityTax = 0>
             <cfset productQuantity = 0>
             <cfinclude  template="./userHeader.cfm">
-            <div class="cartPageMain" id="cartPageMain">
+            <div class="cartPageMain" id="cartPageMainId">
                 <div class="productDescription">
                     <cfloop query="cartDisplayResult">
                         <cfloop query="cartProductDisplayResult">
@@ -30,7 +30,7 @@
                                 <cfset productQuantity = productQuantity + 1>
                                 <div class="mainSectionBody " id="#cartProductDisplayResult.fldCart_ID#CartProduct">
                                     <div class="orderDetailsDiv pt-4">
-                                        <a href="" >
+                                        <a href="./productPage.cfm?productId=#cartDisplayResult.fldProduct_ID#">
                                             <img class="cartImage" src="../Assets/ProductImages/#cartDisplayResult.fldImageFileName#" alt="">
                                         </a>
                                         <div class="mt-2 ms-5">
@@ -57,7 +57,7 @@
                                     </div>
                                     <div class="d-flex w-50 ms-5 mt-2 justify-content-between mb-3">
                                         <div>
-                                            <button class="prquanityIncrease" value="#cartProductDisplayResult.fldCart_ID#" onclick="reduceProductQuantity(this,#productQuantity#)">-</button>
+                                            <button class="prquanityIncrease" value="#cartProductDisplayResult.fldCart_ID#" onclick="reduceProductQuantity(this)">-</button>
                                             <span class="prquanity" id="#cartProductDisplayResult.fldCart_ID#quantity">#cartProductDisplayResult.fldQuantity#</span>
                                             <button class="prquanityIncrease" value="#cartProductDisplayResult.fldCart_ID#" id="addProductButton" onclick="addProductQuantity(this,#productQuantity#)">+</button>
                                         </div>

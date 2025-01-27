@@ -1,7 +1,7 @@
 <cfcomponent>
 
     <cffunction  name="addUser" returnType="struct">
-        <cfargument  name="registerStructure" type="struct">
+        <cfargument  name="registerStructure" type="struct" required = "true">
         <cfset local.exceptionStruct = structNew()>
         <cfset local.exceptionStruct["messageType"] = "Red">
         <cfset local.isUserExists = isUserExist(arguments.registerStructure.emailId,arguments.registerStructure.phonenumber)>
@@ -14,13 +14,13 @@
             <cfelse>
                 <cfset local.saltString = generateSecretKey("AES",128)>
                 <cfset local.HashedPassword = hash("#arguments.registerStructure.password#"&"#local.saltString#","SHA-256","UTF-8")>
-                <cfif local.isUserExists>
+                <cfif queryRecordCount(local.isUserExists)>
                     <cfset local.exceptionStruct["message"] = "User Already Exists">
                     <cfelse>
                         <cfquery name="local.registerUserQuery">
                             INSERT INTO
                                 tblUser(fldFirstName,fldLastName,fldEmail,fldPhone,fldRoleId,fldHashedPassword,fldUserSaltString)
-                            values(
+                            VALUES(
                                 <cfqueryparam value = '#arguments.registerStructure.firstName#' cfsqltype = "varchar">,
                                 <cfqueryparam value = '#arguments.registerStructure.lastName#' cfsqltype = "varchar">,
                                 <cfqueryparam value = '#arguments.registerStructure.emailId#' cfsqltype = "varchar">,
@@ -37,32 +37,36 @@
         <cfreturn local.exceptionStruct>
     </cffunction>
 
-    <cffunction  name="isUserExist" returnType="boolean">
-        <cfargument  name="emailId" type="string">
-        <cfargument  name="phonenumber" type="string">
+    <cffunction  name="isUserExist" returnType="query">
+        <cfargument  name="emailId" type="string" required = "false">
+        <cfargument  name="phonenumber" type="string" required = "false">
+        <cfargument  name="userId" type="string" required = "false">
         <cfquery name="local.getUserQuery">
             SELECT
-                fldEmail
+                fldFirstName,
+                fldLastName, 
+                fldEmail,
+                fldPhone
             FROM
                 tblUser 
             WHERE
-                (fldEmail = <cfqueryparam value = '#arguments.emailId#' cfsqltype = "varchar">
-                OR fldPhone = <cfqueryparam value = '#arguments.phonenumber#' cfsqltype = "varchar">)
+                <cfif structKeyExists(arguments,"userId")>
+                    fldUser_ID = <cfqueryparam value = '#arguments.userId#' cfsqltype = "varchar">
+                    <cfelse>
+                        (fldEmail = <cfqueryparam value = '#arguments.emailId#' cfsqltype = "varchar">
+                        OR fldPhone = <cfqueryparam value = '#arguments.phonenumber#' cfsqltype = "varchar">)
+                </cfif>
                 AND fldRoleId = <cfqueryparam value = '1' cfsqltype = "integer">
                 AND fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
         </cfquery>
-        <cfif queryRecordCount(local.getUserQuery)>
-            <cfreturn true>
-            <cfelse>
-                <cfreturn false>
-        </cfif>
+        <cfreturn local.getUserQuery>
     </cffunction>
 
     <cffunction  name="loginUser" returnType="struct" access="remote" returnFormat="JSON">
-        <cfargument  name="enteredId" type="string">
-        <cfargument  name="enteredPassword" type="string">
-        <cfargument  name="jsCall" default = "false">
-        <cfargument  name="productId" required="false">
+        <cfargument  name="enteredId" type="string" required = "true">
+        <cfargument  name="enteredPassword" type="string" required = "true">
+        <cfargument  name="jsCall" default = "false" type="string" required = "true">
+        <cfargument  name="productId" required="false" type="numeric">
         <cfset local.loginExcepetion = structNew()>
         <cfif trim(arguments.enteredId) EQ "" OR trim(arguments.enteredPassword) EQ "">
             <cfset local.loginExcepetion["Message"] = "Empty Fields are not alllowed!">
@@ -115,8 +119,8 @@
     </cffunction>
 
     <cffunction  name="listCategories" returnType="query">
-        <cfargument  name="categoryId" type="numeric">
-        <cfargument  name="allData" type="numeric">
+        <cfargument  name="categoryId" type="numeric" required = "false">
+        <cfargument  name="allData" type="string" required = "false">
         <cfquery name="local.getCategoryQuery">
             SELECT 
             <cfif NOT structKeyExists(arguments, "allData")>
@@ -135,7 +139,6 @@
     </cffunction>
 
     <cffunction  name="listSubCategories" returnType="query">
-        <cfargument  name="categoryId" type="numeric">
         <cfargument  name="subCategoryId" type="numeric" required="false">
         <cfquery name="local.getSubCategoryQuery">
             SELECT 
@@ -152,11 +155,11 @@
     </cffunction>
 
     <cffunction  name="getRandomProducts" returnType="any">
-        <cfargument  name="sort" default="false" required = "false">
-        <cfargument  name="filterArray" default="false" required = "false">
-        <cfargument  name="subCategoryId" default="false" required = "false">
-        <cfargument  name="productId" required = "false">
-        <cfargument  name="searchKeyword" required = "false">
+        <cfargument  name="sort" default="false" required = "false" type="string">
+        <cfargument  name="filterArray" required = "false">
+        <cfargument  name="subCategoryId" required = "false" type="numeric">
+        <cfargument  name="productId" required = "false" type="numeric">
+        <cfargument  name="searchKeyword" required = "false" type="string">
         <cfquery name="local.getproductsQuery">
             SELECT 
                 <cfif arguments.sort EQ "false">
@@ -182,21 +185,21 @@
             WHERE
                 tblProductImages.fldDefaultImage = <cfqueryparam value = '1' cfsqltype = "integer">
                 AND tblProduct.fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
-                <cfif IsArray(arguments.filterArray)>
+                <cfif structKeyExists(arguments, "filterArray")>
                     AND fldPrice + fldTax >=  <cfqueryparam value = '#val(arguments.filterArray[1])#' cfsqltype = "decimal">
                     AND fldPrice + fldTax <=  <cfqueryparam value = '#val(arguments.filterArray[2])#' cfsqltype = "decimal">
                     AND fldSubCategoryId = <cfqueryparam value = '#arguments.subCategoryId#' cfsqltype = "integer">;
                     <cfelseif structKeyExists(arguments, "productId")>
                         AND fldProduct_ID = <cfqueryparam value = '#arguments.productId#' cfsqltype = "integer">;
                     <cfelseif structKeyExists(arguments, "searchKeyword")>
-                        AND (fldProductName LIKE <cfqueryparam value = '%#arguments.searchKeyword#%' cfsqltype = "varchar">
-                        OR fldBrandName LIKE <cfqueryparam value = '%#arguments.searchKeyword#%' cfsqltype = "varchar">
-                        OR fldDescription LIKE <cfqueryparam value = '%#arguments.searchKeyword#%' cfsqltype = "varchar">);
+                        AND (fldProductName LIKE <cfqueryparam value = '%#trim(arguments.searchKeyword)#%' cfsqltype = "varchar">
+                        OR fldBrandName LIKE <cfqueryparam value = '%#trim(arguments.searchKeyword)#%' cfsqltype = "varchar">
+                        OR fldDescription LIKE <cfqueryparam value = '%#trim(arguments.searchKeyword)#%' cfsqltype = "varchar">);
                     <cfelse>
                         <cfif arguments.sort EQ "false">
                             ORDER BY NEWID();
                             <cfelseif arguments.sort EQ "negative">
-                                ;
+                            ORDER BY NEWID();
                             <cfelse>
                                 ORDER BY fldPrice + fldTax #arguments.sort#;
                         </cfif> 
@@ -206,7 +209,7 @@
     </cffunction>
 
     <cffunction  name="getProductImages" returnType="query">
-        <cfargument  name="productId">
+        <cfargument  name="productId" type="numeric" required = "true">
         <cfquery name="local.ProductImages">
             SELECT 
                 fldImageFileName,
@@ -220,8 +223,8 @@
     </cffunction>
 
     <cffunction  name="selectPriceRange" access="remote" returnFormat="JSON">
-        <cfargument name="filterRange">
-        <cfargument  name="subCategoryId">
+        <cfargument name="filterRange" required = "true">
+        <cfargument  name="subCategoryId"  type="numeric" required = "true">
         <cfset local.filterArray = DeserializeJSON(arguments.filterRange)>
         <cfset local.randomProductsRange = getRandomProducts(sort=true,filterArray= local.filterArray,subCategoryId=arguments.subCategoryId)>
         <cfset local.rangeProductArray = []>
@@ -241,8 +244,8 @@
         <cfreturn local.rangeProductArray>
     </cffunction>
 
-    <cffunction  name="addToCart">
-        <cfargument  name="productId">
+    <cffunction  name="addToCart"  returnType="void">
+        <cfargument  name="productId" type="numeric" required = "true">
         <cfset isProductInCart = displayCart(arguments.productId)>
         <cfif queryRecordCount(isProductInCart)>
             <cfset updateCartQuantity(
@@ -263,8 +266,8 @@
         </cfif>
     </cffunction>
 
-    <cffunction  name="displayCart">
-        <cfargument  name="productId">
+    <cffunction  name="displayCart"  returnType="query">
+        <cfargument  name="productId" type="numeric" required = "false">
         <cfquery name="getCartQuery">
             SELECT
                 fldCart_ID,
@@ -281,9 +284,9 @@
         <cfreturn getCartQuery>
     </cffunction>
 
-    <cffunction  name="updateCartQuantity" access="remote">
-        <cfargument  name="CartId">
-        <cfargument  name="prQuantity">
+    <cffunction  name="updateCartQuantity" access="remote" returnType="void">
+        <cfargument  name="CartId" type="numeric" required = "true">
+        <cfargument  name="prQuantity" required = "true">
         <cfif arguments.prQuantity EQ 0>
             <cfset deleteCart(cartId = arguments.CartId)>
             <cfelse>
@@ -298,8 +301,8 @@
         </cfif>
     </cffunction>
 
-    <cffunction  name="deleteCart" access="remote">
-        <cfargument  name="CartId">
+    <cffunction  name="deleteCart" access="remote" returnType="void">
+        <cfargument  name="CartId" type="numeric" required = "true">
         <cfquery name="deleteCartQuery">
             DELETE FROM
                 tblCart
@@ -307,6 +310,24 @@
                 fldCart_ID = <cfqueryparam value = '#arguments.CartId#' cfsqltype = "integer">
         </cfquery>
         <cfset session.productQuantity = session.productQuantity - 1>
+    </cffunction>
+
+    <cffunction  name="getSavedAddress" returnType="query">
+        <cfquery name="local.getAddressQuery">
+            SELECT
+                fldFirstName,
+                fldLastName,
+                fldAddressLine1,
+                fldAddressLine2,
+                fldCity,fldState,
+                fldPincode,
+                fldPhoneNumber
+            FROM
+                tblAddress
+            WHERE 
+                fldUserId = <cfqueryparam value = '#session.userId#' cfsqltype = "integer">
+        </cfquery>
+        <cfreturn local.getAddressQuery>
     </cffunction>
 
     <cffunction  name="logoutUser" access="remote" returnType="void">

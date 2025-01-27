@@ -73,7 +73,7 @@
                             <i class="fa-solid fa-chevron-right fa-xs"></i> 
                             <a href="./subCategoriesListingPage.cfm?subCategoryId=#subCategoryResult.fldsubCategory_ID#">#subCategoryResult.fldsubCategoryName# </a>
                             <i class="fa-solid fa-chevron-right fa-xs"></i> 
-                            <a href="">#resultProductDetails.fldProductName#</a>
+                            <a>#resultProductDetails.fldProductName#</a>
                         </div>
                     </div>
                     <div class="productName">#resultProductDetails.fldProductName#</div>
@@ -103,9 +103,11 @@
             </div>
             <h3 class="m-3 mt-5">Related Products</h3>
             <div class="randomProductsMainDiv">
+                <cfset productsCount = 0>
                 <cfloop query="randomProductsResult">
                     <cfif resultProductDetails.fldSubCategoryId EQ randomProductsResult.fldSubCategoryId 
                     AND randomProductsResult.fldProduct_ID NEQ url.productId>
+                        <cfset productsCount = productsCount + 1>
                         <div class="card randomProductCard" style="width: 13rem;">
                             <a href="./productPage.cfm?productId=#randomProductsResult.fldProduct_ID#">
                                 <img src="../Assets/ProductImages/#randomProductsResult.fldImageFileName#" class="card-img-top randProductImage" alt="Product Image">
@@ -122,6 +124,11 @@
                     </cfif>
                 </cfloop>
             </div>
+            <cfif productsCount EQ 0>
+                <div class="text-secondary ms-3">
+                    No Related products to display
+                </div>
+            </cfif>
             <cfif structKeyExists(form, "addToCartButton")>
                 <cfif structKeyExists(session, "userLogin") AND structKeyExists(session, "username")>
                     <cflocation  url="./userCartPage.cfm?productId=#url.productId#">

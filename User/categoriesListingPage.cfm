@@ -22,7 +22,11 @@
                 <div>
                     <cfloop query="subCategoryResult">
                         <cfif subCategoryResult.fldCategoryId EQ categoryResult.fldCategory_ID >
-                            <div class="randomProductsHead">#subCategoryResult.fldSubcategoryName#</div>
+                            <div class="randomProductsHead">
+                                <a class="randomAnchor" href="./subCategoriesListingPage.cfm?subCategoryId=#subCategoryResult.fldsubCategory_ID#">
+                                    #subCategoryResult.fldSubcategoryName#
+                                </a>
+                            </div>
                             <div class="randomProductsMainDiv">
                                 <cfloop query="randomProductsResult">
                                     <cfif randomProductsResult.fldSubCategoryId EQ subCategoryResult.fldsubCategory_ID>

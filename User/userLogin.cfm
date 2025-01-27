@@ -13,7 +13,7 @@
         <cfoutput>
             <div class="d-flex accessPageHead justify-content-between py-2">
                 <div class="ms-5">
-                    <img width="30" src="" alt="logo">
+                    <i class="fa-brands fa-shopify fs-1 text-dark"></i>
                     <span>SHOPPING CART</span>
                 </div>
                 <div class="d-flex me-5">

@@ -73,7 +73,7 @@ function logoutFunction(){
             type:"POST",
             url:"Component/userComponent.cfc?method=logoutUser",
             success:function(){
-                    location.reload()
+                    window.location.href = "./userhomePage.cfm"
                 }
         })
     }
@@ -140,7 +140,6 @@ function disableInputs(){
 }
 
 function getFilterResult(subCategoryId){
-
     var flag = false;
     minVal = document.getElementById("minVal").value;
     maxVal = document.getElementById("maxVal").value;
@@ -216,7 +215,7 @@ function addProductQuantity(cartId){
     })
 }
 
-function reduceProductQuantity(cartId,productQuantity){
+function reduceProductQuantity(cartId){
     var prQuantity = document.getElementById(cartId.value+"quantity").innerHTML;
     document.getElementById(cartId.value+"quantity").innerHTML = Number(prQuantity) - 1
     var prQuantity = document.getElementById(cartId.value+"quantity").innerHTML;
@@ -230,10 +229,15 @@ function reduceProductQuantity(cartId,productQuantity){
     document.getElementById("totalamount").innerHTML = (Number(totalamount) - Number(tax)) - Number(price);
     if(prQuantity == 0){
         document.getElementById(cartId.value+"CartProduct").remove()
-
-    }
-    if(productQuantity == 0){
-        document.getElementById("cartPageMain").remove()
+        var producttotalQuantity = document.getElementById("productQuantityId").innerHTML;
+        document.getElementById("productQuantityId").innerHTML = Number(producttotalQuantity)-1;
+        var producttotalQuantity = document.getElementById("productQuantityId").innerHTML;
+        if(producttotalQuantity == 0){
+            document.getElementById("cartPageMainId").innerHTML = 
+                `<div class="d-flex justify-content-center">
+                    <img src="../Assets/SiteImages/Empty_Shopping.jpg">
+                </div>`
+        }
     }
     $.ajax({
         type:"POST",
@@ -244,12 +248,33 @@ function reduceProductQuantity(cartId,productQuantity){
 
 function removeCart(cartId){
     if(confirm("Are you sure to remove product from cart?")){
+        var prQuantity = document.getElementById(cartId.value+"quantity").innerHTML;
+        var price = document.getElementById(cartId.value+"unitprice").innerHTML;
+        var tax = document.getElementById(cartId.value+"unittax").innerHTML;
+        var totalprice = document.getElementById("totalprice").innerHTML;
+        var totaltax = document.getElementById("totaltax").innerHTML;
+        var totalamount = document.getElementById("totalamount").innerHTML;
+        var qtyPrice = Number(prQuantity)*Number(price)
+        var qtyTax = Number(prQuantity)*Number(tax)
+        var totalQtyAmount = qtyPrice + qtyTax;
+        document.getElementById("totalamount").innerHTML = Number(totalamount) - totalQtyAmount;
+        document.getElementById("totalprice").innerHTML = Number(totalprice) - Number(qtyPrice)
+        document.getElementById("totaltax").innerHTML = Number(totaltax) - Number(qtyTax)
         document.getElementById(cartId.value+"CartProduct").remove()
+        var producttotalQuantity = document.getElementById("productQuantityId").innerHTML;
+        document.getElementById("productQuantityId").innerHTML = Number(producttotalQuantity)-1;
         $.ajax({
             type:"POST",
             url:"Component/userComponent.cfc?method=deleteCart",
             data:{cartId:cartId.value}
         })
+        var producttotalQuantity = document.getElementById("productQuantityId").innerHTML;
+        if(producttotalQuantity == 0){
+            document.getElementById("cartPageMainId").innerHTML = 
+            `<div class="d-flex justify-content-center">
+                <img src="../Assets/SiteImages/Empty_Shopping.jpg">
+            </div>`
+        }
     }
 }
 
@@ -257,5 +282,22 @@ function removeHeightClass(){
     document.getElementById("randomProductsMainDivId").classList.remove("initialDivHeight");
     document.getElementById("viewMore").style.display = "none"
 }
+
+function searchValidate(){
+    var searchKey = document.getElementById("searchInput").value;
+    if(searchKey.trim() == 0){
+        alert("Enter keyword to search")
+        return false
+    }else{
+        document.getElementById("searchInput").value = searchKey.trim();
+        return true
+    }
+}
+
+window.addEventListener('pageshow', (event) => {
+    if (event.persisted) {
+      window.location.reload();
+    }
+});
 
 

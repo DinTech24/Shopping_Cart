@@ -4,10 +4,13 @@
             <i class="fa-brands fa-shopify fs-1 text-dark"></i>
             <a href="./userhomePage.cfm" class="navHead">eCart</a>
         </div>
-        <form method="GET" action="./subCategoriesListingPage.cfm">
+        <cfif structKeyExists(form,"searchButton")>
+            <cflocation  url="./subCategoriesListingPage.cfm?searchKeyword=#form.searchKeyword#">
+        </cfif>
+        <form method="POST">
             <div class="d-flex">
-                <input class="form-control me-2" name="searchKeyword" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-dark me-3" namae="searchButton" type="submit">
+                <input class="form-control me-2" id="searchInput" name="searchKeyword" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-dark me-3" onclick="return searchValidate()" name="searchButton" type="submit">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
             </div>
@@ -16,7 +19,7 @@
             <a href="./userCartPage.cfm" class="mx-3 position-relative">
                 <i class="fa-solid fa-lg fa-cart-shopping"></i>
                 <cfif structKeyExists(session, "userLogin") AND structKeyExists(session, "username")>
-                    <span  class="position-absolute mt-1 start-100 translate-middle badge rounded-circle bg-danger">
+                    <span id="productQuantityId" class="position-absolute mt-1 start-100 translate-middle badge rounded-circle bg-danger">
                         #session.productQuantity# 
                     </span>
                 </cfif>

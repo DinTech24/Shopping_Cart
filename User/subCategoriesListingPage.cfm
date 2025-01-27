@@ -90,9 +90,11 @@
             <div>
                 <div>
                     <div class="randomProductsMainDiv initialDivHeight" id="randomProductsMainDivId">
+                        <cfset productsCount = 0>
                         <cfloop query="randomProductsResult">
                             <cfif structKeyExists(url, "subCategoryId")>
                                 <cfif randomProductsResult.fldSubCategoryId EQ url.subCategoryId>
+                                    <cfset productsCount = productsCount + 1>
                                     <div class="card randomProductCard" style="width: 13rem;">
                                         <a href="./productPage.cfm?productId=#randomProductsResult.fldProduct_ID#">
                                             <img src="../Assets/ProductImages/#randomProductsResult.fldImageFileName#" class="card-img-top randProductImage" alt="Product Image">
@@ -108,6 +110,7 @@
                                     </div>
                                 </cfif>
                                 <cfelse>
+                                    <cfset productsCount = productsCount + 1>
                                     <div class="card randomProductCard" style="width: 13rem;">
                                         <a href="./productPage.cfm?productId=#randomProductsResult.fldProduct_ID#">
                                             <img src="../Assets/ProductImages/#randomProductsResult.fldImageFileName#" class="card-img-top randProductImage" alt="Product Image">
@@ -126,12 +129,14 @@
                     </div>
                 </div>
             </div>
-            <div class="text-center mb-3" id="viewMore">
-                <button type="button" class="viewMoreButton" onclick="removeHeightClass()">
-                    load more products
-                    <i class="fa-solid fa-sort-down"></i>
-                </button>
-            </div>
+            <cfif productsCount GT 12>
+                <div class="text-center mb-3" id="viewMore">
+                    <button type="button" class="viewMoreButton" onclick="removeHeightClass()">
+                        load more products
+                        <i class="fa-solid fa-sort-down"></i>
+                    </button>
+                </div>
+            </cfif>
             <cfinclude  template="./footer.cfm">
         </cfoutput>
         <script src="./Script/userPage.js"></script>
