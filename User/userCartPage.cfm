@@ -15,7 +15,7 @@
                 <cflocation  url="./userCartPage.cfm">
             </cfif>
             <cfset cartProductDisplayResult = userCartObject.displayCart()>
-            <cfset cartDisplayResult = userCartObject.getRandomProducts(sort = "negative")>
+            <cfset cartDisplayResult = userCartObject.getRandomProducts(sort = "positive")>
             <cfset totalPrice = 0>
             <cfset totalTax = 0>
             <cfset quantityPrice = 0>
@@ -40,17 +40,20 @@
                                                 <div class="orderDetailsSpan3 mt-1">
                                                     Product Price : 
                                                     <span id="#cartProductDisplayResult.fldCart_ID#unitprice">
+                                                        <i class="fa-solid fa-indian-rupee-sign"></i>
                                                         #cartDisplayResult.fldPrice#
                                                     </span>
                                                 </div>
                                                 <div class="orderDetailsSpan3 mt-1">
                                                     Product Tax : 
                                                     <span id="#cartProductDisplayResult.fldCart_ID#unittax">
+                                                    <i class="fa-solid fa-indian-rupee-sign"></i>
                                                         #cartDisplayResult.fldTax#
                                                     </span>
                                                 </div>
                                                 <div class="orderDetailsSpan mt-4">
-                                                    Product Total Amount : #cartDisplayResult.fldPrice + cartDisplayResult.fldTax#
+                                                    Product Total Amount : <i class="fa-solid fa-indian-rupee-sign"></i>
+                                                    #cartDisplayResult.fldPrice + cartDisplayResult.fldTax#
                                                 </div>
                                             </div>	
                                         </div>
@@ -86,19 +89,26 @@
                             <div class="d-flex justify-content-between px-4 pb-3 pt-2"> 
                                 <span>Total Price</span>
                                 <span id="totalprice">
+                                    <i class="fa-solid fa-indian-rupee-sign"></i>
                                     #quantityPrice#
                                 </span>
                             </div>
                             <div class="d-flex justify-content-between px-4 pb-3">
                                 <span>Total Tax</span>
                                 <span id="totaltax">
+                                    <i class="fa-solid fa-indian-rupee-sign"></i>
                                     #quantityTax#</span>
                                 </div>
-                            <div class="d-flex justify-content-between px-4 pb-2"> <span>Delivery Charges</span> <span>40</span> </div>
+                            <div class="d-flex justify-content-between px-4 pb-2"> 
+                                <span>Delivery Charges</span><span><i class="fa-solid fa-indian-rupee-sign"></i> 40</span> 
+                            </div>
                         </div>				
                         <div class="d-flex justify-content-between mx-4 pb-4 pt-4 fs-6 fw-bold borderDotted"> 
                             <span>Total Amount</span> 
-                            <span id="totalamount">#quantityPrice + quantityTax + 40#</span>
+                            <span id="totalamount">
+                                <i class="fa-solid fa-indian-rupee-sign"></i>
+                                #quantityPrice + quantityTax + 40#
+                            </span>
                         </div>
                     </div>
                 </cfif>

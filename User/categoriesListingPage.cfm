@@ -11,7 +11,7 @@
     <body>
         <cfoutput>
             <cfset userCateObject = new Component.userComponent()>
-            <cfset categoryResult = userCateObject.listCategories(url.categoryId)>
+            <cfset categoryResult = userCateObject.listCategories(decrypt(url.categoryId,application.encryptionString,"AES","Base64"))>
             <cfset randomProductsResult = userCateObject.getRandomProducts(sort="negative")>
             <cfset subCategoryResult = userCateObject.listSubCategories()>
             <cfinclude  template="./userHeader.cfm">
@@ -23,7 +23,7 @@
                     <cfloop query="subCategoryResult">
                         <cfif subCategoryResult.fldCategoryId EQ categoryResult.fldCategory_ID >
                             <div class="randomProductsHead">
-                                <a class="randomAnchor" href="./subCategoriesListingPage.cfm?subCategoryId=#subCategoryResult.fldsubCategory_ID#">
+                                <a class="randomAnchor" href="./subCategoriesListingPage.cfm?subCategoryId=#encodeForURL(encrypt(subCategoryResult.fldsubCategory_ID,application.encryptionString,'AES','Base64'))#">
                                     #subCategoryResult.fldSubcategoryName#
                                 </a>
                             </div>

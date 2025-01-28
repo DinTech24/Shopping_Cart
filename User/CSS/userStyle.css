@@ -666,5 +666,14 @@ body{
 }
 
 .addressCard{
-    width: 19rem;
+    width: 14rem;
+}
+
+.modal-header{
+    background-color:#6da7b1;
+}
+
+.addressCard *{
+    font-size: 15px;
+    font-family: Times;
 }

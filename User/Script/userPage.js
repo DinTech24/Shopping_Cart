@@ -1,6 +1,5 @@
 function registerUser(){
     var firstName = document.getElementById("firstNameId").value;
-    var lastName = document.getElementById("lastNameId").value;
     var emailId = document.getElementById("emailIds").value;
     var password = document.getElementById("passwordId").value;
     var rePassword = document.getElementById("rePasswordId").value;
@@ -285,7 +284,7 @@ function removeHeightClass(){
 
 function searchValidate(){
     var searchKey = document.getElementById("searchInput").value;
-    if(searchKey.trim() == 0){
+    if(searchKey.trim().length == 0){
         alert("Enter keyword to search")
         return false
     }else{
@@ -294,10 +293,126 @@ function searchValidate(){
     }
 }
 
+function addressModalValidation(){
+    var firstName = document.getElementById("firstNameId").value;
+    var address1 = document.getElementById("address1Id").value;
+    var city = document.getElementById("cityId").value;
+    var state = document.getElementById("stateId").value;
+    var pincode = document.getElementById("pincodeId").value;
+    var phone = document.getElementById("phoneId").value;
+    var phonePattern = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+    var flag = true;
+    if(firstName.trim().length == 0){
+        document.getElementById("firstWarning").innerHTML = "firstName is empty"
+        document.getElementById("firstNameId").focus();
+        document.getElementById("firstNameId").style.border = "2px solid red";
+        flag = false;
+    }else{
+        document.getElementById("firstWarning").innerHTML = ""
+        document.getElementById("firstNameId").style.border = "1px solid black";
+    }
+
+    if(address1 === ""){
+        document.getElementById("address1Warning").innerHTML = "address line 1 is empty"
+        document.getElementById("address1Id").focus();
+        document.getElementById("address1Id").style.border = "2px solid red";
+        flag = false;
+    }else{
+        document.getElementById("address1Warning").innerHTML = ""
+        document.getElementById("address1Id").style.border = "1px solid black";
+    }
+
+    if(city === ""){
+        document.getElementById("cityWarning").innerHTML = "city is empty"
+        document.getElementById("cityId").focus();
+        document.getElementById("cityId").style.border = "2px solid red";
+        flag = false;
+    }else{
+        document.getElementById("cityWarning").innerHTML = ""
+        document.getElementById("cityId").style.border = "1px solid black";
+    }
+
+    if(state === ""){
+        document.getElementById("stateWarning").innerHTML = "state is empty"
+        document.getElementById("stateId").focus();
+        document.getElementById("stateId").style.border = "2px solid red";
+        flag = false;
+    }else{
+        document.getElementById("stateWarning").innerHTML = ""
+        document.getElementById("stateId").style.border = "1px solid black";
+    }
+    
+    if(pincode.trim() === ""){
+        document.getElementById("pincodeWarning").innerHTML = "pincode is empty";
+        document.getElementById("pincodeId").focus();
+        document.getElementById("pincodeId").style.border = "2px solid red";
+        flag = false;
+    }else{
+        if(pincode.length !== 6){
+            document.getElementById("pincodeWarning").innerHTML = "enter 6 digit pincode";
+            flag = false;
+        }else if(/^[0-9]{6}$/.test(pincode) === false){
+            document.getElementById("pincodeWarning").innerHTML = "pincode should only contain digits";
+            flag = false;
+        }else{
+            document.getElementById("pincodeWarning").innerHTML = "";
+            document.getElementById("pincodeId").style.border = "1px solid black";
+        }
+    }
+
+    if(phone === ""){
+        document.getElementById("phoneWarning").innerHTML = "Phone Number is empty"
+        document.getElementById("phoneId").focus();
+        document.getElementById("phoneId").style.border = "2px solid red";
+        flag = false;
+    }else{
+        if(!phonePattern.test(phone)){
+            document.getElementById("phoneWarning").innerHTML = "Phone Number should follow pattern"
+            flag = false;
+        }else{
+            document.getElementById("phoneWarning").innerHTML = ""
+            document.getElementById("phoneId").style.border = "1px solid black";
+        }
+    }
+    if(flag === false){
+        event.preventDefault()
+    }
+    return flag;
+}
+
+function clearModal(){
+    const nodeList = document.querySelectorAll(".registerWarning");
+    const nodeListNew = document.querySelectorAll(".inputStyleNew");
+    document.getElementById("userAddressForm").reset();
+    for (let i = 0; i < nodeList.length; i++) {
+        nodeList[i].innerHTML = "";
+    }
+    for (let j = 0; j < nodeList.length; j++) {
+        nodeListNew[j].style.border = "1px solid black";
+    }
+}
+
+function removeAddress(addressId){
+    if(confirm("Confirm to remove address")){
+        $.ajax({
+            type:"POST",
+            url:"Component/userComponent.cfc?method=deleteAddress",
+            data:{addressId:addressId.value},
+            success:function(){
+                    document.getElementById(addressId.value+"address").remove();
+                }
+        })
+    }
+}
+
 window.addEventListener('pageshow', (event) => {
     if (event.persisted) {
       window.location.reload();
     }
 });
+
+if ( window.history.replaceState ) {
+    window.history.replaceState( null, null, window.location.href );
+}
 
 

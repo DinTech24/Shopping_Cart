@@ -69,9 +69,9 @@
                         <div class="pageFullPath">
                             <a href="./userhomePage.cfm">Home</a>
                             <i class="fa-solid fa-chevron-right fa-xs"></i> 
-                            <a href="./categoriesListingPage.cfm?categoryId=#categoryResult.fldcategory_ID#">#categoryResult.fldcategoryName#</a> 
+                            <a href="./categoriesListingPage.cfm?categoryId=#encodeForURL(encrypt(categoryResult.fldcategory_ID,application.encryptionString,'AES','Base64'))#">#categoryResult.fldcategoryName#</a> 
                             <i class="fa-solid fa-chevron-right fa-xs"></i> 
-                            <a href="./subCategoriesListingPage.cfm?subCategoryId=#subCategoryResult.fldsubCategory_ID#">#subCategoryResult.fldsubCategoryName# </a>
+                            <a href="./subCategoriesListingPage.cfm?subCategoryId=#encodeForURL(encrypt(subCategoryResult.fldsubCategory_ID,application.encryptionString,'AES','Base64'))#">#subCategoryResult.fldsubCategoryName# </a>
                             <i class="fa-solid fa-chevron-right fa-xs"></i> 
                             <a>#resultProductDetails.fldProductName#</a>
                         </div>

@@ -25,7 +25,7 @@
                 </cfif>
             </a>
             <cfif structKeyExists(session, "userLogin") AND structKeyExists(session, "username")>
-                <a href="" class="mx-2">
+                <a href="./userProfilePage.cfm" class="mx-2">
                     <i class="fa-solid fa-lg fa-user"></i>
                     #session.username#
                 </a>

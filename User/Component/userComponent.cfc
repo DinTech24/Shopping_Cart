@@ -1,6 +1,6 @@
 <cfcomponent>
 
-    <cffunction  name="addUser" returnType="struct">
+    <cffunction  name="addUser" returnType="struct" description="Add user to Database">
         <cfargument  name="registerStructure" type="struct" required = "true">
         <cfset local.exceptionStruct = structNew()>
         <cfset local.exceptionStruct["messageType"] = "Red">
@@ -37,7 +37,7 @@
         <cfreturn local.exceptionStruct>
     </cffunction>
 
-    <cffunction  name="isUserExist" returnType="query">
+    <cffunction  name="isUserExist" returnType="query" description="check user already exists">
         <cfargument  name="emailId" type="string" required = "false">
         <cfargument  name="phonenumber" type="string" required = "false">
         <cfargument  name="userId" type="string" required = "false">
@@ -62,7 +62,7 @@
         <cfreturn local.getUserQuery>
     </cffunction>
 
-    <cffunction  name="loginUser" returnType="struct" access="remote" returnFormat="JSON">
+    <cffunction  name="loginUser" returnType="struct" access="remote" returnFormat="JSON"  description="Login user">
         <cfargument  name="enteredId" type="string" required = "true">
         <cfargument  name="enteredPassword" type="string" required = "true">
         <cfargument  name="jsCall" default = "false" type="string" required = "true">
@@ -118,7 +118,7 @@
         <cfreturn local.loginExcepetion>
     </cffunction>
 
-    <cffunction  name="listCategories" returnType="query">
+    <cffunction  name="listCategories" returnType="query" description="Get all category details">
         <cfargument  name="categoryId" type="numeric" required = "false">
         <cfargument  name="allData" type="string" required = "false">
         <cfquery name="local.getCategoryQuery">
@@ -138,7 +138,7 @@
         <cfreturn local.getCategoryQuery>
     </cffunction>
 
-    <cffunction  name="listSubCategories" returnType="query">
+    <cffunction  name="listSubCategories" returnType="query" description="Get all sub-category details">
         <cfargument  name="subCategoryId" type="numeric" required="false">
         <cfquery name="local.getSubCategoryQuery">
             SELECT 
@@ -154,7 +154,7 @@
         <cfreturn local.getSubCategoryQuery>
     </cffunction>
 
-    <cffunction  name="getRandomProducts" returnType="any">
+    <cffunction  name="getRandomProducts" returnType="any" description="Get all products details">
         <cfargument  name="sort" default="false" required = "false" type="string">
         <cfargument  name="filterArray" required = "false">
         <cfargument  name="subCategoryId" required = "false" type="numeric">
@@ -200,6 +200,8 @@
                             ORDER BY NEWID();
                             <cfelseif arguments.sort EQ "negative">
                             ORDER BY NEWID();
+                            <cfelseif arguments.sort EQ "positive">
+                            ORDER BY fldProductId;
                             <cfelse>
                                 ORDER BY fldPrice + fldTax #arguments.sort#;
                         </cfif> 
@@ -208,7 +210,7 @@
         <cfreturn local.getproductsQuery>
     </cffunction>
 
-    <cffunction  name="getProductImages" returnType="query">
+    <cffunction  name="getProductImages" returnType="query" description="Get images of products">
         <cfargument  name="productId" type="numeric" required = "true">
         <cfquery name="local.ProductImages">
             SELECT 
@@ -222,7 +224,7 @@
         <cfreturn local.ProductImages>
     </cffunction>
 
-    <cffunction  name="selectPriceRange" access="remote" returnFormat="JSON">
+    <cffunction  name="selectPriceRange" access="remote" returnFormat="JSON" description="Set price range for filtering products">
         <cfargument name="filterRange" required = "true">
         <cfargument  name="subCategoryId"  type="numeric" required = "true">
         <cfset local.filterArray = DeserializeJSON(arguments.filterRange)>
@@ -244,7 +246,7 @@
         <cfreturn local.rangeProductArray>
     </cffunction>
 
-    <cffunction  name="addToCart"  returnType="void">
+    <cffunction  name="addToCart"  returnType="void"  description="Add products to cart">
         <cfargument  name="productId" type="numeric" required = "true">
         <cfset isProductInCart = displayCart(arguments.productId)>
         <cfif queryRecordCount(isProductInCart)>
@@ -266,7 +268,7 @@
         </cfif>
     </cffunction>
 
-    <cffunction  name="displayCart"  returnType="query">
+    <cffunction  name="displayCart"  returnType="query"  description="Get all cart details">
         <cfargument  name="productId" type="numeric" required = "false">
         <cfquery name="getCartQuery">
             SELECT
@@ -284,7 +286,7 @@
         <cfreturn getCartQuery>
     </cffunction>
 
-    <cffunction  name="updateCartQuantity" access="remote" returnType="void">
+    <cffunction  name="updateCartQuantity" access="remote" returnType="void"  description="Update product quantity in cart">
         <cfargument  name="CartId" type="numeric" required = "true">
         <cfargument  name="prQuantity" required = "true">
         <cfif arguments.prQuantity EQ 0>
@@ -301,7 +303,7 @@
         </cfif>
     </cffunction>
 
-    <cffunction  name="deleteCart" access="remote" returnType="void">
+    <cffunction  name="deleteCart" access="remote" returnType="void" description="Delete products from cart">
         <cfargument  name="CartId" type="numeric" required = "true">
         <cfquery name="deleteCartQuery">
             DELETE FROM
@@ -312,9 +314,62 @@
         <cfset session.productQuantity = session.productQuantity - 1>
     </cffunction>
 
-    <cffunction  name="getSavedAddress" returnType="query">
+    <cffunction  name="validateAddress" returnType="boolean" description="Validate all fields in address modal">
+        <cfargument  name="addressStructure" type="struct" required="true">
+        <cfset flag = true>
+        <cfset pincodePattern = "/^[0-9]{6}$/">
+        <cfif 
+            trim(arguments.addressStructure.firstName) EQ ""
+            OR trim(arguments.addressStructure.address1) EQ ""
+            OR trim(arguments.addressStructure.city) EQ ""
+            OR trim(arguments.addressStructure.state) EQ ""
+            OR trim(arguments.addressStructure.pincode) EQ ""
+            OR trim(arguments.addressStructure.phone) EQ ""
+        >
+            <cfset flag = false>
+        </cfif>
+        <cfif NOT reFind(pincodePattern,'#arguments.addressStructure.pincode#')>
+            <cfset flag = false>
+        </cfif>
+        <cfreturn flag>
+    </cffunction>
+
+    <cffunction  name="saveAddress" retrunType="void" description="Add new addresses">
+        <cfargument  name="addressStructure" required="true" type="struct">
+        <cfset isAddressValid = validateAddress(addressStructure = addressStructure)>
+        <cfif isAddressValid>
+            <cfquery name="local.addAddressQuery">
+                INSERT INTO 
+                    tblAddress(
+                        fldUserId,
+                        fldFirstName,
+                        fldLastName,
+                        fldAddressLine1,
+                        fldAddressLine2,
+                        fldCity,
+                        fldState,
+                        fldPincode,
+                        fldPhoneNumber
+                    )
+                VALUES(
+                    <cfqueryparam value = '#session.userId#' cfsqltype = "integer">,
+                    <cfqueryparam value = '#arguments.addressStructure.firstName#' cfsqltype = "varchar">,
+                    <cfqueryparam value = '#arguments.addressStructure.lastName#' cfsqltype = "varchar">,
+                    <cfqueryparam value = '#arguments.addressStructure.address1#' cfsqltype = "varchar">,
+                    <cfqueryparam value = '#arguments.addressStructure.address2#' cfsqltype = "varchar">,
+                    <cfqueryparam value = '#arguments.addressStructure.city#' cfsqltype = "varchar">,
+                    <cfqueryparam value = '#arguments.addressStructure.state#' cfsqltype = "varchar">,
+                    <cfqueryparam value = '#arguments.addressStructure.pincode#' cfsqltype = "varchar">,
+                    <cfqueryparam value = '#arguments.addressStructure.phone#' cfsqltype = "varchar">
+                )
+            </cfquery>
+        </cfif>
+    </cffunction>
+
+    <cffunction  name="getSavedAddress" returnType="query"  description="Get all saved addresses">
         <cfquery name="local.getAddressQuery">
             SELECT
+                fldAddress_ID,
                 fldFirstName,
                 fldLastName,
                 fldAddressLine1,
@@ -326,11 +381,24 @@
                 tblAddress
             WHERE 
                 fldUserId = <cfqueryparam value = '#session.userId#' cfsqltype = "integer">
+                AND fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
         </cfquery>
         <cfreturn local.getAddressQuery>
     </cffunction>
 
-    <cffunction  name="logoutUser" access="remote" returnType="void">
+    <cffunction  name="deleteAddress" access="remote"  description="Deactivate addresses from database">
+        <cfargument name="addressId">
+        <cfquery name="deleteAddressQuery">
+            UPDATE
+                tblAddress
+            SET
+                fldActive = <cfqueryparam value = '0' cfsqltype = "integer">
+            WHERE
+                fldAddress_ID = <cfqueryparam value = '#arguments.addressId#' cfsqltype = "integer">
+        </cfquery>
+    </cffunction>
+
+    <cffunction  name="logoutUser" access="remote" returnType="void"  description="Logout user">
         <cfset structClear(session)>
     </cffunction>
 

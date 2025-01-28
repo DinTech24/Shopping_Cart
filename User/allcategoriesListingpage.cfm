@@ -19,7 +19,7 @@
             <div>
                 <div class="d-grid ms-3">
                     <cfloop query="categoryResult">
-                        <a href="./categoriesListingPage.cfm?categoryId=#categoryResult.fldcategory_ID#" class=" text-dark fw-bold mb-2">
+                        <a href="./categoriesListingPage.cfm?categoryId=#encodeForURL(encrypt(categoryResult.fldcategory_ID,application.encryptionString,'AES','Base64'))#" class=" text-dark fw-bold mb-2">
                             #categoryResult.fldcategoryName#
                         </a>
                     </cfloop>

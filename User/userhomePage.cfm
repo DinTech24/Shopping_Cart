@@ -18,12 +18,12 @@
             <div class="subcategoryBar py-1">
                 <cfloop query="categoryResult">
                     <div class="subCategoryEach">
-                        <a href="./categoriesListingPage.cfm?categoryId=#categoryResult.fldcategory_ID#">#categoryResult.fldcategoryName#</a>
+                        <a href="./categoriesListingPage.cfm?categoryId=#encodeForURL(encrypt(categoryResult.fldcategory_ID,application.encryptionString,'AES','Base64'))#">#categoryResult.fldcategoryName#</a>
                         <div class="toolTipData">
                             <cfloop query="subCategoryResult">
                                 <cfif categoryResult.fldcategory_ID EQ subCategoryResult.fldcategoryId>
                                     <div class="py-2 subcategories">
-                                        <a href="./subCategoriesListingPage.cfm?subCategoryId=#subCategoryResult.fldsubCategory_ID#" class="text-decoration-none subcategoriesAnchor">
+                                        <a href="./subCategoriesListingPage.cfm?subCategoryId=#encodeForURL(encrypt(subCategoryResult.fldsubCategory_ID,application.encryptionString,'AES','Base64'))#" class="text-decoration-none subcategoriesAnchor">
                                             #subCategoryResult.fldSubCategoryName#
                                         </a>
                                     </div>

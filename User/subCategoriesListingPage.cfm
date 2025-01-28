@@ -14,8 +14,10 @@
             <cfset subCategoryResult = userCateObject.listSubCategories()>
             <cfif structKeyExists(form, "highSort")>
                 <cfset randomProductsResult = userCateObject.getRandomProducts(sort = form.highSort)>
+                <cfset subCategoryId = decrypt(url.subCategoryId,application.encryptionString,"AES","Base64")>
                 <cfelseif structKeyExists(form, "lowSort")>
                     <cfset randomProductsResult = userCateObject.getRandomProducts(sort = form.lowSort)>
+                    <cfset subCategoryId = decrypt(url.subCategoryId,application.encryptionString,"AES","Base64")>
                 <cfelseif structKeyExists(url, "searchKeyword")>
                     <cfset randomProductsResult = userCateObject.getRandomProducts(
                         searchKeyword = url.searchKeyword,
@@ -23,11 +25,12 @@
                     )>
                 <cfelse>
                     <cfset randomProductsResult = userCateObject.getRandomProducts(sort="negative")>
+                    <cfset subCategoryId = decrypt(url.subCategoryId,application.encryptionString,"AES","Base64")>
             </cfif>
             <cfinclude  template="./userHeader.cfm">
             <cfif NOT structKeyExists(url, "searchKeyword")>
                 <cfloop query="subCategoryResult">
-                    <cfif subCategoryResult.fldSubCategory_ID EQ url.subCategoryId>
+                    <cfif subCategoryResult.fldSubCategory_ID EQ subCategoryId>
                         <div class="p-3 d-flex justify-content-between px-2">
                             <h2>#subCategoryResult.fldSubcategoryName# - All Products</h2>
                             <form method="POST">
@@ -71,7 +74,7 @@
                                                     <div class="text-center fw-bold">Select Range</div>
                                                     <input type="text" disabled id="maxVal" placeholder="MAX" class="selectRange form-control border-success">
                                                 </div>
-                                                <button type="button" class="btn btn-primary mt-2" onclick="getFilterResult(#url.subCategoryId#)">Show result</button>
+                                                <button type="button" class="btn btn-primary mt-2" onclick="getFilterResult(#subCategoryId#)">Show result</button>
                                             </div>
                                         </div>
                                     </div>
@@ -93,7 +96,7 @@
                         <cfset productsCount = 0>
                         <cfloop query="randomProductsResult">
                             <cfif structKeyExists(url, "subCategoryId")>
-                                <cfif randomProductsResult.fldSubCategoryId EQ url.subCategoryId>
+                                <cfif randomProductsResult.fldSubCategoryId EQ subCategoryId>
                                     <cfset productsCount = productsCount + 1>
                                     <div class="card randomProductCard" style="width: 13rem;">
                                         <a href="./productPage.cfm?productId=#randomProductsResult.fldProduct_ID#">
@@ -129,14 +132,14 @@
                     </div>
                 </div>
             </div>
-            <cfif productsCount GT 12>
-                <div class="text-center mb-3" id="viewMore">
+            <div class="text-center mb-3" id="viewMore">
+                <cfif productsCount GT 12>
                     <button type="button" class="viewMoreButton" onclick="removeHeightClass()">
                         load more products
                         <i class="fa-solid fa-sort-down"></i>
                     </button>
-                </div>
-            </cfif>
+                </cfif>
+            </div>
             <cfinclude  template="./footer.cfm">
         </cfoutput>
         <script src="./Script/userPage.js"></script>
