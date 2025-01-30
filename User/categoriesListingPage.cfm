@@ -10,36 +10,36 @@
     </head>
     <body>
         <cfoutput>
-            <cfset userCateObject = new Component.userComponent()>
-            <cfset categoryResult = userCateObject.listCategories(decrypt(url.categoryId,application.encryptionString,"AES","Base64"))>
-            <cfset randomProductsResult = userCateObject.getRandomProducts(sort="negative")>
-            <cfset subCategoryResult = userCateObject.listSubCategories()>
+            <cfset variables.userCateObject = new Component.userComponent()>
+            <cfset variables.categoryResult = variables.userCateObject.listCategories(decrypt(url.categoryId,application.encryptionString,"AES","Base64"))>
+            <cfset variables.randomProductsResult = variables.userCateObject.getRandomProducts(sort="negative")>
+            <cfset variables.subCategoryResult = variables.userCateObject.listSubCategories()>
             <cfinclude  template="./userHeader.cfm">
             <div class="p-3">
-                <h2>#categoryResult.fldCategoryName# - All Products</h2>
+                <h2>#variables.categoryResult.fldCategoryName# - All Products</h2>
             </div>
             <div>
                 <div>
                     <cfloop query="subCategoryResult">
-                        <cfif subCategoryResult.fldCategoryId EQ categoryResult.fldCategory_ID >
+                        <cfif variables.subCategoryResult.fldCategoryId EQ variables.categoryResult.fldCategory_ID >
                             <div class="randomProductsHead">
-                                <a class="randomAnchor" href="./subCategoriesListingPage.cfm?subCategoryId=#encodeForURL(encrypt(subCategoryResult.fldsubCategory_ID,application.encryptionString,'AES','Base64'))#">
-                                    #subCategoryResult.fldSubcategoryName#
+                                <a class="randomAnchor" href="./subCategoriesListingPage.cfm?subCategoryId=#encodeForURL(encrypt(variables.subCategoryResult.fldsubCategory_ID,application.encryptionString,'AES','Base64'))#">
+                                    #variables.subCategoryResult.fldSubcategoryName#
                                 </a>
                             </div>
                             <div class="randomProductsMainDiv">
                                 <cfloop query="randomProductsResult">
-                                    <cfif randomProductsResult.fldSubCategoryId EQ subCategoryResult.fldsubCategory_ID>
+                                    <cfif randomProductsResult.fldSubCategoryId EQ variables.subCategoryResult.fldsubCategory_ID>
                                         <div class="card randomProductCard" style="width: 13rem;">
-                                            <a href="./productPage.cfm?productId=#randomProductsResult.fldProduct_ID#">
-                                                <img src="../Assets/ProductImages/#randomProductsResult.fldImageFileName#" class="card-img-top randProductImage" alt="Product Image">
+                                            <a href="./productPage.cfm?productId=#variables.randomProductsResult.fldProduct_ID#">
+                                                <img src="../Assets/ProductImages/#variables.randomProductsResult.fldImageFileName#" class="card-img-top randProductImage" alt="Product Image">
                                             </a>
                                             <div class="card-body randProductbody">
-                                                <div class="card-text randProductName">#randomProductsResult.fldProductName#</div>
-                                                <div>#randomProductsResult.fldBrandName#</div>
+                                                <div class="card-text randProductName">#variables.randomProductsResult.fldProductName#</div>
+                                                <div>#variables.randomProductsResult.fldBrandName#</div>
                                                 <div class="card-text randProductPrice">
                                                     <i class="fa-solid fa-indian-rupee-sign"></i>
-                                                    #randomProductsResult.fldPrice + randomProductsResult.fldTax#
+                                                    #variables.randomProductsResult.fldPrice + variables.randomProductsResult.fldTax#
                                                 </div>
                                             </div>
                                         </div>

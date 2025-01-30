@@ -11,13 +11,13 @@
    <cfoutput>
         <body>
             <cfinclude  template="./userHeader.cfm">
-            <cfset productObject = new Component.userComponent()>
-            <cfset resultProductDetails = productObject.getRandomProducts(productId = url.productId)>
-            <cfset randomProductsResult = productObject.getRandomProducts(sort="negative")>
-            <cfset resultProductImages = productObject.getProductImages(productId = url.productId)>
-            <cfset subCategoryResult = productObject.listSubCategories(subCategoryId = resultProductDetails.fldSubCategoryId)>
-            <cfset categoryResult = productObject.listCategories(categoryId = subCategoryResult.fldCategoryId)>
-            <cfset randomLabels = [
+            <cfset variables.productObject = new Component.userComponent()>
+            <cfset variables.resultProductDetails = variables.productObject.getRandomProducts(productId = url.productId)>
+            <cfset variables.randomProductsResult = variables.productObject.getRandomProducts(sort="negative")>
+            <cfset variables.resultProductImages = variables.productObject.getProductImages(productId = url.productId)>
+            <cfset variables.subCategoryResult = variables.productObject.listSubCategories(subCategoryId = variables.resultProductDetails.fldSubCategoryId)>
+            <cfset variables.categoryResult = variables.productObject.listCategories(categoryId = variables.subCategoryResult.fldCategoryId)>
+            <cfset variables.randomLabels = [
                 "Best Seller",
                 "Special Price",
                 "Best price ever",
@@ -31,13 +31,13 @@
                     <div>
                         <div id="carouselControls" class="carousel slide" data-bs-ride="carousel">
                             <div class="carousel-inner" id="carousel-inner">
-                                <cfloop query="resultProductImages">
-                                    <cfif resultProductImages.fldDefaultImage EQ 1>
+                                <cfloop query="variables.resultProductImages">
+                                    <cfif variables.resultProductImages.fldDefaultImage EQ 1>
                                         <div class="carousel-item active">
                                         <cfelse>
                                             <div class="carousel-item">
                                     </cfif>
-                                        <img class="productAllImages1" src="../Assets/ProductImages/#resultProductImages.fldImageFileName#" alt="">
+                                        <img class="productAllImages1" src="../Assets/ProductImages/#variables.resultProductImages.fldImageFileName#" alt="">
                                     </div>
                                 </cfloop>
                             </div>
@@ -69,33 +69,33 @@
                         <div class="pageFullPath">
                             <a href="./userhomePage.cfm">Home</a>
                             <i class="fa-solid fa-chevron-right fa-xs"></i> 
-                            <a href="./categoriesListingPage.cfm?categoryId=#encodeForURL(encrypt(categoryResult.fldcategory_ID,application.encryptionString,'AES','Base64'))#">#categoryResult.fldcategoryName#</a> 
+                            <a href="./categoriesListingPage.cfm?categoryId=#encodeForURL(encrypt(variables.categoryResult.fldcategory_ID,application.encryptionString,'AES','Base64'))#">#categoryResult.fldcategoryName#</a> 
                             <i class="fa-solid fa-chevron-right fa-xs"></i> 
-                            <a href="./subCategoriesListingPage.cfm?subCategoryId=#encodeForURL(encrypt(subCategoryResult.fldsubCategory_ID,application.encryptionString,'AES','Base64'))#">#subCategoryResult.fldsubCategoryName# </a>
+                            <a href="./subCategoriesListingPage.cfm?subCategoryId=#encodeForURL(encrypt(variables.subCategoryResult.fldsubCategory_ID,application.encryptionString,'AES','Base64'))#">#subCategoryResult.fldsubCategoryName# </a>
                             <i class="fa-solid fa-chevron-right fa-xs"></i> 
-                            <a>#resultProductDetails.fldProductName#</a>
+                            <a>#variables.resultProductDetails.fldProductName#</a>
                         </div>
                     </div>
-                    <div class="productName">#resultProductDetails.fldProductName#</div>
-                    <div class="productBrand">#resultProductDetails.fldBrandName#</div>
-                    <span class="specialPriceSpan">#randomLabels[randRange(1, 7)]#</span>
+                    <div class="productName">#variables.resultProductDetails.fldProductName#</div>
+                    <div class="productBrand">#variables.resultProductDetails.fldBrandName#</div>
+                    <span class="specialPriceSpan">#variables.randomLabels[randRange(1, 7)]#</span>
                     
                     <div>
                         <div class="mt-1">
-                            #resultProductDetails.fldDescription#
+                            #variables.resultProductDetails.fldDescription#
                         </div>
                         <div class="productDiscountedPrice">
                             PRODUCT PRICE :
                             <span class="discountedPriceSpan">
                                 <i class="fa-solid fa-indian-rupee-sign"></i>
-                                #resultProductDetails.fldPrice+resultProductDetails.fldTax#
+                                #variables.resultProductDetails.fldPrice+variables.resultProductDetails.fldTax#
                             </span>
                         </div>
                     </div>
                     <div class="productImageMainDiv">
                         <cfloop query="resultProductImages" endRow="3">
                             <div class="me-3 productImageSubDiv">
-                                <img class="productImagesSub" src="../Assets/ProductImages/#resultProductImages.fldImageFileName#" alt="Productimages">
+                                <img class="productImagesSub" src="../Assets/ProductImages/#variables.resultProductImages.fldImageFileName#" alt="Productimages">
                             </div>
                         </cfloop>
                     </div>
@@ -103,28 +103,28 @@
             </div>
             <h3 class="m-3 mt-5">Related Products</h3>
             <div class="randomProductsMainDiv">
-                <cfset productsCount = 0>
-                <cfloop query="randomProductsResult">
-                    <cfif resultProductDetails.fldSubCategoryId EQ randomProductsResult.fldSubCategoryId 
-                    AND randomProductsResult.fldProduct_ID NEQ url.productId>
-                        <cfset productsCount = productsCount + 1>
+                <cfset variables.productsCount = 0>
+                <cfloop query="variables.randomProductsResult">
+                    <cfif variables.resultProductDetails.fldSubCategoryId EQ variables.randomProductsResult.fldSubCategoryId 
+                    AND variables.randomProductsResult.fldProduct_ID NEQ url.productId>
+                        <cfset variables.productsCount = variables.productsCount + 1>
                         <div class="card randomProductCard" style="width: 13rem;">
-                            <a href="./productPage.cfm?productId=#randomProductsResult.fldProduct_ID#">
-                                <img src="../Assets/ProductImages/#randomProductsResult.fldImageFileName#" class="card-img-top randProductImage" alt="Product Image">
+                            <a href="./productPage.cfm?productId=#variables.randomProductsResult.fldProduct_ID#">
+                                <img src="../Assets/ProductImages/#variables.randomProductsResult.fldImageFileName#" class="card-img-top randProductImage" alt="Product Image">
                             </a>
                             <div class="card-body randProductbody">
                                 <div class="card-text randProductName">#randomProductsResult.fldProductName#</div>
-                                <div>#randomProductsResult.fldBrandName#</div>
+                                <div>#variables.randomProductsResult.fldBrandName#</div>
                                 <div class="card-text randProductPrice">
                                     <i class="fa-solid fa-indian-rupee-sign"></i>
-                                    #randomProductsResult.fldPrice + randomProductsResult.fldTax#
+                                    #variables.randomProductsResult.fldPrice + randomProductsResult.fldTax#
                                 </div>
                             </div>
                         </div>
                     </cfif>
                 </cfloop>
             </div>
-            <cfif productsCount EQ 0>
+            <cfif variables.productsCount EQ 0>
                 <div class="text-secondary ms-3">
                     No Related products to display
                 </div>
@@ -134,6 +134,13 @@
                     <cflocation  url="./userCartPage.cfm?productId=#url.productId#">
                     <cfelse>
                         <cflocation  url="./userLogin.cfm?productId=#url.productId#">
+                </cfif>
+            </cfif>
+            <cfif structKeyExists(form, "buyNowButton")>
+                <cfif structKeyExists(session, "userLogin") AND structKeyExists(session, "username")>
+                    <cflocation  url="./userOrderPage.cfm?productId=#url.productId#">
+                    <cfelse>
+                        <cflocation  url="./userLogin.cfm?productId=#url.productId#&buyNow=#true#">
                 </cfif>
             </cfif>
             <cfinclude template="./footer.cfm">

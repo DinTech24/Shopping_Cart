@@ -40,7 +40,7 @@
     <cffunction  name="isUserExist" returnType="query" description="check user already exists">
         <cfargument  name="emailId" type="string" required = "false">
         <cfargument  name="phonenumber" type="string" required = "false">
-        <cfargument  name="userId" type="string" required = "false">
+        <cfargument  name="userId" type="numeric" required = "false">
         <cfquery name="local.getUserQuery">
             SELECT
                 fldFirstName,
@@ -50,8 +50,12 @@
             FROM
                 tblUser 
             WHERE
-                <cfif structKeyExists(arguments,"userId")>
-                    fldUser_ID = <cfqueryparam value = '#arguments.userId#' cfsqltype = "varchar">
+                <cfif structKeyExists(arguments,"userId") AND structKeyExists(arguments,"emailId")>
+                    NOT fldUser_ID = <cfqueryparam value = '#arguments.userId#' cfsqltype = "varchar">
+                    AND(fldEmail = <cfqueryparam value = '#arguments.emailId#' cfsqltype = "varchar">
+                    OR fldPhone = <cfqueryparam value = '#arguments.phonenumber#' cfsqltype = "varchar">)
+                    <cfelseif structKeyExists(arguments,"userId")>
+                        fldUser_ID = <cfqueryparam value = '#arguments.userId#' cfsqltype = "varchar">
                     <cfelse>
                         (fldEmail = <cfqueryparam value = '#arguments.emailId#' cfsqltype = "varchar">
                         OR fldPhone = <cfqueryparam value = '#arguments.phonenumber#' cfsqltype = "varchar">)
@@ -62,11 +66,48 @@
         <cfreturn local.getUserQuery>
     </cffunction>
 
+    <cffunction  name="editUserProfile" returnType="boolean" returnFormat="JSON"  access="remote">
+        <cfargument  name="userId">
+        <cfargument  name="userFirstName">
+        <cfargument  name="userLastName">
+        <cfargument  name="userEmail">
+        <cfargument  name="userPhone">
+        <cfif trim(arguments.userFirstName) EQ "" OR
+        trim(arguments.userEmail) EQ "" OR
+        trim(arguments.userPhone) EQ "">
+            <cfelse>
+                <cfset local.isUser = isUserExist(
+                    userId = arguments.userId,
+                    emailId = arguments.userEmail,
+                    phonenumber = arguments.userPhone
+                )>
+                <cfif queryRecordCount(local.isUser) EQ 0>
+                    <cfquery name="updateUser">
+                        UPDATE
+                            tblUser
+                        SET
+                            fldFirstName = <cfqueryparam value = '#arguments.userFirstName#' cfsqltype = "varchar">,
+                            fldLastName = <cfqueryparam value = '#arguments.userLastName#' cfsqltype = "varchar">,
+                            fldEmail = <cfqueryparam value = '#arguments.userEmail#' cfsqltype = "varchar">,
+                            fldPhone = <cfqueryparam value = '#arguments.userPhone#' cfsqltype = "varchar">,
+                            fldUpdatedBy = <cfqueryparam value = '#arguments.userId#' cfsqltype = "integer">,
+                            fldUpdatedDate = <cfqueryparam value = '#Now()#' cfsqltype = "timestamp">
+                        WHERE
+                            flduser_ID = <cfqueryparam value = '#arguments.userId#' cfsqltype = "integer">
+                    </cfquery>
+                    <cfreturn true>
+                    <cfelse>
+                        <cfreturn false>
+                </cfif>
+        </cfif>
+    </cffunction>
+
     <cffunction  name="loginUser" returnType="struct" access="remote" returnFormat="JSON"  description="Login user">
         <cfargument  name="enteredId" type="string" required = "true">
         <cfargument  name="enteredPassword" type="string" required = "true">
         <cfargument  name="jsCall" default = "false" type="string" required = "true">
         <cfargument  name="productId" required="false" type="numeric">
+        <cfargument  name="buyNow" required="false" type="boolean">
         <cfset local.loginExcepetion = structNew()>
         <cfif trim(arguments.enteredId) EQ "" OR trim(arguments.enteredPassword) EQ "">
             <cfset local.loginExcepetion["Message"] = "Empty Fields are not alllowed!">
@@ -103,6 +144,8 @@
                 <cfset session.email = local.checkUser.fldEmail>
                 <cfif jscall EQ true>
                     <cfset local.loginExcepetion["Message"] = "true">
+                    <cfelseif structKeyExists(arguments, "productId") AND structKeyExists(url, "buyNow")>
+                        <cflocation url="../User/userOrderPage.cfm?productId=#arguments.productId#" addToken="no">
                     <cfelseif structKeyExists(arguments, "productId")>
                         <cflocation url="../User/userCartPage.cfm?productId=#arguments.productId#" addToken="no">
                     <cfelse>
@@ -286,6 +329,29 @@
         <cfreturn getCartQuery>
     </cffunction>
 
+    <cffunction  name="loadMoreData" returnType="array" returnFormat="JSON" access="remote">
+        <cfargument  name="productIdList">
+        <cfset local.productIdArray  = listToArray(productIdList)>
+        <cfset local.resultProductQuery = getRandomProducts(sort = "positive")>
+        <cfset local.remainingProducts = []>
+        <cfloop query="local.resultProductQuery">
+            <cfif  arrayContains(local.productIdArray, local.resultProductQuery.fldProduct_ID) >
+                <cfset local.tempStruct = structNew()>
+                <cfset local.tempStruct["fldProduct_ID"] = local.resultProductQuery.fldProduct_ID>
+                <cfset local.tempStruct["fldSubCategoryId"] = local.resultProductQuery.fldSubCategoryId>
+                <cfset local.tempStruct["fldProductName"] = local.resultProductQuery.fldProductName>
+                <cfset local.tempStruct["fldDescription"] = local.resultProductQuery.fldDescription>
+                <cfset local.tempStruct["fldBrandId"] = local.resultProductQuery.fldBrandId>
+                <cfset local.tempStruct["fldBrandName"] = local.resultProductQuery.fldBrandName>
+                <cfset local.tempStruct["fldPrice"] = local.resultProductQuery.fldPrice>
+                <cfset local.tempStruct["fldTax"] = local.resultProductQuery.fldTax>
+                <cfset local.tempStruct["fldImageFileName"] = local.resultProductQuery.fldImageFileName>
+                <cfset arrayAppend(local.remainingProducts, local.tempStruct)>
+            </cfif>
+        </cfloop>
+        <cfreturn local.remainingProducts>
+    </cffunction>
+
     <cffunction  name="updateCartQuantity" access="remote" returnType="void"  description="Update product quantity in cart">
         <cfargument  name="CartId" type="numeric" required = "true">
         <cfargument  name="prQuantity" required = "true">
@@ -316,8 +382,7 @@
 
     <cffunction  name="validateAddress" returnType="boolean" description="Validate all fields in address modal">
         <cfargument  name="addressStructure" type="struct" required="true">
-        <cfset flag = true>
-        <cfset pincodePattern = "/^[0-9]{6}$/">
+        <cfset local.flag = true>
         <cfif 
             trim(arguments.addressStructure.firstName) EQ ""
             OR trim(arguments.addressStructure.address1) EQ ""
@@ -326,17 +391,19 @@
             OR trim(arguments.addressStructure.pincode) EQ ""
             OR trim(arguments.addressStructure.phone) EQ ""
         >
-            <cfset flag = false>
+            <cfset local.flag = false>
         </cfif>
-        <cfif NOT reFind(pincodePattern,'#arguments.addressStructure.pincode#')>
-            <cfset flag = false>
+        <cfset local.pincodePattern = "/^[0-9]{6}$/">
+        <cfif NOT reFind(local.pincodePattern,'#arguments.addressStructure.pincode#')>
+            <cfset local.flag = false>
         </cfif>
-        <cfreturn flag>
+        <cfreturn local.flag>
     </cffunction>
 
     <cffunction  name="saveAddress" retrunType="void" description="Add new addresses">
         <cfargument  name="addressStructure" required="true" type="struct">
         <cfset isAddressValid = validateAddress(addressStructure = addressStructure)>
+        <cfdump  var="#isAddressValid#">
         <cfif isAddressValid>
             <cfquery name="local.addAddressQuery">
                 INSERT INTO 
@@ -374,7 +441,8 @@
                 fldLastName,
                 fldAddressLine1,
                 fldAddressLine2,
-                fldCity,fldState,
+                fldCity,
+                fldState,
                 fldPincode,
                 fldPhoneNumber
             FROM

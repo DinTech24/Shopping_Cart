@@ -10,8 +10,8 @@
     </head>
     <body>
         <cfoutput>
-            <cfset userCateObject = new Component.userComponent()>
-            <cfset categoryResult = userCateObject.listCategories(allData = "1")>
+            <cfset variables.userCateObject = new Component.userComponent()>
+            <cfset variables.categoryResult = variables.userCateObject.listCategories(allData = "1")>
             <cfinclude  template="./userHeader.cfm">
             <div class="p-3">
                 <h2>All Categories</h2>
@@ -19,8 +19,8 @@
             <div>
                 <div class="d-grid ms-3">
                     <cfloop query="categoryResult">
-                        <a href="./categoriesListingPage.cfm?categoryId=#encodeForURL(encrypt(categoryResult.fldcategory_ID,application.encryptionString,'AES','Base64'))#" class=" text-dark fw-bold mb-2">
-                            #categoryResult.fldcategoryName#
+                        <a href="./categoriesListingPage.cfm?categoryId=#encodeForURL(encrypt(variables.categoryResult.fldcategory_ID,application.encryptionString,'AES','Base64'))#" class=" text-dark fw-bold mb-2">
+                            #variables.categoryResult.fldcategoryName#
                         </a>
                     </cfloop>
                     

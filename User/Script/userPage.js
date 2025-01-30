@@ -277,10 +277,6 @@ function removeCart(cartId){
     }
 }
 
-function removeHeightClass(){
-    document.getElementById("randomProductsMainDivId").classList.remove("initialDivHeight");
-    document.getElementById("viewMore").style.display = "none"
-}
 
 function searchValidate(){
     var searchKey = document.getElementById("searchInput").value;
@@ -387,7 +383,7 @@ function clearModal(){
     for (let i = 0; i < nodeList.length; i++) {
         nodeList[i].innerHTML = "";
     }
-    for (let j = 0; j < nodeList.length; j++) {
+    for (let j = 0; j < nodeListNew.length; j++) {
         nodeListNew[j].style.border = "1px solid black";
     }
 }
@@ -402,6 +398,125 @@ function removeAddress(addressId){
                     document.getElementById(addressId.value+"address").remove();
                 }
         })
+    }
+}
+
+function editUserProfile(userId){
+    var userFirstName = document.getElementById("userFirstNameId").value
+    var userLastName = document.getElementById("userLastNameId").value
+    var userEmail = document.getElementById("userEmailId").value
+    var userPhone = document.getElementById("userPhoneId").value
+    var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    var phonePattern = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+    var flag = true;
+    if(userFirstName.trim() == ""){
+        document.getElementById("userFirstNameWarning").innerHTML = "firstname is empty"
+        flag = false
+    }else{
+        document.getElementById("userFirstNameWarning").innerHTML = ""
+    }
+    if(userEmail.trim() == ""){
+        document.getElementById("userEmailWarning").innerHTML = "email is empty"
+        flag = false
+    }else if(!emailPattern.test(userEmail)){
+        document.getElementById("userEmailWarning").innerHTML = "email should follow pattern"
+        flag = false
+    }else{
+        document.getElementById("userEmailWarning").innerHTML = ""
+    }
+    if(userPhone.trim() == ""){
+        document.getElementById("userPhoneWarning").innerHTML = "phone number is empty"
+        flag = false
+    }else if(!phonePattern.test(userPhone)){
+        document.getElementById("userPhoneWarning").innerHTML = "phone number should follow pattern"
+        flag = false
+    }else{
+        document.getElementById("userPhoneWarning").innerHTML = ""
+    }
+    if(flag == true){
+        $.ajax({
+            type:"POST",
+            url:"Component/userComponent.cfc?method=editUserProfile",
+            data:{
+                userId:userId,
+                userFirstName:userFirstName,
+                userLastName:userLastName,
+                userEmail:userEmail,
+                userPhone:userPhone
+            },
+            success:function(result){
+                    result = JSON.parse(result);
+                    if(result == true){
+                        document.getElementById("userDataName").innerHTML = userFirstName + " " + userLastName;
+                        document.getElementById("userDataEmail").innerHTML = userEmail;
+                        document.getElementById("userDataPhone").innerHTML = userPhone;
+                        document.getElementById("profileModalClose").click();
+                    }else{
+                        alert("User already exists")
+                    }
+                }
+        })
+    }
+}
+
+function loadAllProducts(productsIdArray){
+    $.ajax({
+        type:"POST",
+        url:"Component/userComponent.cfc?method=loadMoreData",
+        data:{productIdList:productsIdArray},
+        success:function(result){
+            var result = JSON.parse(result)
+            for(j=0;j<result.length;j++){
+                var eachProducts = 
+                `<div class="card randomProductCard" style="width: 13rem;">
+                    <a href="./productPage.cfm?productId=${result[j].fldProduct_ID}">
+                        <img src="../Assets/ProductImages/${result[j].fldImageFileName}" class="card-img-top randProductImage" alt="Product Image">
+                    </a>
+                    <div class="card-body randProductbody">
+                        <div class="card-text randProductName">${result[j].fldProductName}</div>
+                        <div>${result[j].fldBrandName}</div>
+                        <div class="card-text randProductPrice">
+                            <i class="fa-solid fa-indian-rupee-sign"></i>
+                            ${result[j].fldPrice + result[j].fldTax}
+                        </div>
+                    </div>
+                </div>`
+                $("#randomProductsMainDivId").append(eachProducts);
+            }
+            document.getElementById("viewMore").remove();
+        }
+    })
+}
+
+function addBuyQuantity(){
+    var totalprice = document.getElementById("totalprice").innerHTML;
+    var totaltax = document.getElementById("totaltax").innerHTML;
+    var productQuantity = document.getElementById("ProductQuantitySpan").innerHTML;
+    var unitPrice = document.getElementById("buyNowPrice").innerHTML;
+    var unitTax = document.getElementById("buyNowTax").innerHTML;
+    var totalAmount = document.getElementById("totalAmount").innerHTML
+    document.getElementById("reduceQuantity").disabled = false;
+    document.getElementById("ProductQuantitySpan").innerHTML = Number(productQuantity) + 1
+    var productQuantity = document.getElementById("ProductQuantitySpan").innerHTML;
+    document.getElementById("totalprice").innerHTML = Number(totalprice) + Number(unitPrice);
+    document.getElementById("totaltax").innerHTML = Number(totaltax) + Number(unitTax);
+    document.getElementById("totalAmount").innerHTML = Number(totalAmount) + Number(unitPrice) + Number(unitTax)
+}
+
+function reduceBuyQuantity(){
+    var totalprice = document.getElementById("totalprice").innerHTML;
+    var totaltax = document.getElementById("totaltax").innerHTML;
+    var productQuantity = document.getElementById("ProductQuantitySpan").innerHTML;
+    var unitPrice = document.getElementById("buyNowPrice").innerHTML;
+    var unitTax = document.getElementById("buyNowTax").innerHTML;
+    var totalAmount = document.getElementById("totalAmount").innerHTML
+    document.getElementById("ProductQuantitySpan").innerHTML = Number(productQuantity) - 1
+    var productQuantity = document.getElementById("ProductQuantitySpan").innerHTML;
+    document.getElementById("totalprice").innerHTML = Number(totalprice) - Number(unitPrice);
+    document.getElementById("totaltax").innerHTML = Number(totaltax) - Number(unitTax);
+    document.getElementById("totalAmount").innerHTML = Number(totalAmount) - Number(unitPrice) - Number(unitTax)
+    if(productQuantity == 1){
+            document.getElementById("reduceQuantity").disabled = true;
     }
 }
 

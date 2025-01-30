@@ -45,11 +45,18 @@
             </div>
             <cfif structKeyExists(form,"loginButton")>
                 <cfset userLoginObject = new Component.userComponent()>
-                <cfif structKeyExists(url, "productId")>
+                <cfif structKeyExists(url, "productId") AND structKeyExists(url, "buyNow")>
                     <cfset result = userLoginObject.loginUser(
                         enteredId = form.emailId,
                         enteredPassword = form.password,
-                        productId = url.productId
+                        productId = url.productId,
+                        buyNow = true
+                    )>
+                    <cfelseif structKeyExists(url, "productId")>
+                        <cfset result = userLoginObject.loginUser(
+                            enteredId = form.emailId,
+                            enteredPassword = form.password,
+                            productId = url.productId
                         )>
                     <cfelse>
                         <cfset result = userLoginObject.loginUser(

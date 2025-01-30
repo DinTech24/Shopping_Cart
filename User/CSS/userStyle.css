@@ -108,7 +108,7 @@ body{
     background-color:#17879b;
     top: 0px;
     position: sticky;
-    z-index: 1;
+    z-index: 5;
 }
 
 .userNavBar a{
@@ -569,8 +569,12 @@ body{
 	color:white;
 	margin:1vw 1vw 1vw auto;
 	font-weight:600;
-	
-	
+}
+
+.placeorderAnchor{
+    background-color:#307197;
+    text-decoration: none;
+    color: white;
 }
 
 .placeOrderDiv{
@@ -676,4 +680,15 @@ body{
 .addressCard *{
     font-size: 15px;
     font-family: Times;
+}
+
+.deliveryAddressDiv{
+    font-size: 24px;
+    padding-left: 20px;
+    padding: 15px;
+    border-bottom: 1px solid grey;
+}
+
+.addressSubDiv{
+    border-bottom: 1px solid rgb(175, 175, 175);
 }

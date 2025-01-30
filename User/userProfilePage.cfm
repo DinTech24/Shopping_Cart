@@ -10,6 +10,43 @@
     </head>
     <body>
         <cfoutput>
+            <cfset userProfileObject = new Component.userComponent()>
+            <cfset userResult = userProfileObject.isUserExist(userId = session.userId)>
+            <div class="modal fade" id="staticBackdropProfile" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabelProfile" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabelProfile">Edit user profile</h5>
+                        </div>
+                        <div class="modal-body">
+                            <div>
+                                <div class="addressLabel">Enter your first name</div>
+                                <input value='#userResult.fldFirstName#' name="firstName" id="userFirstNameId" class="inputStyleNew" type="text">
+                                <div id="userFirstNameWarning" class="registerWarning"></div>
+                            </div>
+                            <div>
+                                <div class="addressLabel">Enter your last name</div>
+                                <input value='#userResult.fldLastName#' name="lastName" id="userLastNameId" class="inputStyleNew" type="text">
+                                <div id="userLastNameWarning" class="registerWarning"></div>
+                            </div>
+                            <div>
+                                <div class="addressLabel">Enter emailId</div>
+                                <input value="#userResult.fldEmail#" name="lastName" id="userEmailId" class="inputStyleNew" type="text">
+                                <div id="userEmailWarning" class="registerWarning"></div>
+                            </div>
+                            <div>
+                                <div class="addressLabel">Enter phone number</div>
+                                <input value="#userResult.fldPhone#" name="address1" id="userPhoneId" class="inputStyleNew" type="text">
+                                <div id="userPhoneWarning" class="registerWarning"></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="profileModalClose" class="btn btn-secondary py-2" data-bs-dismiss="modal">Close</button>
+                            <button onclick="editUserProfile(#session.userId#)" type="button" class="accessButton py-2">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="modal fade" id="staticBackdropAddress" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <form method="POST" id="userAddressForm">
                     <div class="modal-dialog">
@@ -66,8 +103,6 @@
                     </div>
                 </form>
             </div>
-            <cfset userProfileObject = new Component.userComponent()>
-            <cfset userResult = userProfileObject.isUserExist(userId = session.userId)>
             <cfif structKeyExists(form, "addressButton")>
                 <cfset userProfileObject.saveAddress(addressStructure = form)>
             </cfif>
@@ -78,15 +113,15 @@
             </div>
             <div class="d-flex justify-content-center">
                 <div class="text-start ms-3 userDataDiv">
-                    <div>#userResult.fldFirstName &" "& userResult.fldLastName#</div>
-                    <div>#userResult.fldEmail#</div>
-                    <div>#userResult.fldPhone#</div>
-                    <button class="w-100 btn btn-success">Edit Profile</button>
+                    <div id="userDataName">#userResult.fldFirstName &" "& userResult.fldLastName#</div>
+                    <div id="userDataEmail">#userResult.fldEmail#</div>
+                    <div id="userDataPhone">#userResult.fldPhone#</div>
+                    <button data-bs-toggle="modal" data-bs-target="##staticBackdropProfile" class="w-100 btn btn-success">Edit Profile</button>
                 </div>
             </div>
             <div class="d-flex justify-content-between mt-5 mx-3">
                 <div class="fs-3">Saved Adresses</div>
-                <button class="btn btn-primary" onclick="clearModal()"  data-bs-toggle="modal" data-bs-target="##staticBackdropAddress">Add new address +</button>
+                <button class="btn btn-primary" onclick="clearModal()" data-bs-toggle="modal" data-bs-target="##staticBackdropAddress">Add new address +</button>
             </div>
             <div class="addressesDiv">
                 <cfloop query="userAddressResult">

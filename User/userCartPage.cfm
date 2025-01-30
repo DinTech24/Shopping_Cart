@@ -9,72 +9,78 @@
     </head>
     <body>
         <cfoutput>
-            <cfset userCartObject = new Component.userComponent()>
+            <cfset variables.userCartObject = new Component.userComponent()>
             <cfif structKeyExists(url,"productId")>
-                <cfset cartResult = userCartObject.addToCart(productId = url.productId)>
+                <cfset variables.cartResult = userCartObject.addToCart(productId = url.productId)>
                 <cflocation  url="./userCartPage.cfm">
             </cfif>
-            <cfset cartProductDisplayResult = userCartObject.displayCart()>
-            <cfset cartDisplayResult = userCartObject.getRandomProducts(sort = "positive")>
-            <cfset totalPrice = 0>
-            <cfset totalTax = 0>
-            <cfset quantityPrice = 0>
-            <cfset quantityTax = 0>
-            <cfset productQuantity = 0>
+            <cfset variables.cartProductDisplayResult = userCartObject.displayCart()>
+            <cfset variables.cartDisplayResult = userCartObject.getRandomProducts(sort = "positive")>
+            <cfset variables.totalPrice = 0>
+            <cfset variables.totalTax = 0>
+            <cfset variables.quantityPrice = 0>
+            <cfset variables.quantityTax = 0>
+            <cfset variables.productQuantity = 0>
             <cfinclude  template="./userHeader.cfm">
             <div class="cartPageMain" id="cartPageMainId">
                 <div class="productDescription">
                     <cfloop query="cartDisplayResult">
                         <cfloop query="cartProductDisplayResult">
-                            <cfif cartProductDisplayResult.fldProductId EQ cartDisplayResult.fldProduct_ID>
-                                <cfset productQuantity = productQuantity + 1>
-                                <div class="mainSectionBody " id="#cartProductDisplayResult.fldCart_ID#CartProduct">
+                            <cfif variables.cartProductDisplayResult.fldProductId EQ variables.cartDisplayResult.fldProduct_ID>
+                                <cfset variables.productQuantity = variables.productQuantity + 1>
+                                <div class="mainSectionBody " id="#variables.cartProductDisplayResult.fldCart_ID#CartProduct">
                                     <div class="orderDetailsDiv pt-4">
-                                        <a href="./productPage.cfm?productId=#cartDisplayResult.fldProduct_ID#">
+                                        <a href="./productPage.cfm?productId=#variables.cartDisplayResult.fldProduct_ID#">
                                             <img class="cartImage" src="../Assets/ProductImages/#cartDisplayResult.fldImageFileName#" alt="">
                                         </a>
                                         <div class="mt-2 ms-5">
-                                            <div class="productNameSize">#cartDisplayResult.fldProductName#</div>
-                                            <span class="orderDetailsSpan1">#cartDisplayResult.fldBrandName#</span>
+                                            <div class="productNameSize">#variables.cartDisplayResult.fldProductName#</div>
+                                            <span class="orderDetailsSpan1">#variables.cartDisplayResult.fldBrandName#</span>
                                             <div class="mt-3">	
                                                 <div class="orderDetailsSpan3 mt-1">
                                                     Product Price : 
-                                                    <span id="#cartProductDisplayResult.fldCart_ID#unitprice">
+                                                    <span>
                                                         <i class="fa-solid fa-indian-rupee-sign"></i>
-                                                        #cartDisplayResult.fldPrice#
+                                                        <span id="#variables.cartProductDisplayResult.fldCart_ID#unitprice">
+                                                            #variables.cartDisplayResult.fldPrice#
+                                                        </span>
                                                     </span>
                                                 </div>
                                                 <div class="orderDetailsSpan3 mt-1">
                                                     Product Tax : 
-                                                    <span id="#cartProductDisplayResult.fldCart_ID#unittax">
+                                                    <span>
                                                     <i class="fa-solid fa-indian-rupee-sign"></i>
-                                                        #cartDisplayResult.fldTax#
+                                                        <span id="#variables.cartProductDisplayResult.fldCart_ID#unittax">
+                                                            #variables.cartDisplayResult.fldTax#
+                                                        </span>
                                                     </span>
                                                 </div>
                                                 <div class="orderDetailsSpan mt-4">
                                                     Product Total Amount : <i class="fa-solid fa-indian-rupee-sign"></i>
-                                                    #cartDisplayResult.fldPrice + cartDisplayResult.fldTax#
+                                                    #variables.cartDisplayResult.fldPrice + variables.cartDisplayResult.fldTax#
                                                 </div>
                                             </div>	
                                         </div>
                                     </div>
                                     <div class="d-flex w-50 ms-5 mt-2 justify-content-between mb-3">
                                         <div>
-                                            <button class="prquanityIncrease" value="#cartProductDisplayResult.fldCart_ID#" onclick="reduceProductQuantity(this)">-</button>
-                                            <span class="prquanity" id="#cartProductDisplayResult.fldCart_ID#quantity">#cartProductDisplayResult.fldQuantity#</span>
-                                            <button class="prquanityIncrease" value="#cartProductDisplayResult.fldCart_ID#" id="addProductButton" onclick="addProductQuantity(this,#productQuantity#)">+</button>
+                                            <button class="prquanityIncrease" value="#variables.cartProductDisplayResult.fldCart_ID#" onclick="reduceProductQuantity(this)">-</button>
+                                            <span class="prquanity" id="#variables.cartProductDisplayResult.fldCart_ID#quantity">#variables.cartProductDisplayResult.fldQuantity#</span>
+                                            <button class="prquanityIncrease" value="#variables.cartProductDisplayResult.fldCart_ID#" id="addProductButton" onclick="addProductQuantity(this,#variables.productQuantity#)">+</button>
                                         </div>
-                                        <button value="#cartProductDisplayResult.fldCart_ID#" onclick="removeCart(this)" class="fontWeight">REMOVE</button>
+                                        <button value="#variables.cartProductDisplayResult.fldCart_ID#" onclick="removeCart(this)" class="fontWeight">REMOVE</button>
                                     </div>
                                 </div>
-                                <cfset quantityPrice = quantityPrice +  (cartDisplayResult.fldPrice* cartProductDisplayResult.fldQuantity)>
-                                <cfset quantityTax = quantityTax + (cartDisplayResult.fldTax * cartProductDisplayResult.fldQuantity)>
+                                <cfset quantityPrice = variables.quantityPrice + (variables.cartDisplayResult.fldPrice * variables.cartProductDisplayResult.fldQuantity)>
+                                <cfset quantityTax = variables.quantityTax + (variables.cartDisplayResult.fldTax * variables.cartProductDisplayResult.fldQuantity)>
                             </cfif>
                         </cfloop>
                     </cfloop>
                     <cfif productQuantity NEQ 0>
                         <div class="w-100 placeOrderDiv">
-                                <div class="placeOrderButton">PLACE ORDER</div>
+                                <div class="placeOrderButton" name="placeorder">
+                                    <a class="placeorderAnchor" href="./userOrderPage.cfm">PLACE ORDER</a>
+                                </div>
                         </div>
                         <cfelse>
                             <div class="d-flex justify-content-center">
@@ -88,16 +94,20 @@
                         <div class="detailedAmountInnerDiv">
                             <div class="d-flex justify-content-between px-4 pb-3 pt-2"> 
                                 <span>Total Price</span>
-                                <span id="totalprice">
+                                <span>
                                     <i class="fa-solid fa-indian-rupee-sign"></i>
-                                    #quantityPrice#
+                                    <span id="totalprice">
+                                        #quantityPrice#
+                                    </span>
                                 </span>
                             </div>
                             <div class="d-flex justify-content-between px-4 pb-3">
                                 <span>Total Tax</span>
-                                <span id="totaltax">
+                                <span>
                                     <i class="fa-solid fa-indian-rupee-sign"></i>
-                                    #quantityTax#</span>
+                                    <span id="totaltax">
+                                        #quantityTax#</span>
+                                    </span>
                                 </div>
                             <div class="d-flex justify-content-between px-4 pb-2"> 
                                 <span>Delivery Charges</span><span><i class="fa-solid fa-indian-rupee-sign"></i> 40</span> 
@@ -105,14 +115,16 @@
                         </div>				
                         <div class="d-flex justify-content-between mx-4 pb-4 pt-4 fs-6 fw-bold borderDotted"> 
                             <span>Total Amount</span> 
-                            <span id="totalamount">
+                            <span>
                                 <i class="fa-solid fa-indian-rupee-sign"></i>
-                                #quantityPrice + quantityTax + 40#
+                                <span id="totalamount">
+                                    #quantityPrice + quantityTax + 40#
+                                </span>
                             </span>
                         </div>
                     </div>
                 </cfif>
-            </div>	
+            </div>
         </cfoutput>
         <cfinclude  template="./footer.cfm">
         <script src="./Script/userPage.js"></script>

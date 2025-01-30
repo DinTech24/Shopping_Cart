@@ -10,29 +10,29 @@
     </head>
     <body>
         <cfoutput>
-            <cfset userCateObject = new Component.userComponent()>
-            <cfset subCategoryResult = userCateObject.listSubCategories()>
+            <cfset variables.userCateObject = new Component.userComponent()>
+            <cfset variables.subCategoryResult = variables.userCateObject.listSubCategories()>
             <cfif structKeyExists(form, "highSort")>
-                <cfset randomProductsResult = userCateObject.getRandomProducts(sort = form.highSort)>
-                <cfset subCategoryId = decrypt(url.subCategoryId,application.encryptionString,"AES","Base64")>
+                <cfset variables.randomProductsResult = variables.userCateObject.getRandomProducts(sort = form.highSort)>
+                <cfset variables.subCategoryId = decrypt(url.subCategoryId,application.encryptionString,"AES","Base64")>
                 <cfelseif structKeyExists(form, "lowSort")>
-                    <cfset randomProductsResult = userCateObject.getRandomProducts(sort = form.lowSort)>
-                    <cfset subCategoryId = decrypt(url.subCategoryId,application.encryptionString,"AES","Base64")>
+                    <cfset variables.randomProductsResult = variables.userCateObject.getRandomProducts(sort = form.lowSort)>
+                    <cfset variables.subCategoryId = decrypt(url.subCategoryId,application.encryptionString,"AES","Base64")>
                 <cfelseif structKeyExists(url, "searchKeyword")>
-                    <cfset randomProductsResult = userCateObject.getRandomProducts(
+                    <cfset variables.randomProductsResult = variables.userCateObject.getRandomProducts(
                         searchKeyword = url.searchKeyword,
                         sort = "true"
                     )>
                 <cfelse>
-                    <cfset randomProductsResult = userCateObject.getRandomProducts(sort="negative")>
-                    <cfset subCategoryId = decrypt(url.subCategoryId,application.encryptionString,"AES","Base64")>
+                    <cfset variables.randomProductsResult = variables.userCateObject.getRandomProducts(sort="negative")>
+                    <cfset variables.subCategoryId = decrypt(url.subCategoryId,application.encryptionString,"AES","Base64")>
             </cfif>
             <cfinclude  template="./userHeader.cfm">
             <cfif NOT structKeyExists(url, "searchKeyword")>
                 <cfloop query="subCategoryResult">
-                    <cfif subCategoryResult.fldSubCategory_ID EQ subCategoryId>
+                    <cfif variables.subCategoryResult.fldSubCategory_ID EQ variables.subCategoryId>
                         <div class="p-3 d-flex justify-content-between px-2">
-                            <h2>#subCategoryResult.fldSubcategoryName# - All Products</h2>
+                            <h2>#variables.subCategoryResult.fldSubcategoryName# - All Products</h2>
                             <form method="POST">
                                 <div class="d-flex">
                                     <div class="me-3">
@@ -74,7 +74,7 @@
                                                     <div class="text-center fw-bold">Select Range</div>
                                                     <input type="text" disabled id="maxVal" placeholder="MAX" class="selectRange form-control border-success">
                                                 </div>
-                                                <button type="button" class="btn btn-primary mt-2" onclick="getFilterResult(#subCategoryId#)">Show result</button>
+                                                <button type="button" class="btn btn-primary mt-2" onclick="getFilterResult(#variables.subCategoryId#)">Show result</button>
                                             </div>
                                         </div>
                                     </div>
@@ -84,7 +84,7 @@
                     </cfif>
                 </cfloop>
                 <cfelse>
-                    <cfif queryRecordCount(randomProductsResult)>
+                    <cfif queryRecordCount(variables.randomProductsResult)>
                             <h4 class="m-3">Results for your search "#url.searchKeyword#"</h4>
                         <cfelse>
                         <h4 class="m-3">No result based on your search "#url.searchKeyword#"</h4>
@@ -92,51 +92,56 @@
             </cfif>
             <div>
                 <div>
-                    <div class="randomProductsMainDiv initialDivHeight" id="randomProductsMainDivId">
-                        <cfset productsCount = 0>
+                    <div class="randomProductsMainDiv" id="randomProductsMainDivId">
+                        <cfset variables.productsCount = 0>
+                        <cfset variables.productsArray = []>
                         <cfloop query="randomProductsResult">
-                            <cfif structKeyExists(url, "subCategoryId")>
-                                <cfif randomProductsResult.fldSubCategoryId EQ subCategoryId>
-                                    <cfset productsCount = productsCount + 1>
+                            <cfif structKeyExists(url, "subCategoryId") AND variables.productsCount LT 12>
+                                <cfif variables.randomProductsResult.fldSubCategoryId EQ variables.subCategoryId>
+                                    <cfset variables.productsCount = variables.productsCount + 1>
                                     <div class="card randomProductCard" style="width: 13rem;">
-                                        <a href="./productPage.cfm?productId=#randomProductsResult.fldProduct_ID#">
-                                            <img src="../Assets/ProductImages/#randomProductsResult.fldImageFileName#" class="card-img-top randProductImage" alt="Product Image">
+                                        <a href="./productPage.cfm?productId=#variables.randomProductsResult.fldProduct_ID#">
+                                            <img src="../Assets/ProductImages/#variables.randomProductsResult.fldImageFileName#" class="card-img-top randProductImage" alt="Product Image">
                                         </a>
                                         <div class="card-body randProductbody">
-                                            <div class="card-text randProductName">#randomProductsResult.fldProductName#</div>
-                                            <div>#randomProductsResult.fldBrandName#</div>
+                                            <div class="card-text randProductName">#variables.randomProductsResult.fldProductName#</div>
+                                            <div>#variables.randomProductsResult.fldBrandName#</div>
                                             <div class="card-text randProductPrice">
                                                 <i class="fa-solid fa-indian-rupee-sign"></i>
-                                                #randomProductsResult.fldPrice + randomProductsResult.fldTax#
+                                                #variables.randomProductsResult.fldPrice + variables.randomProductsResult.fldTax#
                                             </div>
                                         </div>
                                     </div>
                                 </cfif>
-                                <cfelse>
-                                    <cfset productsCount = productsCount + 1>
+                                <cfelseif variables.productsCount LT 12>
+                                    <cfset variables.productsCount = variables.productsCount + 1>
                                     <div class="card randomProductCard" style="width: 13rem;">
-                                        <a href="./productPage.cfm?productId=#randomProductsResult.fldProduct_ID#">
-                                            <img src="../Assets/ProductImages/#randomProductsResult.fldImageFileName#" class="card-img-top randProductImage" alt="Product Image">
+                                        <a href="./productPage.cfm?productId=#variables.randomProductsResult.fldProduct_ID#">
+                                            <img src="../Assets/ProductImages/#variables.randomProductsResult.fldImageFileName#" class="card-img-top randProductImage" alt="Product Image">
                                         </a>
                                         <div class="card-body randProductbody">
-                                            <div class="card-text randProductName">#randomProductsResult.fldProductName#</div>
-                                            <div>#randomProductsResult.fldBrandName#</div>
+                                            <div class="card-text randProductName">#variables.randomProductsResult.fldProductName#</div>
+                                            <div>#variables.randomProductsResult.fldBrandName#</div>
                                             <div class="card-text randProductPrice">
                                                 <i class="fa-solid fa-indian-rupee-sign"></i>
-                                                #randomProductsResult.fldPrice + randomProductsResult.fldTax#
+                                                #variables.randomProductsResult.fldPrice + variables.randomProductsResult.fldTax#
                                             </div>
                                         </div>
                                     </div>
+                                <cfelse>
+                                    <cfset arrayAppend(variables.productsArray,randomProductsResult.fldProduct_ID)>
                             </cfif>
                         </cfloop>
+                        
                     </div>
                 </div>
             </div>
             <div class="text-center mb-3" id="viewMore">
-                <cfif productsCount GT 12>
-                    <button type="button" class="viewMoreButton" onclick="removeHeightClass()">
+                <cfif variables.productsCount EQ 12>
+                    <cfset variables.listData = arrayToList(variables.productsArray)>
+                    <button name="loadMoreProducts" onclick="loadAllProducts('#variables.listData#')" class="btn btn-secondary">
                         load more products
-                        <i class="fa-solid fa-sort-down"></i>
+                        <i class="fa-solid fa-circle-chevron-down"></i>
                     </button>
                 </cfif>
             </div>
