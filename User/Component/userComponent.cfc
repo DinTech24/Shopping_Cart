@@ -394,7 +394,7 @@
             <cfset local.flag = false>
         </cfif>
         <cfset local.pincodePattern = "/^[0-9]{6}$/">
-        <cfif NOT reFind(local.pincodePattern,'#arguments.addressStructure.pincode#')>
+        <cfif reFind(local.pincodePattern,arguments.addressStructure.pincode)>
             <cfset local.flag = false>
         </cfif>
         <cfreturn local.flag>
@@ -403,7 +403,6 @@
     <cffunction  name="saveAddress" retrunType="void" description="Add new addresses">
         <cfargument  name="addressStructure" required="true" type="struct">
         <cfset isAddressValid = validateAddress(addressStructure = addressStructure)>
-        <cfdump  var="#isAddressValid#">
         <cfif isAddressValid>
             <cfquery name="local.addAddressQuery">
                 INSERT INTO 
@@ -464,6 +463,45 @@
             WHERE
                 fldAddress_ID = <cfqueryparam value = '#arguments.addressId#' cfsqltype = "integer">
         </cfquery>
+    </cffunction>
+
+    <cffunction  name="placeOrder" description="Function to place order" returnType="void">
+        <cfargument name="orderStructure" type="struct">
+        <cfset cardDetails = structNew()>
+        <cfset cardDetails["cardNumber"] = "1111222233334444">
+        <cfset cardDetails["cardMonth"] = "12">
+        <cfset cardDetails["cardYear"] = "26">
+        <cfset cardDetails["cardCvv"] = "000">
+        <cfset flag = false>
+        <cfif 
+        arguments.orderStructure.cardNumberName NEQ cardDetails["cardNumber"]
+        AND arguments.orderStructure.cardNumberName NEQ cardDetails["cardMonth"]
+        AND arguments.orderStructure.cardNumberName NEQ cardDetails["cardYear"]
+        AND arguments.orderStructure.cardNumberName NEQ cardDetails["cardCvv"]>
+            <cfset flag = false>
+        </cfif>
+        <cfif flag EQ true>
+            <cfset generatedUUID = createUUID()>
+            <cfquery name="local.orderProduct">
+                INSERT INTO
+                    tblOrder(
+                        fldOrder_ID,
+                        fldUserId,
+                        fldAddressId,
+                        fldTotalPrice,
+                        fldTotalTax,
+                        fldCardPart
+                    )
+                VALUES(
+                    <cfqueryparam value = '#arguments.generatedUUID#' cfsqltype = "integer">,
+                    <cfqueryparam value = '#session.userId#' cfsqltype = "integer">,
+                    <cfqueryparam value = '#arguments.orderStructure.addressSelect#' cfsqltype = "integer">,
+                    <cfqueryparam value = '#arguments.orderStructure.productQuantity#' cfsqltype = "integer">,
+                    <cfqueryparam value = '#arguments.orderStructure.hiddenTotalTax#' cfsqltype = "integer">,
+                    <cfqueryparam value = '#arguments.orderStructure.hiddenTotalTax#' cfsqltype = "integer">
+                )
+            </cfquery>
+        </cfif>
     </cffunction>
 
     <cffunction  name="logoutUser" access="remote" returnType="void"  description="Logout user">

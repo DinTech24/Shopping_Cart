@@ -488,6 +488,51 @@ function loadAllProducts(productsIdArray){
     })
 }
 
+function verifyCard(cardData){
+    const cardDataArray = cardData.value.split(",")
+    var cardNumber = document.getElementById("cardNumberId").value;
+    var cardMonth = document.getElementById("cardMonthId").value;
+    var cardYear = document.getElementById("cardYearId").value;
+    var cardCvv = document.getElementById("cardCvvId").value;
+    var totalAmount = document.getElementById("totalAmount").innerHTML
+    var flag = true;
+    var error = ""
+    if(cardNumber !== cardDataArray[0]){
+        flag = false;
+        error = "Card Number is wrong"
+    }
+    if((cardMonth !== cardDataArray[1])&&(flag == true)){
+        flag = false;
+        error = "Validity month is wrong"
+    }
+    if((cardYear !== cardDataArray[2]&&(flag == true))){
+        flag = false;
+        error = "Validity year is wrong"
+    }
+    if((cardCvv !== cardDataArray[3]&&(flag == true))){
+        flag = false;
+        error = "Card CVV is wrong"
+    }
+    if(flag == true){
+        document.getElementById("cardWarningId").innerHTML = '<i class="fa-solid fa-check"></i> Verified'
+        document.getElementById("cardWarningId").classList.add("text-success");
+        document.getElementById("cardWarningId").classList.remove("text-danger");
+        document.getElementById("placeOrderButtonId").disabled = false;
+        document.getElementById("cardNumberId").readOnly  = true;
+        document.getElementById("cardMonthId").readOnly = true;
+        document.getElementById("cardYearId").readOnly = true;
+        document.getElementById("cardCvvId").readOnly = true;
+        document.getElementById("verifyButtonId").remove();
+        document.getElementById("paymentsAmount").innerHTML = "Rs."+ totalAmount;
+    }else{
+        document.getElementById("cardWarningId").innerHTML = '<i class="fa-solid fa-xmark"></i> Unverified'
+        document.getElementById("cardWarningId").classList.add("text-danger");
+        document.getElementById("cardWarningId").classList.remove("text-success");
+        document.getElementById("placeOrderButtonId").disabled = true;
+        alert(error)
+    }
+}
+
 function addBuyQuantity(){
     var totalprice = document.getElementById("totalprice").innerHTML;
     var totaltax = document.getElementById("totaltax").innerHTML;
@@ -516,8 +561,18 @@ function reduceBuyQuantity(){
     document.getElementById("totaltax").innerHTML = Number(totaltax) - Number(unitTax);
     document.getElementById("totalAmount").innerHTML = Number(totalAmount) - Number(unitPrice) - Number(unitTax)
     if(productQuantity == 1){
-            document.getElementById("reduceQuantity").disabled = true;
+        document.getElementById("reduceQuantity").disabled = true;
     }
+}
+
+function placeOrderFunction(){
+    var totalAmount = document.getElementById("totalprice").innerHTML;
+    var totalTax = document.getElementById("totaltax").innerHTML;
+    document.getElementById("placeOrderButtonId").value = totalAmount;
+    var productQuantity = document.getElementById("ProductQuantitySpan").innerHTML;
+    document.getElementById("addProductButton").value = Number(productQuantity);
+    document.getElementById("hiddenTax").value = Number(totalTax)
+    return true;
 }
 
 window.addEventListener('pageshow', (event) => {

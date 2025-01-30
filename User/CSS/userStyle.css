@@ -569,11 +569,19 @@ body{
 	color:white;
 	margin:1vw 1vw 1vw auto;
 	font-weight:600;
+    border: transparent;
+}
+
+#placeOrderButtonId{
+    padding:1vw 1vw;
 }
 
 .placeorderAnchor{
     background-color:#307197;
     text-decoration: none;
+    color: white;
+}
+.placeorderAnchor:hover{
     color: white;
 }
 
@@ -683,12 +691,113 @@ body{
 }
 
 .deliveryAddressDiv{
-    font-size: 24px;
+    font-size: 18px;
     padding-left: 20px;
     padding: 15px;
     border-bottom: 1px solid grey;
+    font-weight: bold;
 }
 
 .addressSubDiv{
     border-bottom: 1px solid rgb(175, 175, 175);
+}
+
+.CardMainDiv{
+    width: 24vw;
+    height: 35vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.CardInnerDiv{
+    width: 22vw;
+    height: 30vh;
+    border: transparent;
+    border-radius: 10px;
+    background-image: url("../../Assets/SiteImages/CardDesign.PNG");
+    background-size: cover;
+}
+
+.cardNumberDiv{
+    width: 88%;
+    border: 1px solid rgb(177, 177, 177);
+    height: 7vh;
+    margin: 1.5vw;
+    margin-top: 3vh;
+    background-color: transparent;
+    color: white;
+    font-size: 24px;
+}
+
+.cardNumberDiv::placeholder{
+    color: black;
+    font-size: 14px;
+}
+
+.cardCvv::placeholder{
+    color: black;
+    font-size: 14px;
+}
+
+.cardValidDate::placeholder{
+    color: black;
+    font-size: 14px;
+}
+.cardBottomDiv{
+    margin-top: 10vh;
+    display: flex;
+    justify-content: space-between;
+    background-color: transparent;
+}
+
+.validUpto{
+    width: 7.2vw;
+    border: 1px solid rgb(177, 177, 177);
+    display: flex;
+    background-color: transparent;
+}
+.cardValidDate{
+    width: 3vw;
+    border: transparent;
+    background-color: transparent;
+    color: white;
+}
+
+.cardCvv{
+    border: 1px solid rgb(177, 177, 177);
+    width: 30%;
+    background-color: transparent;
+    color: white;
+}
+
+.cardMidSpan{
+    background-color: transparent;
+}
+
+.cardCvv:focus{
+    outline: none;
+}
+.cardNumberDiv:focus{
+    outline: none;
+}
+.cardValidDate:focus{
+    outline: none;
+}
+.cardWarning{
+    font-size:14px;
+    font-family:'Times New Roman', Times, serif;
+    font-weight: bold;
+}
+
+.enterCardDiv{
+    font-size: 15px;
+    margin-left: 1vw;
+    margin-top: 3vh;
+    color: rgb(148, 146, 146);
+    font-weight: bold;
+}
+
+#paymentsAmount{
+    background: transparent;
 }
