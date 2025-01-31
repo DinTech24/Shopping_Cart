@@ -66,7 +66,7 @@
         <cfreturn local.getUserQuery>
     </cffunction>
 
-    <cffunction  name="editUserProfile" returnType="boolean" returnFormat="JSON"  access="remote">
+    <cffunction  name="editUserProfile" returnType="boolean" returnFormat="JSON" access="remote">
         <cfargument  name="userId">
         <cfargument  name="userFirstName">
         <cfargument  name="userLastName">
@@ -95,6 +95,8 @@
                         WHERE
                             flduser_ID = <cfqueryparam value = '#arguments.userId#' cfsqltype = "integer">
                     </cfquery>
+                    <cfset session.username = arguments.userFirstName>
+                    <cfset session.email = arguments.userEmail>
                     <cfreturn true>
                     <cfelse>
                         <cfreturn false>
@@ -138,10 +140,10 @@
             <cfif queryRecordCount(local.checkUser)>
                 <cfset session.userLogin = true>
                 <cfset session.userId = local.checkUser.fldUser_ID>
-                <cfset cartData = displayCart()>
-                <cfset session.productQuantity = queryRecordCount(cartData)>
                 <cfset session.username = local.checkUser.fldFirstName>
                 <cfset session.email = local.checkUser.fldEmail>
+                <cfset cartData = displayCart()>
+                <cfset session.productQuantity = queryRecordCount(cartData)>
                 <cfif jscall EQ true>
                     <cfset local.loginExcepetion["Message"] = "true">
                     <cfelseif structKeyExists(arguments, "productId") AND structKeyExists(url, "buyNow")>
@@ -467,22 +469,23 @@
 
     <cffunction  name="placeOrder" description="Function to place order" returnType="void">
         <cfargument name="orderStructure" type="struct">
-        <cfset cardDetails = structNew()>
-        <cfset cardDetails["cardNumber"] = "1111222233334444">
-        <cfset cardDetails["cardMonth"] = "12">
-        <cfset cardDetails["cardYear"] = "26">
-        <cfset cardDetails["cardCvv"] = "000">
-        <cfset flag = false>
+        <cfset local.cardDetails = structNew()>
+        <cfset local.cardDetails["cardNumber"] = "1111222233334444">
+        <cfset local.cardDetails["cardMonth"] = "12">
+        <cfset local.cardDetails["cardYear"] = "26">
+        <cfset local.cardDetails["cardCvv"] = "000">
+        <cfset local.cardPart = right(local.cardDetails["cardNumber"],4)>
+        <cfset local.flag = true>
         <cfif 
-        arguments.orderStructure.cardNumberName NEQ cardDetails["cardNumber"]
-        AND arguments.orderStructure.cardNumberName NEQ cardDetails["cardMonth"]
-        AND arguments.orderStructure.cardNumberName NEQ cardDetails["cardYear"]
-        AND arguments.orderStructure.cardNumberName NEQ cardDetails["cardCvv"]>
-            <cfset flag = false>
+        arguments.orderStructure.cardNumberName NEQ local.cardDetails["cardNumber"]
+        OR arguments.orderStructure.cardMonthName NEQ local.cardDetails["cardMonth"]
+        OR arguments.orderStructure.cardYearName NEQ local.cardDetails["cardYear"]
+        OR arguments.orderStructure.cardcvvName NEQ local.cardDetails["cardCvv"]>
+            <cfset local.flag = false>
         </cfif>
-        <cfif flag EQ true>
-            <cfset generatedUUID = createUUID()>
-            <cfquery name="local.orderProduct">
+        <cfif local.flag EQ true>
+            <cfset local.generatedUUID = createUUID()>
+            <cfquery name="local.insertOrderQuery">
                 INSERT INTO
                     tblOrder(
                         fldOrder_ID,
@@ -493,12 +496,29 @@
                         fldCardPart
                     )
                 VALUES(
-                    <cfqueryparam value = '#arguments.generatedUUID#' cfsqltype = "integer">,
+                    <cfqueryparam value = '#local.generatedUUID#' cfsqltype = "varchar">,
                     <cfqueryparam value = '#session.userId#' cfsqltype = "integer">,
                     <cfqueryparam value = '#arguments.orderStructure.addressSelect#' cfsqltype = "integer">,
+                    <cfqueryparam value = '#arguments.orderStructure.hiddenTotalPrice#' cfsqltype = "decimal">,
+                    <cfqueryparam value = '#arguments.orderStructure.hiddenTotalTax#' cfsqltype = "decimal">,
+                    <cfqueryparam value = '#local.cardPart#' cfsqltype = "integer">
+                )
+            </cfquery>
+            <cfquery name="local.insertOrderItemQuery">
+                INSERT INTO
+                    tblOrderedItems(
+                        fldOrderId,
+                        fldProductId,
+                        fldQuantity,
+                        fldUnitPrice,
+                        fldUnitTax
+                    )
+                VALUES(
+                    <cfqueryparam value = '#local.generatedUUID#' cfsqltype = "varchar">,
+                    <cfqueryparam value = '#arguments.orderStructure.productIdHidden#' cfsqltype = "integer">,
                     <cfqueryparam value = '#arguments.orderStructure.productQuantity#' cfsqltype = "integer">,
-                    <cfqueryparam value = '#arguments.orderStructure.hiddenTotalTax#' cfsqltype = "integer">,
-                    <cfqueryparam value = '#arguments.orderStructure.hiddenTotalTax#' cfsqltype = "integer">
+                    <cfqueryparam value = '#arguments.orderStructure.unitPriceHidden#' cfsqltype = "decimal">,
+                    <cfqueryparam value = '#arguments.orderStructure.unitTaxHidden#' cfsqltype = "decimal">
                 )
             </cfquery>
         </cfif>

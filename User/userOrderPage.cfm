@@ -105,7 +105,7 @@
                                 </div>
                                 </cfloop>
                                 <div class="d-flex justify-content-center my-2">
-                                    <button class="btn btn-outline-primary" onclick="clearModal()" data-bs-toggle="modal" data-bs-target="##staticBackdropAddress">Add new address +</button>
+                                    <button class="btn btn-outline-primary" onclick="clearModal()" type="button" data-bs-toggle="modal" data-bs-target="##staticBackdropAddress">Add new address +</button>
                                 </div>
                             </div>
                         </div>
@@ -119,6 +119,7 @@
                                         <div class="orderDetailsDiv pt-4">
                                             <a href="./productPage.cfm?productId=#productResult.fldProduct_ID#">
                                                 <img class="cartImage" src="../Assets/ProductImages/#productResult.fldImageFileName#" alt="">
+                                                <input type="hidden" name="productIdHidden" value="#productResult.fldProduct_ID#">
                                             </a>
                                             <div class="mt-2 ms-5">
                                                 <div class="productNameSize">#productResult.fldProductName#</div>
@@ -132,6 +133,7 @@
                                                                 #productResult.fldPrice#
                                                             </span>
                                                         </span>
+                                                        <input name="unitPriceHidden" type="hidden" value="#productResult.fldPrice#">
                                                     </div>
                                                     <div class="orderDetailsSpan3 mt-1">
                                                         Product Tax : 
@@ -140,8 +142,8 @@
                                                             <span id="buyNowTax">
                                                                 #productResult.fldTax#
                                                             </span>
-                                                            
                                                         </span>
+                                                        <input name="unitTaxHidden" type="hidden" value="#productResult.fldTax#">
                                                     </div>
                                                     <div class="orderDetailsSpan mt-4">
                                                         Product Total Amount : <i class="fa-solid fa-indian-rupee-sign"></i>
@@ -151,12 +153,12 @@
                                             </div>
                                         </div>
                                         <div class="d-flex w-50 ms-4 mt-2 justify-content-between mb-3">
-                                                <div>
-                                                    <button class="prquanityIncrease" name="productId" value="#productResult.fldProduct_ID#" disabled id="reduceQuantity" onclick="reduceBuyQuantity()">-</button>
-                                                    <span class="prquanity" id="ProductQuantitySpan">1</span>
-                                                    <button class="prquanityIncrease" name="productQuantity"  id="addProductButton" onclick="addBuyQuantity()">+</button>
-                                                </div>
+                                            <div>
+                                                <button class="prquanityIncrease" type="button" id="reduceQuantity" disabled onclick="reduceBuyQuantity()">-</button>
+                                                <span class="prquanity" id="ProductQuantitySpan">1</span>
+                                                <button  name="productIdSaved"  value="#productResult.fldProduct_ID#" class="prquanityIncrease" type="button"  id="addProductButton" onclick="addBuyQuantity()">+</button>
                                             </div>
+                                        </div>
                                     </div>
                                     <cfelse>
                                         <cfloop query="cartDisplayResult">
@@ -177,6 +179,7 @@
                                                                             <i class="fa-solid fa-indian-rupee-sign"></i>
                                                                             #productResult.fldPrice#
                                                                         </span>
+
                                                                     </div>
                                                                     <div class="orderDetailsSpan3 mt-1">
                                                                         Product Tax : 
@@ -226,12 +229,12 @@
                                                         <span class="cardMidSpan">|</span>
                                                         <input class="cardValidDate" name="cardYearName" id="cardYearId" maxlength="2" type="text" placeholder="YY">
                                                     </div>
-                                                    <input  name="cardCvvName" class="cardCvv" id="cardCvvId" maxlength="3" type="text" placeholder="CVV">
+                                                    <input  name="cardCvvName" class="cardCvv" id="cardCvvId" maxlength="3" type="password" placeholder="CVV">
                                                 </div>
                                             </div>
                                         </div>
                                     <div class="d-flex justify-content-center align-items-center">
-                                        <button onclick="verifyCard(this)" id="verifyButtonId" class="btn btn-sm btn-outline-danger" value='#variables.savedCard#'>
+                                        <button type="button" onclick="verifyCard(this)" id="verifyButtonId" class="btn btn-sm btn-outline-danger" value='#variables.savedCard#'>
                                             Verify Card
                                         </button>
                                         <div id="cardWarningId" class="text-center cardWarning ms-2"></div>
@@ -244,7 +247,9 @@
                                 CONTINUE TO PAY
                                 <span id="paymentsAmount"></span>
                             </button>
-                            <inpput type="hidden" id="hiddenTax" name="hiddenTotalTax">
+                            <input type="hidden" id="hiddenTax" name="hiddenTotalTax">
+                            <input type="hidden" id="hiddenPrice" name="hiddenTotalPrice">
+                            <input type="hidden" id="productQuanityHidden" name="productQuantity">
                         </div>
                     </div>
                     <div class="productPrice">
@@ -295,10 +300,10 @@
                         </div>
                     </div>
                 </div>
-            </form>
             <cfif structKeyExists(form,"orderProduct") AND structKeyExists(url,"productId")>
                 <cfset orderResult = userOrderObject.placeOrder(orderStructure = form)>
             </cfif> 
+            </form>
         </cfoutput>
         <cfinclude  template="./footer.cfm">
         <script src="./Script/userPage.js"></script>

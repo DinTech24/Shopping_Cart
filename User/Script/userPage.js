@@ -570,8 +570,9 @@ function placeOrderFunction(){
     var totalTax = document.getElementById("totaltax").innerHTML;
     document.getElementById("placeOrderButtonId").value = totalAmount;
     var productQuantity = document.getElementById("ProductQuantitySpan").innerHTML;
-    document.getElementById("addProductButton").value = Number(productQuantity);
+    document.getElementById("productQuanityHidden").value = Number(productQuantity);
     document.getElementById("hiddenTax").value = Number(totalTax)
+    document.getElementById("hiddenPrice").value = Number(totalAmount)
     return true;
 }
 
@@ -580,6 +581,13 @@ window.addEventListener('pageshow', (event) => {
       window.location.reload();
     }
 });
+
+function clearEditModal(){
+    document.getElementById("userFirstNameWarning").innerHTML = "";
+    document.getElementById("userEmailWarning").innerHTML = "";
+    document.getElementById("userPhoneWarning").innerHTML = "";
+
+}
 
 if ( window.history.replaceState ) {
     window.history.replaceState( null, null, window.location.href );

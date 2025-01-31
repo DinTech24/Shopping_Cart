@@ -10,7 +10,7 @@
     </head>
     <body>
         <cfoutput>
-            <cfset adminLoginObject = new Component.adminComponent()>
+            <cfset variables.adminLoginObject = new Component.adminComponent()>
             <div class="adminNavBar align-items-center px-3 py-2">
                 <div>
                     <span class="navHead">ShoppingCart</span>
@@ -30,8 +30,8 @@
             </div>
             <div>
                 <cfif structKeyExists(form,"adminLoginButton")>
-                    <cfset adminLoginResult = adminLoginObject.adminLogin(form.adminUser,form.adminPass)>
-                    <div class="text-danger text-center fw-bold">#adminLoginResult["exception"]#</div>
+                    <cfset variables.adminLoginResult = variables.adminLoginObject.adminLogin(form.adminUser,form.adminPass)>
+                    <div class="text-danger text-center fw-bold">#variables.adminLoginResult["exception"]#</div>
                 </cfif>
             </div>
         </cfoutput>

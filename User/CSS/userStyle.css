@@ -678,7 +678,7 @@ body{
 }
 
 .addressCard{
-    width: 14rem;
+    width: 15rem;
 }
 
 .modal-header{
@@ -687,7 +687,6 @@ body{
 
 .addressCard *{
     font-size: 15px;
-    font-family: Times;
 }
 
 .deliveryAddressDiv{

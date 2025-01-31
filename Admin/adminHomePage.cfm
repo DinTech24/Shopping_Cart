@@ -10,7 +10,7 @@
     </head>
     <body>
         <cfoutput>
-            <cfset adminHomeObject = new Component.adminComponent()>
+            <cfset variables.adminHomeObject = new Component.adminComponent()>
             <!--- Modal --->
             <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <form method="POST" id="adminProductForm">
@@ -47,20 +47,20 @@
                         <button class="categoriesAdd" data-bs-toggle="modal" onclick="createCategory()" data-bs-target="##staticBackdrop">Add +</button>
                     </div>
                     <div>
-                        <cfset categoriesResult = adminHomeObject.getCategories()>
-                            <cfloop query="categoriesResult">
+                        <cfset variables.categoriesResult = variables.adminHomeObject.getCategories()>
+                            <cfloop query="variables.categoriesResult">
                                 <div class="eachCategory mb-2">
                                     <div>
-                                        <span id="categoryEdit#categoriesResult.fldCategory_ID#">#categoriesResult.fldCategoryName#</span>
+                                        <span id="categoryEdit#variables.categoriesResult.fldCategory_ID#">#variables.categoriesResult.fldCategoryName#</span>
                                     </div>
                                     <div>
-                                        <button class="categoriesButton" value="#categoriesResult.fldCategory_ID#" onclick="editCategory(this)" data-bs-toggle="modal" data-bs-target="##staticBackdrop">
+                                        <button class="categoriesButton" value="#variables.categoriesResult.fldCategory_ID#" onclick="editCategory(this)" data-bs-toggle="modal" data-bs-target="##staticBackdrop">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </button>
-                                        <button class="categoriesButton" value="#categoriesResult.fldCategory_ID#" onclick="deleteCategory(this)">
+                                        <button class="categoriesButton" value="#variables.categoriesResult.fldCategory_ID#" onclick="deleteCategory(this)">
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
-                                        <a class="categoriesButton toolti px-2" href="./adminHomeSubcategory.cfm?categoryId=#categoriesResult.fldCategory_ID#">
+                                        <a class="categoriesButton toolti px-2" href="./adminHomeSubcategory.cfm?categoryId=#variables.categoriesResult.fldCategory_ID#">
                                             <i class="fa-solid fa-chevron-right"></i>
                                             <span class="tooltiptext">Go to Sub-category</span>
                                         </a>

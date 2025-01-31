@@ -13,39 +13,41 @@
             <cfset userProfileObject = new Component.userComponent()>
             <cfset userResult = userProfileObject.isUserExist(userId = session.userId)>
             <div class="modal fade" id="staticBackdropProfile" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabelProfile" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="staticBackdropLabelProfile">Edit user profile</h5>
-                        </div>
-                        <div class="modal-body">
-                            <div>
-                                <div class="addressLabel">Enter your first name</div>
-                                <input value='#userResult.fldFirstName#' name="firstName" id="userFirstNameId" class="inputStyleNew" type="text">
-                                <div id="userFirstNameWarning" class="registerWarning"></div>
+                <form>
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabelProfile">Edit user profile</h5>
                             </div>
-                            <div>
-                                <div class="addressLabel">Enter your last name</div>
-                                <input value='#userResult.fldLastName#' name="lastName" id="userLastNameId" class="inputStyleNew" type="text">
-                                <div id="userLastNameWarning" class="registerWarning"></div>
+                            <div class="modal-body">
+                                <div>
+                                    <div class="addressLabel">Enter your first name</div>
+                                    <input value='#userResult.fldFirstName#' name="firstName" id="userFirstNameId" class="inputStyleNew" type="text">
+                                    <div id="userFirstNameWarning" class="registerWarning"></div>
+                                </div>
+                                <div>
+                                    <div class="addressLabel">Enter your last name</div>
+                                    <input value='#userResult.fldLastName#' name="lastName" id="userLastNameId" class="inputStyleNew" type="text">
+                                    <div id="userLastNameWarning" class="registerWarning"></div>
+                                </div>
+                                <div>
+                                    <div class="addressLabel">Enter emailId</div>
+                                    <input value="#userResult.fldEmail#" name="lastName" id="userEmailId" class="inputStyleNew" type="text">
+                                    <div id="userEmailWarning" class="registerWarning"></div>
+                                </div>
+                                <div>
+                                    <div class="addressLabel">Enter phone number</div>
+                                    <input value="#userResult.fldPhone#" name="address1" id="userPhoneId" class="inputStyleNew" type="text">
+                                    <div id="userPhoneWarning" class="registerWarning"></div>
+                                </div>
                             </div>
-                            <div>
-                                <div class="addressLabel">Enter emailId</div>
-                                <input value="#userResult.fldEmail#" name="lastName" id="userEmailId" class="inputStyleNew" type="text">
-                                <div id="userEmailWarning" class="registerWarning"></div>
+                            <div class="modal-footer">
+                                <button type="reset" id="profileModalClose" class="btn btn-secondary py-2" data-bs-dismiss="modal">Close</button>
+                                <button onclick="editUserProfile(#session.userId#)" type="button" class="accessButton py-2">Save Changes</button>
                             </div>
-                            <div>
-                                <div class="addressLabel">Enter phone number</div>
-                                <input value="#userResult.fldPhone#" name="address1" id="userPhoneId" class="inputStyleNew" type="text">
-                                <div id="userPhoneWarning" class="registerWarning"></div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" id="profileModalClose" class="btn btn-secondary py-2" data-bs-dismiss="modal">Close</button>
-                            <button onclick="editUserProfile(#session.userId#)" type="button" class="accessButton py-2">Save Changes</button>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
             <div class="modal fade" id="staticBackdropAddress" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <form method="POST" id="userAddressForm">
@@ -116,7 +118,7 @@
                     <div id="userDataName">#userResult.fldFirstName &" "& userResult.fldLastName#</div>
                     <div id="userDataEmail">#userResult.fldEmail#</div>
                     <div id="userDataPhone">#userResult.fldPhone#</div>
-                    <button data-bs-toggle="modal" data-bs-target="##staticBackdropProfile" class="w-100 btn btn-success">Edit Profile</button>
+                    <button data-bs-toggle="modal" onclick="clearEditModal()" data-bs-target="##staticBackdropProfile" class="w-100 btn btn-success">Edit Profile</button>
                 </div>
             </div>
             <div class="d-flex justify-content-between mt-5 mx-3">
@@ -125,21 +127,20 @@
             </div>
             <div class="addressesDiv">
                 <cfloop query="userAddressResult">
-                    <div class="card addressCard border border-primary m-3" id="#userAddressResult.fldAddress_ID#address">
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">Name : #userAddressResult.fldFirstName &" "&userAddressResult.fldLastName#</li>
-                            <li class="list-group-item">Line 1 : #userAddressResult.fldAddressLine1 #</li>
-                            <cfif userAddressResult.fldAddressLine2 NEQ "">
-                                <li class="list-group-item">Line 2 : #userAddressResult.fldAddressLine2#</li>
-                            </cfif>
-                            <li class="list-group-item">City : #userAddressResult.fldCity#</li>
-                            <li class="list-group-item">State : #userAddressResult.fldState#</li>
-                            <li class="list-group-item">Pincode : #userAddressResult.fldPincode#</li>
-                            <li class="list-group-item">Phone : #userAddressResult.fldPhoneNumber#</li>
-                            <li class="list-group-item">
+                    <div class="card addressCard border border-secondary m-3" id="#userAddressResult.fldAddress_ID#address">
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item d-grid">
+                                <div>#userAddressResult.fldFirstName &" "&userAddressResult.fldLastName#</div>
+                                <div>#userAddressResult.fldAddressLine1#</div>
+                                <div>#userAddressResult.fldAddressLine2#</div>
+                                <div>#userAddressResult.fldCity#</div>
+                                <div>#userAddressResult.fldState# - #userAddressResult.fldPincode#</div>
+                                <div>#userAddressResult.fldPhoneNumber#</div>
+                            </div>
+                            <div class="list-group-item">
                                 <button class="btn btn-danger w-100"onclick="removeAddress(this)" value="#userAddressResult.fldAddress_ID#">REMOVE</button>
-                            </li>
-                        </ul>
+                            </div>
+                        </div>
                     </div>
                 </cfloop>
             </div>

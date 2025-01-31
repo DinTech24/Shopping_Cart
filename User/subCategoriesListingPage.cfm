@@ -140,7 +140,7 @@
                 <cfif variables.productsCount EQ 12>
                     <cfset variables.listData = arrayToList(variables.productsArray)>
                     <button name="loadMoreProducts" onclick="loadAllProducts('#variables.listData#')" class="btn btn-secondary">
-                        load more products
+                        Load More
                         <i class="fa-solid fa-circle-chevron-down"></i>
                     </button>
                 </cfif>

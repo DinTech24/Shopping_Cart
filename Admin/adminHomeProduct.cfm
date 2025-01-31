@@ -10,19 +10,19 @@
     </head>
     <body>
         <cfoutput>
-            <cfset adminProductObject = new Component.adminComponent()>
-            <cfset getCategory = adminProductObject.getCategories()>
-            <cfset getSubCategory = adminProductObject.listAllSubcategories(categoryId = url.categoryId)>
-            <cfset getBrandsData = adminProductObject.getBrands()>
-            <cfset createErrorVar = true>
+            <cfset variables.adminProductObject = new Component.adminComponent()>
+            <cfset variables.getCategory = variables.adminProductObject.getCategories()>
+            <cfset variables.getSubCategory = variables.adminProductObject.listAllSubcategories(categoryId = url.categoryId)>
+            <cfset variables.getBrandsData = variables.adminProductObject.getBrands()>
+            <cfset variables.createErrorVar = true>
             <cfif structKeyExists(form, "productSubmit")>
-                <cfset insertResult = adminProductObject.insertProduct(dataStructure = form)>
-                <cfset createErrorVar = insertResult>
+                <cfset variables.insertResult = variables.adminProductObject.insertProduct(dataStructure = form)>
+                <cfset variables.createErrorVar = variables.insertResult>
             </cfif>
             <cfif structKeyExists(form, "productEdit")>
-                <cfset adminProductObject.updateProduct(editDataStructure = form)>
+                <cfset variables.adminProductObject.updateProduct(editDataStructure = form)>
             </cfif>
-            <cfset getProductData = adminProductObject.getProducts(subCategoryId = url.subCategoryId)>
+            <cfset variables.getProductData = variables.adminProductObject.getProducts(subCategoryId = url.subCategoryId)>
             <div class="modal fade" id="staticProductImageModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <form method="POST" >
                     <div class="modal-dialog">
@@ -66,8 +66,8 @@
                                     <label>Category Name</label>
                                     <select required name="categoryname" id="categoriesSelect" onChange="getSubCategoriesFunction()" id="categoryName">
                                         <cfloop query="getCategory">
-                                            <option id="#getCategory.fldCategory_ID#cate" value="#getCategory.fldCategory_ID#">
-                                                #getCategory.fldCategoryName#
+                                            <option id="#variables.getCategory.fldCategory_ID#cate" value="#variables.getCategory.fldCategory_ID#">
+                                                #variables.getCategory.fldCategoryName#
                                             </option>
                                         </cfloop>
                                     </select>
@@ -75,8 +75,8 @@
                                 <div class="productData">
                                     <label>SubCategory Name</label>
                                     <select name="subcategoryname" required id="subcategoriesSelect">
-                                        <cfloop collection="#getSubCategory#" item="dataItem">
-                                            <option value="#dataItem#" id="#dataItem#subcate">#getSubCategory[dataItem]#</option>
+                                        <cfloop collection="#variables.getSubCategory#" item="dataItem">
+                                            <option value="#variables.dataItem#" id="#variables.dataItem#subcate">#variables.getSubCategory[dataItem]#</option>
                                         </cfloop>
                                     </select>
                                 </div>
@@ -87,8 +87,8 @@
                                 <div class="productData">
                                     <label>Product Brand</label>
                                     <select name="brandname" required id="selectBrandId">
-                                        <cfloop query="#getBrandsData#">
-                                            <option value="#getBrandsData.fldBrand_ID#" id="#getBrandsData.fldBrand_ID#brand">#getBrandsData.fldBrandName#</option>
+                                        <cfloop query="#variables.getBrandsData#">
+                                            <option value="#variables.getBrandsData.fldBrand_ID#" id="#variables.getBrandsData.fldBrand_ID#brand">#variables.getBrandsData.fldBrandName#</option>
                                         </cfloop>
                                     </select>
                                 </div>
@@ -134,29 +134,29 @@
                     <div class="my-2">
                         <span>Products Page</span>
                         <button class="categoriesAdd" onclick="openProductModal(#url.categoryId#,#url.subCategoryId#)" data-bs-toggle="modal" data-bs-target="##staticBackdropModal">Add +</button>
-                        <cfif createErrorVar EQ false>
+                        <cfif variables.createErrorVar EQ false>
                             <span class="text-danger ms-2 fw-bold">Cannot insert product with same name</span>
                             <cfelse>
                         </cfif>
                     </div>
                     <div class="productsDivision">
-                        <cfloop query="getProductData">
-                            <div class="eachCategory mb-3" id="#getProductData.fldProduct_ID#product">
+                        <cfloop query="variables.getProductData">
+                            <div class="eachCategory mb-3" id="#variables.getProductData.fldProduct_ID#product">
                                 <div>
-                                    <div class="productName">#getProductData.fldProductName#</div>
-                                    <div class="productBrand">#getProductData.fldBrandName#</div>
-                                    <div class="productPrice">#getProductData.fldPrice#</div>
+                                    <div class="productName">#variables.getProductData.fldProductName#</div>
+                                    <div class="productBrand">#variables.getProductData.fldBrandName#</div>
+                                    <div class="productPrice">#variables.getProductData.fldPrice#</div>
                                 </div>
                                 <div class="imagePoint">
-                                    <button class="carousalimageButton " onclick="addcarousalImage(this)" value="#getProductData.fldProduct_ID#">
-                                        <img height="100"   src="../Assets/ProductImages/#getProductData.fldImageFileName#" alt="ProductImage" data-bs-toggle="modal" data-bs-target="##staticProductImageModal">
+                                    <button class="carousalimageButton " onclick="addcarousalImage(this)" value="#variables.getProductData.fldProduct_ID#">
+                                        <img height="100"   src="../Assets/ProductImages/#variables.getProductData.fldImageFileName#" alt="ProductImage" data-bs-toggle="modal" data-bs-target="##staticProductImageModal">
                                     </button>
                                 </div>
                                 <div>
-                                    <button value="#getProductData.fldProduct_ID#" class="categoriesButton" onclick="updateProductFunction(this,#url.categoryId#,#url.subCategoryId#)" data-bs-toggle="modal" data-bs-target="##staticBackdropModal">
+                                    <button value="#variables.getProductData.fldProduct_ID#" class="categoriesButton" onclick="updateProductFunction(this,#url.categoryId#,#url.subCategoryId#)" data-bs-toggle="modal" data-bs-target="##staticBackdropModal">
                                         <i class="fa-solid fa-pen-to-square"></i>
                                     </button>
-                                    <button value="#getProductData.fldProduct_ID#" class="categoriesButton" onclick="deleteProduct(this)"><i class="fa-solid fa-trash"></i></button>
+                                    <button value="#variables.getProductData.fldProduct_ID#" class="categoriesButton" onclick="deleteProduct(this)"><i class="fa-solid fa-trash"></i></button>
                                 </div>
                             </div>
                         </cfloop>

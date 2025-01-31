@@ -1,13 +1,13 @@
 <cfcomponent>
 
-    <cffunction  name="adminLogin" returntype="struct">
-        <cfargument  name="adminUsername">
-        <cfargument  name="adminPassword">
-        <cfset exceptionStruct = structNew()>
+    <cffunction name="adminLogin" returntype="struct" description="Function to login admin">
+        <cfargument  name="adminUsername" type="string">
+        <cfargument  name="adminPassword" type="string">
+        <cfset local.exceptionStruct = structNew()>
         <cfif trim(arguments.adminUsername) EQ "" OR trim(arguments.adminPassword)  EQ "">
-            <cfset exceptionStruct["exception"] = "Enter all values to Proceed">
+            <cfset local.exceptionStruct["exception"] = "Enter all values to Proceed">
         </cfif>
-        <cfquery name="local.loginAdminQuery" datasource="myData">
+        <cfquery name="local.loginAdminQuery">
             SELECT 
                 fldFirstName,
                 fldUser_ID,
@@ -34,15 +34,15 @@
                 <cfset session.email = local.loginAdminQuery.fldEmail>
                 <cflocation  url="./adminHomePage.cfm">
                 <cfelse>
-                    <cfset exceptionStruct["exception"] = "Entered Password is wrong">
+                    <cfset local.exceptionStruct["exception"] = "Entered Password is wrong">
             </cfif>
             <cfelse>
-                <cfset exceptionStruct["exception"] = "Entered EmailId or PhoneNumber is wrong">
+                <cfset local.exceptionStruct["exception"] = "Entered EmailId or PhoneNumber is wrong">
         </cfif>
-        <cfreturn exceptionStruct>
+        <cfreturn local.exceptionStruct>
     </cffunction>
 
-    <cffunction  name="getCategories" returnType="query">
+    <cffunction  name="getCategories" returnType="query" description="Function to get category details">
         <cfquery name="local.getcategoriesQuery">
             SELECT fldCategoryName,fldCategory_ID
             FROM tblCategory
@@ -54,15 +54,15 @@
         <cfreturn local.getcategoriesQuery>
     </cffunction>
 
-    <cffunction  name="insertCategories" access="remote" returnType="boolean" returnFormat="JSON">
-        <cfargument name="newCategory">
-        <cfquery name="local.findSameCategory">
+    <cffunction  name="insertCategories" access="remote" returnType="boolean" returnFormat="JSON"  description="Function to insert Categories">
+        <cfargument name="newCategory" type="string">
+        <cfquery name="local.findSameCategoryQuery">
             SELECT fldcategoryName
             FROM tblCategory
             WHERE fldcategoryName = <cfqueryparam value = '#arguments.newCategory#' cfsqltype = "varchar">
                 AND fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
         </cfquery>
-        <cfif queryRecordCount(local.findSameCategory)>
+        <cfif queryRecordCount(local.findSameCategoryQuery)>
             <cfreturn true>
             <cfelse>
                 <cfquery name="local.categoryInsertQuery">
@@ -77,20 +77,20 @@
         </cfif>
     </cffunction>
 
-    <cffunction  name="editCategory" access="remote" returnType="boolean" returnFormat="JSON">
-        <cfargument  name="categoryId">
-        <cfargument  name="newcategory">
-        <cfquery name="findSameEditCategory">
+    <cffunction  name="editCategory" access="remote" returnType="boolean" returnFormat="JSON"  description="Function to edit category">
+        <cfargument  name="categoryId" type="integer">
+        <cfargument  name="newcategory" type="string">
+        <cfquery name="local.findSameEditCategoryQuery">
             SELECT fldcategoryName
             FROM tblCategory
             WHERE fldcategoryName = <cfqueryparam value = '#arguments.newCategory#' cfsqltype = "varchar">
                 AND fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
                 AND NOT fldCategory_ID = <cfqueryparam value = '#arguments.categoryId#' cfsqltype = "integer">
         </cfquery>
-        <cfif queryRecordCount(findSameEditCategory)>
+        <cfif queryRecordCount(local.findSameEditCategoryQuery)>
             <cfreturn true>
             <cfelse>
-                <cfquery name="editCategoryQuery">
+                <cfquery name="local.editCategoryQuery">
                     UPDATE tblcategory
                     SET fldCategoryName = <cfqueryparam value = '#arguments.newCategory#' cfsqltype = "varchar">
                     WHERE fldCategory_ID = <cfqueryparam value = '#arguments.categoryId#' cfsqltype = "integer">
@@ -99,8 +99,8 @@
         </cfif>
     </cffunction>
 
-    <cffunction  name="deleteCategory" access="remote" returnType="void">
-        <cfargument  name="categoryId">
+    <cffunction  name="deleteCategory" access="remote" returnType="void" description="Function to delete category">
+        <cfargument  name="categoryId" type="integer">
         <cfquery name="local.deleteCategoryQuery">
             UPDATE tblcategory
             SET fldActive = <cfqueryparam value = '0' cfsqltype = "integer">
@@ -108,8 +108,8 @@
         </cfquery>
     </cffunction>
 
-    <cffunction  name="listSubcategories" returnType="query">
-        <cfargument  name="categoryId">
+    <cffunction  name="listSubcategories" returnType="query" description="Function to get subcategory Details">
+        <cfargument  name="categoryId" type="integer">
         <cfquery name="local.getSubcategoryQuery">
             SELECT 
                 fldSubCategory_ID,fldSubCategoryName 
@@ -122,8 +122,8 @@
         <cfreturn local.getSubcategoryQuery>
     </cffunction>
     
-    <cffunction  name="listAllSubcategories" access="remote" returnFormat="JSON" returnType="struct">
-        <cfargument name="categoryId">
+    <cffunction  name="listAllSubcategories" access="remote" returnFormat="JSON" returnType="struct" description="Function to get subcategory Details">
+        <cfargument name="categoryId" type="integer">
         <cfset subcateStructure = structNew()>
         <cfquery name="local.getSubcategoryQuery">
             SELECT 
@@ -140,7 +140,7 @@
         <cfreturn subcateStructure>
     </cffunction>
 
-    <cffunction name="getBrands" returnType="query">
+    <cffunction name="getBrands" returnType="query" description="Function to get subcatBrandegory Details">
         <cfquery name="getBrandQuery">
             SELECT 
                 fldBrandName,fldBrand_ID
@@ -152,8 +152,8 @@
         <cfreturn getBrandQuery>
     </cffunction>
 
-    <cffunction  name="insertProduct" returnType="boolean">
-        <cfargument  name="dataStructure">
+    <cffunction  name="insertProduct" returnType="boolean" description="Function to insert product">
+        <cfargument name="dataStructure" type="struct">
         <cffile action="uploadall"
         destination="#expandPath('../Assets/ProductImages')#"
         result="local.productImages"
@@ -200,9 +200,9 @@
         </cfif>
     </cffunction>
 
-    <cffunction  name="getProductCount" returnType="query">
-        <cfargument name="productname">
-        <cfargument  name="subcateid">
+    <cffunction  name="getProductCount" returnType="query" description="Function to get ProductDetails">
+        <cfargument name="productname" type="string">
+        <cfargument  name="subcateid" type="integer">
         <cfquery name="getProductQuery">
             SELECT 
                 fldProduct_ID
@@ -216,8 +216,8 @@
         <cfreturn getProductQuery>
     </cffunction>
 
-    <cffunction  name="updateProduct" returnType="void">
-        <cfargument  name="editDataStructure">
+    <cffunction  name="updateProduct" returnType="void"  description="Function to update products">
+        <cfargument  name="editDataStructure"  type="struct">
             <cfquery name="insertProductQuery" result="generatedVal">
                 UPDATE tblProduct 
                 SET fldSubCategoryId = <cfqueryparam value = '#arguments.editDataStructure.subcategoryname#' cfsqltype = "integer">,
@@ -247,10 +247,10 @@
             </cfloop>
     </cffunction>
 
-    <cffunction  name="getProducts" access="remote" returnFormat="JSON" returnType="any">
-        <cfargument  name="subCategoryId">
-        <cfargument  name="jscall" default=false>
-        <cfargument  name="productId" default="">
+    <cffunction  name="getProducts" access="remote" returnFormat="JSON" returnType="any" description="Function to get product details">
+        <cfargument  name="subCategoryId" type="integer">
+        <cfargument  name="jscall"  required="false" type="boolean">
+        <cfargument  name="productId" type="integer">
         <cfset newStructure = structNew()>
         <cfquery name="local.getproductsQuery">
             SELECT fldProduct_ID,fldProductName,fldDescription,fldBrandId,fldBrandName,fldPrice,fldTax,fldImageFileName
@@ -264,11 +264,11 @@
                 AND fldDefaultImage = <cfqueryparam value = '1' cfsqltype = "integer">
                 AND tblProduct.fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
                 AND tblbrands.fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
-            <cfif arguments.jscall EQ true>
+            <cfif structKeyExists(arguments, "jscall")>
                 AND fldProduct_ID = <cfqueryparam value = '#arguments.productId#' cfsqltype = "integer">
             </cfif>
         </cfquery>
-        <cfif arguments.jscall EQ true>
+        <cfif structKeyExists(arguments, "jscall")>
             <cfset newStructure["productid"] =local.getproductsQuery.fldProduct_ID>
             <cfset newStructure["productname"] =local.getproductsQuery.fldProductName>
             <cfset newStructure["productdesc"] =local.getproductsQuery.fldDescription>
@@ -282,9 +282,9 @@
         </cfif>
     </cffunction>
 
-    <cffunction  name="addSubCategory" access="remote" returnFormat="JSON" returnType="boolean">
-        <cfargument  name="categoryId">
-        <cfargument name="newsubCategory">
+    <cffunction  name="addSubCategory" access="remote" returnFormat="JSON" returnType="boolean" description="Function to add subcategory">
+        <cfargument  name="categoryId" type="integer">
+        <cfargument name="newsubCategory" type="string">
         <cfquery name="findSameSubCategory">
             SELECT fldSubCategoryName
             FROM tblSubCategory
@@ -307,9 +307,9 @@
         </cfif>
     </cffunction>
 
-    <cffunction  name="setDefaultImage" access="remote" returnType="void">
-        <cfargument  name="imageId">
-        <cfargument  name="productId">
+    <cffunction  name="setDefaultImage" access="remote" returnType="void" description="Function to set Default Image of products">
+        <cfargument  name="imageId" type="integer">
+        <cfargument  name="productId" type="integer">
         <cfquery name="setDefaultImageQuery">
             UPDATE 
                 tblProductImages
@@ -329,10 +329,10 @@
         </cfquery>
     </cffunction>
 
-    <cffunction  name="editSubCategoryFunction" returnType="void">
-        <cfargument name="newSubCategory">
-        <cfargument name="selectedCategory">
-        <cfargument name="subCategoryId">
+    <cffunction  name="editSubCategoryFunction" returnType="void" description="Function to edit Subcategory">
+        <cfargument name="newSubCategory" type="string">
+        <cfargument name="selectedCategory" type="integer">
+        <cfargument name="subCategoryId" type="integer">
         <cfquery name="editSubcategoryQuery">
             UPDATE tblSubCategory
             SET fldSubCategoryName = <cfqueryparam value = '#arguments.newsubCategory#' cfsqltype = "varchar">,
@@ -343,8 +343,8 @@
         </cfquery>
     </cffunction>
 
-    <cffunction  name="deleteSubcategory" access="remote" returnType="void">
-        <cfargument  name="subcategoryId">
+    <cffunction  name="deleteSubcategory" access="remote" returnType="void"  description="Function to delete subcategory">
+        <cfargument name="subcategoryId" type="integer">
         <cfquery name="local.deleteSubcategoryQuery">
             UPDATE tblSubCategory
             SET fldActive = <cfqueryparam value = '0' cfsqltype = "integer">,
@@ -354,8 +354,8 @@
         </cfquery>
     </cffunction>
 
-    <cffunction  name="deleteproduct" access="remote" returnType="void">
-        <cfargument  name="productId">
+    <cffunction  name="deleteproduct" access="remote" returnType="void"  description="Function to delete products">
+        <cfargument  name="productId" type="integer">
         <cfquery name="local.deleteSubcategoryQuery">
             UPDATE tblProduct
             SET fldActive = <cfqueryparam value = '0' cfsqltype = "integer">,
@@ -365,11 +365,11 @@
         </cfquery>
     </cffunction>
 
-    <cffunction  name="getProductImages" access="remote" returnFormat="JSON" returnType="struct">
-        <cfargument  name="productId">
-        <cfset imageStructure = structNew()>
-        <cfset imageDefaultStruct = structNew()>
-        <cfset imageinnerStruct = structNew()>
+    <cffunction  name="getProductImages" access="remote" returnFormat="JSON" returnType="struct" description="Function to get product Images">
+        <cfargument  name="productId" type="integer">
+        <cfset local.imageStructure = structNew()>
+        <cfset local.imageDefaultStruct = structNew()>
+        <cfset local.imageinnerStruct = structNew()>
         <cfquery name="getProductImageQuery">
             SELECT 
                 fldImageFileName,fldProductImage_ID,fldDefaultImage
@@ -379,17 +379,17 @@
                 fldProductId = <cfqueryparam value = '#arguments.productId#' cfsqltype = "integer">
         </cfquery>
         <cfloop query="getProductImageQuery">
-            <cfif getProductImageQuery.fldDefaultImage EQ 1>
-                <cfset imageStructure["imageDefaultStruct"][getProductImageQuery.fldProductImage_ID] = getProductImageQuery.fldImageFileName>
+            <cfif local.getProductImageQuery.fldDefaultImage EQ 1>
+                <cfset local.imageStructure["imageDefaultStruct"][local.getProductImageQuery.fldProductImage_ID] = local.getProductImageQuery.fldImageFileName>
                 <cfelse>
-                    <cfset imageStructure["imageinnerStruct"][getProductImageQuery.fldProductImage_ID] = getProductImageQuery.fldImageFileName>
+                    <cfset local.imageStructure["imageinnerStruct"][local.getProductImageQuery.fldProductImage_ID] = local.getProductImageQuery.fldImageFileName>
             </cfif>
         </cfloop>
         <cfreturn imageStructure>
     </cffunction>
 
-    <cffunction  name="deleteProductImage" access="remote" returnType="void">
-        <cfargument  name="imageId">
+    <cffunction  name="deleteProductImage" access="remote" returnType="void"  description="Function to delete product images">
+        <cfargument  name="imageId" type="integer">
         <cfquery name="deleteImageQuery">
             DELETE
             FROM
@@ -399,7 +399,7 @@
         </cfquery>
     </cffunction>
 
-    <cffunction name="adminLogout" access="remote" returnType="void">
+    <cffunction name="adminLogout" access="remote" returnType="void"  description="Function to logout admin">
         <cfset structClear(session)>
     </cffunction>
     

@@ -30,7 +30,7 @@
                             <div>
                                 <input name="emailId" id="emailIds" class="inputStyle" type="text" placeholder="Enter Email ID or Phone Number">
                                 <div id="emailWarning" class="registerWarning"></div>
-                            </div>
+                            </div>  
                             <div>
                                 <input name="password" id="passwordId" class="inputStyle" type="password" placeholder="Enter Password">
                                 <div id="passWarning" class="registerWarning"></div>

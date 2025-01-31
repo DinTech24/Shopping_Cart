@@ -10,11 +10,11 @@
     </head>
     <body>
         <cfoutput>
-            <cfset adminSubCateObject = new Component.adminComponent()>
+            <cfset variables.adminSubCateObject = new Component.adminComponent()>
             <cfif structKeyExists(form,"subcatgoryEdit")>
-                <cfset subcategoryEditResult = adminSubCateObject.editSubCategoryFunction(editSubCategory,form.categorySelect,form.subcatgoryEdit)>
+                <cfset variables.subcategoryEditResult = variables.adminSubCateObject.editSubCategoryFunction(editSubCategory,form.categorySelect,form.subcatgoryEdit)>
             </cfif>
-            <cfset subcategoriesResult = adminSubCateObject.listSubcategories("#url.categoryId#")>
+            <cfset variables.subcategoriesResult = variables.adminSubCateObject.listSubcategories("#url.categoryId#")>
             <!---Add Modal --->
             <div class="modal fade" id="staticBackdropAdd" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -35,7 +35,7 @@
             </div>
 
             <!---Edit Modal --->
-            <cfset editSubcategoriesResult = adminSubCateObject.getCategories()>
+            <cfset variables.editSubcategoriesResult = variables.adminSubCateObject.getCategories()>
             <div class="modal fade" id="staticBackdropEdit" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <form method="POST" id="adminProductForm">
                     <div class="modal-dialog">
@@ -47,8 +47,8 @@
                                 <input type="text" class="form-control" name="editSubCategory" id="editSubCategoryId" name="category" placeholder="Enter new sub-category name">
                                 <div class="warning" id="addDiffcategoryWarning"></div>
                                 <select class="form-control mt-3" name="categorySelect">
-                                    <cfloop query="editSubcategoriesResult">
-                                        <option id='#editSubcategoriesResult.fldCategory_ID#Category' value="#editSubcategoriesResult.fldCategory_ID#">#editSubcategoriesResult.fldCategoryName#</option>
+                                    <cfloop query="variables.editSubcategoriesResult">
+                                        <option id='#variables.editSubcategoriesResult.fldCategory_ID#Category' value="#variables.editSubcategoriesResult.fldCategory_ID#">#variables.editSubcategoriesResult.fldCategoryName#</option>
                                     </cfloop>
                                 </select>
                             </div>
@@ -78,19 +78,19 @@
                         <span>Sub-Categories</span>
                         <button class="categoriesAdd" data-bs-toggle="modal" data-bs-target="##staticBackdropAdd">Add +</button>
                     </div>
-                    <cfloop query="subcategoriesResult">
-                        <div class="eachCategory mb-2" id="eachSub#subcategoriesResult.fldSubCategory_ID#">
+                    <cfloop query="variables.subcategoriesResult">
+                        <div class="eachCategory mb-2" id="eachSub#variables.subcategoriesResult.fldSubCategory_ID#">
                             <div>
-                                <span id="#subcategoriesResult.fldSubCategory_ID#">#subcategoriesResult.fldSubCategoryName#</span>
+                                <span id="#variables.subcategoriesResult.fldSubCategory_ID#">#variables.subcategoriesResult.fldSubCategoryName#</span>
                             </div>
                             <div>
-                                <button class="categoriesButton" onclick="editSubcategoryModal(this,#url.categoryId#)" value="#subcategoriesResult.fldSubCategory_ID#"  data-bs-toggle="modal" data-bs-target="##staticBackdropEdit">
+                                <button class="categoriesButton" onclick="editSubcategoryModal(this,#url.categoryId#)" value="#variables.subcategoriesResult.fldSubCategory_ID#"  data-bs-toggle="modal" data-bs-target="##staticBackdropEdit">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </button>
-                                <button class="categoriesButton" value="#subcategoriesResult.fldSubCategory_ID#" onclick="deleteSubCategory(this)">
+                                <button class="categoriesButton" value="#variables.subcategoriesResult.fldSubCategory_ID#" onclick="deleteSubCategory(this)">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
-                                <a class="categoriesButton toolti px-2" href="./adminHomeProduct.cfm?categoryId=#url.categoryId#&subCategoryId=#subcategoriesResult.fldSubCategory_ID#">
+                                <a class="categoriesButton toolti px-2" href="./adminHomeProduct.cfm?categoryId=#url.categoryId#&subCategoryId=#variables.subcategoriesResult.fldSubCategory_ID#">
                                     <i class="fa-solid fa-chevron-right"></i>
                                     <span class="tooltiptext">Go to Product Page</span>
                                 </a>
