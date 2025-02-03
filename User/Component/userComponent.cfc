@@ -318,14 +318,32 @@
         <cfquery name="getCartQuery">
             SELECT
                 fldCart_ID,
-                fldProductId,
-                fldQuantity
-            FROM
-                tblCart 
+                fldQuantity,
+                fldProduct_ID,
+                fldSubCategoryId,
+                fldProductName,
+                fldBrandId,
+                fldBrandName,
+                fldPrice,
+                fldTax,
+                fldImageFileName
+            FROM 
+                tblProduct  
+            LEFT JOIN 
+                tblbrands 
+                ON tblbrands.fldBrand_ID = tblProduct.fldBrandId
+            LEFT JOIN 
+                tblProductImages 
+                ON tblProductImages.fldProductId = tblProduct.fldProduct_ID
+            LEFT JOIN 
+                tblCart
+                ON tblCart.fldProductId = tblProduct.fldProduct_ID
             WHERE
                 fldUserId = <cfqueryparam value = '#session.userId#' cfsqltype = "integer">
+                AND tblProductImages.fldDefaultImage = <cfqueryparam value = '1' cfsqltype = "integer">
+                AND tblProduct.fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
                 <cfif structKeyExists(arguments, "productId")>
-                    AND fldProductId = <cfqueryparam value = '#arguments.productId#' cfsqltype = "integer">
+                    AND tblCart.fldProductId = <cfqueryparam value = '#arguments.productId#' cfsqltype = "integer">
                 </cfif>
         </cfquery>
         <cfreturn getCartQuery>
@@ -469,6 +487,7 @@
 
     <cffunction  name="placeOrder" description="Function to place order" returnType="void">
         <cfargument name="orderStructure" type="struct">
+        <cfargument  name="orderType">
         <cfset local.cardDetails = structNew()>
         <cfset local.cardDetails["cardNumber"] = "1111222233334444">
         <cfset local.cardDetails["cardMonth"] = "12">
@@ -483,45 +502,105 @@
         OR arguments.orderStructure.cardcvvName NEQ local.cardDetails["cardCvv"]>
             <cfset local.flag = false>
         </cfif>
+        <cfif NOT structKeyExists(arguments, "orderType")>
+            <cfset local.cartResult = displayCart()>
+        </cfif>
         <cfif local.flag EQ true>
             <cfset local.generatedUUID = createUUID()>
-            <cfquery name="local.insertOrderQuery">
-                INSERT INTO
-                    tblOrder(
-                        fldOrder_ID,
-                        fldUserId,
-                        fldAddressId,
-                        fldTotalPrice,
-                        fldTotalTax,
-                        fldCardPart
+            <cfif structKeyExists(arguments, "orderType")>
+                <cfquery name="local.insertOrderQuery">
+                    INSERT INTO
+                        tblOrder(
+                            fldOrder_ID,
+                            fldUserId,
+                            fldAddressId,
+                            fldTotalPrice,
+                            fldTotalTax,
+                            fldCardPart
+                        )
+                    VALUES(
+                        <cfqueryparam value = '#local.generatedUUID#' cfsqltype = "varchar">,
+                        <cfqueryparam value = '#session.userId#' cfsqltype = "integer">,
+                        <cfqueryparam value = '#arguments.orderStructure.addressSelect#' cfsqltype = "integer">,
+                        <cfqueryparam value = '#arguments.orderStructure.hiddenTotalPrice#' cfsqltype = "decimal">,
+                        <cfqueryparam value = '#arguments.orderStructure.hiddenTotalTax#' cfsqltype = "decimal">,
+                        <cfqueryparam value = '#local.cardPart#' cfsqltype = "integer">
                     )
-                VALUES(
-                    <cfqueryparam value = '#local.generatedUUID#' cfsqltype = "varchar">,
-                    <cfqueryparam value = '#session.userId#' cfsqltype = "integer">,
-                    <cfqueryparam value = '#arguments.orderStructure.addressSelect#' cfsqltype = "integer">,
-                    <cfqueryparam value = '#arguments.orderStructure.hiddenTotalPrice#' cfsqltype = "decimal">,
-                    <cfqueryparam value = '#arguments.orderStructure.hiddenTotalTax#' cfsqltype = "decimal">,
-                    <cfqueryparam value = '#local.cardPart#' cfsqltype = "integer">
-                )
-            </cfquery>
-            <cfquery name="local.insertOrderItemQuery">
-                INSERT INTO
-                    tblOrderedItems(
-                        fldOrderId,
-                        fldProductId,
-                        fldQuantity,
-                        fldUnitPrice,
-                        fldUnitTax
-                    )
-                VALUES(
-                    <cfqueryparam value = '#local.generatedUUID#' cfsqltype = "varchar">,
-                    <cfqueryparam value = '#arguments.orderStructure.productIdHidden#' cfsqltype = "integer">,
-                    <cfqueryparam value = '#arguments.orderStructure.productQuantity#' cfsqltype = "integer">,
-                    <cfqueryparam value = '#arguments.orderStructure.unitPriceHidden#' cfsqltype = "decimal">,
-                    <cfqueryparam value = '#arguments.orderStructure.unitTaxHidden#' cfsqltype = "decimal">
-                )
-            </cfquery>
+                </cfquery>
+                <cfquery name="local.insertOrderItemQuery">
+                    INSERT INTO
+                        tblOrderedItems(
+                            fldOrderId,
+                            fldProductId,
+                            fldQuantity,
+                            fldUnitPrice,
+                            fldUnitTax
+                        )
+                        VALUES(
+                            <cfqueryparam value = '#local.generatedUUID#' cfsqltype = "varchar">,
+                            <cfqueryparam value = '#arguments.orderStructure.productIdHidden#' cfsqltype = "integer">,
+                            <cfqueryparam value = '#arguments.orderStructure.productQuantity#' cfsqltype = "integer">,
+                            <cfqueryparam value = '#arguments.orderStructure.unitPriceHidden#' cfsqltype = "decimal">,
+                            <cfqueryparam value = '#arguments.orderStructure.unitTaxHidden#' cfsqltype = "decimal">
+                        )
+                </cfquery>
+                <cfelse>
+                    <cfquery name="executeSPQuery">
+                        EXEC 
+                        orderProduct_SP 
+                            @userId = <cfqueryparam value = '#session.userId#' cfsqltype = "integer">,
+                            @addressId = <cfqueryparam value = '#arguments.orderStructure.addressSelect#' cfsqltype = "integer">,
+                            @generatedUuid = <cfqueryparam value = '#local.generatedUUID#' cfsqltype = "varchar">,
+                            @cardPart = <cfqueryparam value = '#local.cardPart#' cfsqltype = "varchar">
+                    </cfquery>
+                    <cfset session.productQuantity = 0>
+            </cfif>
         </cfif>
+        <cflocation  url="./userCartPage.cfm">
+    </cffunction>
+
+    <cffunction  name="displayOrderHistory" description = "To disaply Order History">
+        <cfquery name="getOrderHistoryQuery">
+            SELECT
+                fldQuantity,
+                fldProduct_ID,
+                fldSubCategoryId,
+                fldProductName,
+                fldBrandId,
+                fldBrandName,
+                tblOrderedItems.fldPrice,
+                tblOrderedItems.fldTax,
+                fldImageFileName,
+                fldFirstName,
+                fldLastName,
+                fldAddressLine1,
+                fldAddressLine2,
+                fldCity,
+                fldState,
+                fldPincode,
+                fldPhoneNumber
+            FROM 
+                tblProduct  
+            INNER JOIN 
+                tblbrands 
+                ON tblbrands.fldBrand_ID = tblProduct.fldBrandId
+            INNER JOIN 
+                tblProductImages 
+                ON tblProductImages.fldProductId = tblProduct.fldProduct_ID
+            INNER JOIN 
+                tblOrderedItems 
+                ON tblOrderedItems.orderId = tblOrder.order_ID
+            INNER JOIN
+                tblAddress
+                ON tblAddress.fldUserId = tblOrder.fldUserId
+            WHERE
+                fldUserId = <cfqueryparam value = '#session.userId#' cfsqltype = "integer">
+                AND tblProductImages.fldDefaultImage = <cfqueryparam value = '1' cfsqltype = "integer">
+                AND tblProduct.fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
+                <cfif structKeyExists(arguments, "productId")>
+                    AND tblCart.fldProductId = <cfqueryparam value = '#arguments.productId#' cfsqltype = "integer">
+                </cfif>
+        </cfquery>
     </cffunction>
 
     <cffunction  name="logoutUser" access="remote" returnType="void"  description="Logout user">

@@ -8,6 +8,9 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     </head>
     <body>
+        <cfif session.productQuantity EQ 0>
+            <cflocation  url="./userCartPage.cfm">
+        </cfif>
         <cfoutput>
             <div class="modal fade" id="staticBackdropAddress" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <form method="POST" id="userAddressForm">
@@ -69,8 +72,6 @@
             <cfinclude  template="./userHeader.cfm">
             <cfif structKeyExists(url, "productId")>
                 <cfset productResult = userOrderObject.getRandomProducts(productId = url.productId)>
-                <cfelse>
-                    <cfset productResult = userOrderObject.getRandomProducts(sort = "positive")>
             </cfif>
             <cfif structKeyExists(form, "addressButton")>
                 <cfset userOrderObject.saveAddress(addressStructure = form)>
@@ -157,27 +158,26 @@
                                                 <button class="prquanityIncrease" type="button" id="reduceQuantity" disabled onclick="reduceBuyQuantity()">-</button>
                                                 <span class="prquanity" id="ProductQuantitySpan">1</span>
                                                 <button  name="productIdSaved"  value="#productResult.fldProduct_ID#" class="prquanityIncrease" type="button"  id="addProductButton" onclick="addBuyQuantity()">+</button>
+                                                <input type="hidden" value=1 id="productQuanityHidden" name="productQuantity">
                                             </div>
                                         </div>
                                     </div>
                                     <cfelse>
                                         <cfloop query="cartDisplayResult">
-                                            <cfloop query="productResult">
-                                                <cfif cartDisplayResult.fldProductId EQ productResult.fldProduct_ID>
                                                     <div class="mainSectionBody " id="#cartDisplayResult.fldCart_ID#CartProduct">
                                                         <div class="orderDetailsDiv pt-4">
-                                                            <a href="./productPage.cfm?productId=#productResult.fldProduct_ID#">
-                                                                <img class="cartImage" src="../Assets/ProductImages/#productResult.fldImageFileName#" alt="">
+                                                            <a href="./productPage.cfm?productId=#cartDisplayResult.fldProduct_ID#">
+                                                                <img class="cartImage" src="../Assets/ProductImages/#cartDisplayResult.fldImageFileName#" alt="">
                                                             </a>
                                                             <div class="mt-2 ms-5">
-                                                                <div class="productNameSize">#productResult.fldProductName#</div>
-                                                                <span class="orderDetailsSpan1">#productResult.fldBrandName#</span>
+                                                                <div class="productNameSize">#cartDisplayResult.fldProductName#</div>
+                                                                <span class="orderDetailsSpan1">#cartDisplayResult.fldBrandName#</span>
                                                                 <div class="mt-3">	
                                                                     <div class="orderDetailsSpan3 mt-1">
                                                                         Product Price : 
                                                                         <span id="#cartDisplayResult.fldCart_ID#unitprice">
                                                                             <i class="fa-solid fa-indian-rupee-sign"></i>
-                                                                            #productResult.fldPrice#
+                                                                            #cartDisplayResult.fldPrice#
                                                                         </span>
 
                                                                     </div>
@@ -185,7 +185,7 @@
                                                                         Product Tax : 
                                                                         <span id="#cartDisplayResult.fldCart_ID#unittax">
                                                                         <i class="fa-solid fa-indian-rupee-sign"></i>
-                                                                            #productResult.fldTax#
+                                                                            #cartDisplayResult.fldTax#
                                                                         </span>
                                                                     </div>
                                                                     <div class="orderDetailsSpan3 mt-1">
@@ -196,16 +196,14 @@
                                                                     </div>
                                                                     <div class="orderDetailsSpan mt-4">
                                                                         Product Total Amount : <i class="fa-solid fa-indian-rupee-sign"></i>
-                                                                        #productResult.fldPrice + productResult.fldTax#
+                                                                        #cartDisplayResult.fldPrice + cartDisplayResult.fldTax#
                                                                     </div>
                                                                 </div>	
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <cfset quantityPrice = quantityPrice +  (productResult.fldPrice* cartDisplayResult.fldQuantity)>
-                                                    <cfset quantityTax = quantityTax + (productResult.fldTax * cartDisplayResult.fldQuantity)>
-                                                </cfif>
-                                            </cfloop>
+                                                    <cfset quantityPrice = quantityPrice +  (cartDisplayResult.fldPrice* cartDisplayResult.fldQuantity)>
+                                                    <cfset quantityTax = quantityTax + (cartDisplayResult.fldTax * cartDisplayResult.fldQuantity)>
                                         </cfloop>
                                 </cfif>
                             </div>
@@ -229,7 +227,7 @@
                                                         <span class="cardMidSpan">|</span>
                                                         <input class="cardValidDate" name="cardYearName" id="cardYearId" maxlength="2" type="text" placeholder="YY">
                                                     </div>
-                                                    <input  name="cardCvvName" class="cardCvv" id="cardCvvId" maxlength="3" type="password" placeholder="CVV">
+                                                    <input name="cardCvvName" class="cardCvv" id="cardCvvId" maxlength="3" type="password" placeholder="CVV">
                                                 </div>
                                             </div>
                                         </div>
@@ -249,7 +247,6 @@
                             </button>
                             <input type="hidden" id="hiddenTax" name="hiddenTotalTax">
                             <input type="hidden" id="hiddenPrice" name="hiddenTotalPrice">
-                            <input type="hidden" id="productQuanityHidden" name="productQuantity">
                         </div>
                     </div>
                     <div class="productPrice">
@@ -300,9 +297,16 @@
                         </div>
                     </div>
                 </div>
-            <cfif structKeyExists(form,"orderProduct") AND structKeyExists(url,"productId")>
-                <cfset orderResult = userOrderObject.placeOrder(orderStructure = form)>
-            </cfif> 
+                <cfif structKeyExists(form,"orderProduct") AND structKeyExists(url,"productId")>
+                    <cfset orderResult = userOrderObject.placeOrder(
+                        orderStructure = form,
+                        orderType = "buyNow"
+                    )>
+                    <cfelseif structKeyExists(form,"orderProduct")>
+                        <cfset orderResult = userOrderObject.placeOrder(
+                            orderStructure = form
+                        )>
+                </cfif> 
             </form>
         </cfoutput>
         <cfinclude  template="./footer.cfm">

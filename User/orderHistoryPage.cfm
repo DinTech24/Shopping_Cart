@@ -9,25 +9,29 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     </head>
     <body>
+        <cfinclude  template="./userHeader.cfm">
         <cfoutput>
             <cfset orderHistoryObject = new Component.userComponent()>
             <cfset userResult = orderHistoryObject.displayOrderHistory()>
             <div>
-                <div class="mainSectionBody " id="#variables.cartProductDisplayResult.fldCart_ID#CartProduct">
+                <div class="p-3 border border-secondary">
+                    <div class="fs-2">Order History</div>
+                </div>
+                <div class="mainSectionBody ">
                     <div class="orderDetailsDiv pt-4">
-                        <a href="./productPage.cfm?productId=#variables.cartDisplayResult.fldProduct_ID#">
-                            <img class="cartImage" src="../Assets/ProductImages/#cartDisplayResult.fldImageFileName#" alt="">
+                        <a href="./productPage.cfm?productId=##">
+                            <img class="cartImage" src="../Assets/ProductImages/" alt="">
                         </a>
                         <div class="mt-2 ms-5">
-                            <div class="productNameSize">#variables.cartDisplayResult.fldProductName#</div>
-                            <span class="orderDetailsSpan1">#variables.cartDisplayResult.fldBrandName#</span>
+                            <div class="productNameSize">3f</div>
+                            <span class="orderDetailsSpan1">g4r</span>
                             <div class="mt-3">	
                                 <div class="orderDetailsSpan3 mt-1">
                                     Product Price : 
                                     <span>
                                         <i class="fa-solid fa-indian-rupee-sign"></i>
-                                        <span id="#variables.cartProductDisplayResult.fldCart_ID#unitprice">
-                                            #variables.cartDisplayResult.fldPrice#
+                                        <span id="4g54">
+                                            g
                                         </span>
                                     </span>
                                 </div>
@@ -35,25 +39,17 @@
                                     Product Tax : 
                                     <span>
                                     <i class="fa-solid fa-indian-rupee-sign"></i>
-                                        <span id="#variables.cartProductDisplayResult.fldCart_ID#unittax">
-                                            #variables.cartDisplayResult.fldTax#
+                                        <span id="unittax">
+                                           wefewfe
                                         </span>
                                     </span>
                                 </div>
                                 <div class="orderDetailsSpan mt-4">
                                     Product Total Amount : <i class="fa-solid fa-indian-rupee-sign"></i>
-                                    #variables.cartDisplayResult.fldPrice + variables.cartDisplayResult.fldTax#
+                                    
                                 </div>
                             </div>	
                         </div>
-                    </div>
-                    <div class="d-flex w-50 ms-5 mt-2 justify-content-between mb-3">
-                        <div>
-                            <button class="prquanityIncrease" value="#variables.cartProductDisplayResult.fldCart_ID#" onclick="reduceProductQuantity(this)">-</button>
-                            <span class="prquanity" id="#variables.cartProductDisplayResult.fldCart_ID#quantity">#variables.cartProductDisplayResult.fldQuantity#</span>
-                            <button class="prquanityIncrease" value="#variables.cartProductDisplayResult.fldCart_ID#" id="addProductButton" onclick="addProductQuantity(this,#variables.productQuantity#)">+</button>
-                        </div>
-                        <button value="#variables.cartProductDisplayResult.fldCart_ID#" onclick="removeCart(this)" class="fontWeight">REMOVE</button>
                     </div>
                 </div>
             </div>

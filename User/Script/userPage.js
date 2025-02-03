@@ -546,6 +546,7 @@ function addBuyQuantity(){
     document.getElementById("totalprice").innerHTML = Number(totalprice) + Number(unitPrice);
     document.getElementById("totaltax").innerHTML = Number(totaltax) + Number(unitTax);
     document.getElementById("totalAmount").innerHTML = Number(totalAmount) + Number(unitPrice) + Number(unitTax)
+    document.getElementById("productQuanityHidden").value = Number(productQuantity);
 }
 
 function reduceBuyQuantity(){
@@ -560,6 +561,7 @@ function reduceBuyQuantity(){
     document.getElementById("totalprice").innerHTML = Number(totalprice) - Number(unitPrice);
     document.getElementById("totaltax").innerHTML = Number(totaltax) - Number(unitTax);
     document.getElementById("totalAmount").innerHTML = Number(totalAmount) - Number(unitPrice) - Number(unitTax)
+    document.getElementById("productQuanityHidden").value = Number(productQuantity);
     if(productQuantity == 1){
         document.getElementById("reduceQuantity").disabled = true;
     }
@@ -569,8 +571,6 @@ function placeOrderFunction(){
     var totalAmount = document.getElementById("totalprice").innerHTML;
     var totalTax = document.getElementById("totaltax").innerHTML;
     document.getElementById("placeOrderButtonId").value = totalAmount;
-    var productQuantity = document.getElementById("ProductQuantitySpan").innerHTML;
-    document.getElementById("productQuanityHidden").value = Number(productQuantity);
     document.getElementById("hiddenTax").value = Number(totalTax)
     document.getElementById("hiddenPrice").value = Number(totalAmount)
     return true;
