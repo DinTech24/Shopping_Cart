@@ -110,10 +110,11 @@
             </cfif>
             <cfset userAddressResult = userProfileObject.getSavedAddress()>
             <cfinclude  template="./userHeader.cfm">
-            <div class="d-flex justify-content-center">
+            <div class="d-flex justify-content-between ms-3">
                 <img src="../Assets/SiteImages/userProfile.png" class="userProfileLogo my-2">
+                <a href="./orderHistoryPage.cfm" class="text-decoration-none fw-bold me-3 mt-2 text-danger">Your Orders</a>
             </div>
-            <div class="d-flex justify-content-center">
+            <div class="d-flex justify-content-between">
                 <div class="text-start ms-3 userDataDiv">
                     <div id="userDataName">#userResult.fldFirstName &" "& userResult.fldLastName#</div>
                     <div id="userDataEmail">#userResult.fldEmail#</div>

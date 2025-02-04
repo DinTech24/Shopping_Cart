@@ -555,8 +555,19 @@
                     </cfquery>
                     <cfset session.productQuantity = 0>
             </cfif>
+            <cfset orderConfirmationMail(local.generatedUUID)>
         </cfif>
-        <cflocation  url="./userCartPage.cfm">
+        <cflocation  url="./orderHistoryPage.cfm">
+    </cffunction>
+
+    <cffunction  name="orderConfirmationMail">
+        <cfargument  name="orderId">
+        <cfmail from="dinilvallikunnil@gmail.com"  subject="eCart Order Confirmation"  to="#session.email#">
+            Hi, #session.username#
+            Your recent order through eCart is successfull.
+            Your Order Id is #arguments.orderId#
+            Thank you
+        </cfmail>
     </cffunction>
 
     <cffunction  name="displayOrderHistory" description = "To disaply Order History">
@@ -568,8 +579,9 @@
                 fldProductName,
                 fldBrandId,
                 fldBrandName,
-                tblOrderedItems.fldPrice,
-                tblOrderedItems.fldTax,
+                tblOrderedItems.fldUnitPrice,
+                tblOrderedItems.fldUnitTax,
+                tblOrderedItems.fldQuantity,
                 fldImageFileName,
                 fldFirstName,
                 fldLastName,
@@ -578,7 +590,13 @@
                 fldCity,
                 fldState,
                 fldPincode,
-                fldPhoneNumber
+                fldPhoneNumber,
+                fldOrder_ID,
+                fldOrderId,
+                fldTotalPrice,
+                fldTotalTax,
+                fldCardPart,
+                fldOrderDate
             FROM 
                 tblProduct  
             INNER JOIN 
@@ -589,18 +607,22 @@
                 ON tblProductImages.fldProductId = tblProduct.fldProduct_ID
             INNER JOIN 
                 tblOrderedItems 
-                ON tblOrderedItems.orderId = tblOrder.order_ID
+                ON tblOrderedItems.fldProductId = tblProduct.fldProduct_ID
+            INNER JOIN
+                tblOrder
+                ON tblOrder.fldOrder_ID = tblOrderedItems.fldOrderId
             INNER JOIN
                 tblAddress
-                ON tblAddress.fldUserId = tblOrder.fldUserId
+                ON tblAddress.fldAddress_ID = tblOrder.fldAddressId
             WHERE
-                fldUserId = <cfqueryparam value = '#session.userId#' cfsqltype = "integer">
+                tblOrder.fldUserId = <cfqueryparam value = '#session.userId#' cfsqltype = "integer">
                 AND tblProductImages.fldDefaultImage = <cfqueryparam value = '1' cfsqltype = "integer">
                 AND tblProduct.fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
-                <cfif structKeyExists(arguments, "productId")>
-                    AND tblCart.fldProductId = <cfqueryparam value = '#arguments.productId#' cfsqltype = "integer">
-                </cfif>
+                AND tblAddress.fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
+            ORDER BY
+                fldOrderDate DESC
         </cfquery>
+        <cfreturn getOrderHistoryQuery>
     </cffunction>
 
     <cffunction  name="logoutUser" access="remote" returnType="void"  description="Logout user">

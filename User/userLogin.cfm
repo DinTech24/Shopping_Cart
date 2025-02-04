@@ -49,14 +49,14 @@
                     <cfset result = userLoginObject.loginUser(
                         enteredId = form.emailId,
                         enteredPassword = form.password,
-                        productId = decrypt(url.productId,application.encryptionString,"AES","Base64"),
+                        productId = url.productId,
                         buyNow = true
                     )>
                     <cfelseif structKeyExists(url, "productId")>
                         <cfset result = userLoginObject.loginUser(
                             enteredId = form.emailId,
                             enteredPassword = form.password,
-                            productId = decrypt(url.productId,application.encryptionString,"AES","Base64")
+                            productId = url.productId
                         )>
                     <cfelse>
                         <cfset result = userLoginObject.loginUser(

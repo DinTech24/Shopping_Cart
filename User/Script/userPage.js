@@ -589,6 +589,30 @@ function clearEditModal(){
 
 }
 
+function searchOrder(){
+    searchKeyWord = document.getElementById("searchOrderId").value;
+    const container = document.getElementById("orderHistorymainDivId")
+    const allElements = container.querySelectorAll("[id]");
+    var dataDiv = Array.from(allElements).filter(item => item.id.includes(searchKeyWord));
+    var falseDiv = Array.from(allElements).filter(item => !item.id.includes(searchKeyWord));
+    if(dataDiv.length>0){
+        for(i=0;i<=dataDiv.length;i++){
+            console.log(dataDiv)
+            $(dataDiv[i]).show();
+        }
+        for(i=0;i<=falseDiv.length;i++){
+            $(falseDiv[i]).hide();
+        }
+    }
+}
+
+function downloadConfirmation(){
+    if(confirm("Confirm to download")){
+        alert("Invoice Downloaded successfully")
+        return true;
+    }
+}
+
 if ( window.history.replaceState ) {
     window.history.replaceState( null, null, window.location.href );
 }
