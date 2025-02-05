@@ -370,7 +370,7 @@ function addressModalValidation(){
             document.getElementById("phoneId").style.border = "1px solid black";
         }
     }
-    if(flag === false){
+    if(flag == false){
         event.preventDefault()
     }
     return flag;
@@ -573,7 +573,13 @@ function placeOrderFunction(){
     document.getElementById("placeOrderButtonId").value = totalAmount;
     document.getElementById("hiddenTax").value = Number(totalTax)
     document.getElementById("hiddenPrice").value = Number(totalAmount)
-    return true;
+    if(document.getElementById("addressDetailsId").value == 0){
+        alert('Add a delivery address to contitnue')
+        event.preventDefault();
+        return false;
+    }else{
+        return true;
+    }
 }
 
 window.addEventListener('pageshow', (event) => {

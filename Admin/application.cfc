@@ -14,12 +14,12 @@
         </cfif>
     </cffunction>
 
-    <cffunction  name="onError" returnType="void">
+<!---     <cffunction  name="onError" returnType="void">
         <cfargument name="exception" type="string">
         <cfargument name="eventName" type="string">
         <cflocation  url="./errorPage.cfm?error=#arguments.exception#">
     </cffunction>
-
+ --->
     <cffunction  name="onApplicationStart">
         <cfset application.encryptionString = generateSecretKey("AES")>
     </cffunction>

@@ -7,8 +7,11 @@
         <link rel="stylesheet" href="./CSS/userStyle.css">
         <link rel="stylesheet" href="./Bootstrap/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
     </head>
-    <body>
+    <body class="hideScroll">
         <cfoutput>
             <cfset userProfileObject = new Component.userComponent()>
             <cfset userResult = userProfileObject.isUserExist(userId = session.userId)>
@@ -110,17 +113,17 @@
             </cfif>
             <cfset userAddressResult = userProfileObject.getSavedAddress()>
             <cfinclude  template="./userHeader.cfm">
-            <div class="d-flex justify-content-between ms-3">
-                <img src="../Assets/SiteImages/userProfile.png" class="userProfileLogo my-2">
-                <a href="./orderHistoryPage.cfm" class="text-decoration-none fw-bold me-3 mt-2 text-danger">Your Orders</a>
-            </div>
             <div class="d-flex justify-content-between">
-                <div class="text-start ms-3 userDataDiv">
+                <div>
+                </div>
+                <div class="text-center ms-3 userDataDiv">
+                    <img src="../Assets/SiteImages/userProfile.png" class="userProfileLogo my-2">
                     <div id="userDataName">#userResult.fldFirstName &" "& userResult.fldLastName#</div>
                     <div id="userDataEmail">#userResult.fldEmail#</div>
                     <div id="userDataPhone">#userResult.fldPhone#</div>
                     <button data-bs-toggle="modal" onclick="clearEditModal()" data-bs-target="##staticBackdropProfile" class="w-100 btn btn-success">Edit Profile</button>
                 </div>
+                <a href="./orderHistoryPage.cfm" class="text-decoration-none fw-bold me-3 mt-2 text-danger">Your Orders</a>
             </div>
             <div class="d-flex justify-content-between mt-5 mx-3">
                 <div class="fs-3">Saved Adresses</div>

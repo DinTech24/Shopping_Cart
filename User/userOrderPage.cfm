@@ -6,8 +6,11 @@
         <title>User_Cart_Page</title>
  	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
     </head>
-    <body>
+    <body class="hideScroll">
         <cfif session.productQuantity EQ 0 AND NOT structKeyExists(url, "productId")>
             <cflocation  url="./userCartPage.cfm">
         </cfif>
@@ -74,14 +77,14 @@
                 <cfset productResult = userOrderObject.getRandomProducts(productId = url.productId)>
             </cfif>
             <cfif structKeyExists(form, "addressButton")>
-                <cfset userOrderObject.saveAddress(addressStructure = form)>
+                <cfset variables.userOrderObject.saveAddress(addressStructure = form)>
             </cfif>
-            <cfset addressDeatils = userOrderObject.getSavedAddress()>
-            <cfset cartDisplayResult = userOrderObject.displayCart()>
-            <cfset totalPrice = 0>
-            <cfset totalTax = 0>
-            <cfset quantityPrice = 0>
-            <cfset quantityTax = 0>
+            <cfset variables.addressDeatils = variables.userOrderObject.getSavedAddress()>
+            <cfset variables.cartDisplayResult = variables.userOrderObject.displayCart()>
+            <cfset variables.totalPrice = 0>
+            <cfset variables.totalTax = 0>
+            <cfset variables.quantityPrice = 0>
+            <cfset variables.quantityTax = 0>
             <cfset variables.savedCard = '1111222233334444,12,26,000'>
             <form method="POST">
                 <div class="cartPageMain" id="cartPageMainId">
@@ -91,19 +94,19 @@
                                 Delivery Address
                             </button>
                             <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="##accordionMain">
-                                <cfloop query="addressDeatils">
-                                <div class='d-flex addressSubDiv py-2 '>
-                                    <input class="ms-2" checked="checked" name="addressSelect" type="radio" value="#addressDeatils.fldAddress_ID#">
-                                    <div class="ps-2 d-grid">
-                                        <div>#addressDeatils.fldFirstName &" "& addressDeatils.fldLastName#</div>
-                                        <div>
-                                            #addressDeatils.fldAddressLine1#,#addressDeatils.fldAddressLine2#,
-                                            #addressDeatils.fldCity#,#addressDeatils.fldState# - #addressDeatils.fldPincode#
+                                <input type="hidden" id="addressDetailsId" value="#queryRecordCount(variables.addressDeatils)#">
+                                <cfloop query="variables.addressDeatils">
+                                    <div class='d-flex addressSubDiv py-2'>
+                                        <input class="ms-2 selectedAddress" checked="checked" name="addressSelect" type="radio" value="#variables.addressDeatils.fldAddress_ID#">
+                                        <div class="ps-2 d-grid">
+                                            <div>#variables.addressDeatils.fldFirstName &" "& variables.addressDeatils.fldLastName#</div>
+                                            <div>
+                                                #variables.addressDeatils.fldAddressLine1#,#variables.addressDeatils.fldAddressLine2#,
+                                                #variables.addressDeatils.fldCity#,#variables.addressDeatils.fldState# - #variables.addressDeatils.fldPincode#
+                                            </div>
+                                            <div>#variables.addressDeatils.fldPhoneNumber#</div>
                                         </div>
-                                        <div>#addressDeatils.fldPhoneNumber#</div>
                                     </div>
-
-                                </div>
                                 </cfloop>
                                 <div class="d-flex justify-content-center my-2">
                                     <button class="btn btn-outline-primary" onclick="clearModal()" type="button" data-bs-toggle="modal" data-bs-target="##staticBackdropAddress">Add new address +</button>
@@ -222,12 +225,15 @@
                                             <div class="CardInnerDiv">
                                                 <input class="cardNumberDiv" name="cardNumberName" id="cardNumberId" type="text" maxlength="16" placeholder="ENTER CARD NUMBER">
                                                 <div class="cardBottomDiv mx-4">
-                                                    <div class="validUpto d-flex justify-content-between">
-                                                        <input class="cardValidDate" name="cardMonthName" id="cardMonthId" maxlength="2" type="text" placeholder="MM">
-                                                        <span class="cardMidSpan">|</span>
-                                                        <input class="cardValidDate" name="cardYearName" id="cardYearId" maxlength="2" type="text" placeholder="YY">
+                                                    <div class="validThorughText">Valid through</div>
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="validUpto d-flex justify-content-between">
+                                                            <input class="cardValidDate" name="cardMonthName" id="cardMonthId" maxlength="2" type="text" placeholder="MM">
+                                                            <span class="cardMidSpan">|</span>
+                                                            <input class="cardValidDate" name="cardYearName" id="cardYearId" maxlength="2" type="text" placeholder="YY">
+                                                        </div>
+                                                        <input name="cardCvvName" class="cardCvv" id="cardCvvId" maxlength="3" type="password" placeholder="CVV">
                                                     </div>
-                                                    <input name="cardCvvName" class="cardCvv" id="cardCvvId" maxlength="3" type="password" placeholder="CVV">
                                                 </div>
                                             </div>
                                         </div>
@@ -241,7 +247,7 @@
                             </div>
                         </div>
                         <div class="w-100 placeOrderDiv d-flex justify-content-end">
-                            <button id="placeOrderButtonId" onclick="placeOrderFunction()" disabled class="placeOrderButton btn" name="orderProduct">
+                            <button id="placeOrderButtonId" onclick="return placeOrderFunction()" disabled class="placeOrderButton btn" name="orderProduct">
                                 CONTINUE TO PAY
                                 <span id="paymentsAmount"></span>
                             </button>

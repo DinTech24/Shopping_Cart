@@ -12,7 +12,10 @@
         <cfoutput>
             <cfset variables.adminProductObject = new Component.adminComponent()>
             <cfset variables.getCategory = variables.adminProductObject.getCategories()>
-            <cfset variables.getSubCategory = variables.adminProductObject.listAllSubcategories(categoryId = url.categoryId)>
+            <cfset variables.getSubCategory = variables.adminProductObject.listSubcategories(
+                categoryId = url.categoryId,
+                jscall = true
+            )>
             <cfset variables.getBrandsData = variables.adminProductObject.getBrands()>
             <cfset variables.createErrorVar = true>
             <cfif structKeyExists(form, "productSubmit")>

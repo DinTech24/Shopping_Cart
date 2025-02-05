@@ -27,7 +27,7 @@ function categoryValidation(){
     }else if(modalType === "categoryCreateSubmit"){
         $.ajax({
             type:"POST",
-            data:{newCategory:newcategory},
+            data:{newcategory:newcategory},
             url:"Component/adminComponent.cfc?method=insertCategories",
             success:function(result){
                 result = JSON.parse(result)
@@ -169,8 +169,8 @@ function getSubCategoriesFunction(){
     var subcategoriesSelect = document.getElementById("subcategoriesSelect");
     $.ajax({
         type:"POST",
-        url:"Component/adminComponent.cfc?method=listAllSubcategories",
-        data:{categoryId:categoryId},
+        url:"Component/adminComponent.cfc?method=listSubcategories",
+        data:{categoryId:categoryId,jscall:"true"},
         success:function(result){
             if(result)
             {

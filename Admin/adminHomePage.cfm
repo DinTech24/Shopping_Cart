@@ -37,7 +37,8 @@
                     <span>ADMIN</span>
                 </div>
                 <div>
-                    <button href="" onclick="logout()" class="logoutButton">Logout</button>
+                    <a href="../User/userhomePage.cfm" class="btn btn-secondary">Go to User Page</a>
+                    <button onclick="logout()" class="btn btn-danger">Logout</button>
                 </div>
             </div>
             <div class="adminMainDiv w-100 ">

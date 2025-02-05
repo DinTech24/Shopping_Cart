@@ -4,24 +4,12 @@
             <span></span>
         </div>
         <div>
-            <a href="" class="me-4 text-reset">
-                <i class="fab fa-facebook-f"></i>
-            </a>
-            <a href="" class="me-4 text-reset">
-                <i class="fab fa-twitter"></i>
-            </a>
-            <a href="" class="me-4 text-reset">
-                <i class="fab fa-google"></i>
-            </a>
-            <a href="" class="me-4 text-reset">
-                <i class="fab fa-instagram"></i>
-            </a>
-            <a href="" class="me-4 text-reset">
-                <i class="fab fa-linkedin"></i>
-            </a>
-            <a href="" class="me-4 text-reset">
-                <i class="fab fa-github"></i>
-            </a>
+            <i class="fab fa-facebook-f"></i>
+            <i class="fab fa-twitter ms-2"></i>
+            <i class="fab fa-google ms-2"></i>
+            <i class="fab fa-instagram ms-2"></i>
+            <i class="fab fa-linkedin ms-2"></i>
+            <i class="fab fa-github ms-2"></i>
         </div>
     </section>
     <section class="">
@@ -50,7 +38,7 @@
                         <a href="" class="text-reset">Returns</a>
                     </p>
                     <p>
-                        <a href="" class="text-reset">Your Account</a>
+                        <a href="./userProfilePage.cfm" class="text-reset">Your Account</a>
                     </p>
                 </div>
                 <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">

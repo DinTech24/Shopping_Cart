@@ -43,11 +43,19 @@
     </cffunction>
 
     <cffunction  name="getCategories" returnType="query" description="Function to get category details">
+        <cfargument  name="categoryName">
+        <cfargument  name="categoryId">
         <cfquery name="local.getcategoriesQuery">
             SELECT fldCategoryName,fldCategory_ID
             FROM tblCategory
             WHERE 
                 fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
+                <cfif structKeyExists(arguments, "categoryName")>
+                    AND fldcategoryName = <cfqueryparam value = '#arguments.categoryName#' cfsqltype = "varchar">
+                </cfif>
+                <cfif structKeyExists(arguments, "categoryId")>
+                    AND NOT fldCategory_ID = <cfqueryparam value = '#arguments.categoryId#' cfsqltype = "integer">
+                </cfif>
             ORDER BY 
                 fldCategoryName ASC;
         </cfquery>
@@ -55,13 +63,8 @@
     </cffunction>
 
     <cffunction  name="insertCategories" access="remote" returnType="boolean" returnFormat="JSON"  description="Function to insert Categories">
-        <cfargument name="newCategory" type="string">
-        <cfquery name="local.findSameCategoryQuery">
-            SELECT fldcategoryName
-            FROM tblCategory
-            WHERE fldcategoryName = <cfqueryparam value = '#arguments.newCategory#' cfsqltype = "varchar">
-                AND fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
-        </cfquery>
+        <cfargument name="newcategory" type="string">
+        <cfset local.findSameCategoryQuery = getCategories(categoryName = arguments.newcategory)>
         <cfif queryRecordCount(local.findSameCategoryQuery)>
             <cfreturn true>
             <cfelse>
@@ -80,14 +83,11 @@
     <cffunction  name="editCategory" access="remote" returnType="boolean" returnFormat="JSON"  description="Function to edit category">
         <cfargument  name="categoryId" type="integer">
         <cfargument  name="newcategory" type="string">
-        <cfquery name="local.findSameEditCategoryQuery">
-            SELECT fldcategoryName
-            FROM tblCategory
-            WHERE fldcategoryName = <cfqueryparam value = '#arguments.newCategory#' cfsqltype = "varchar">
-                AND fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
-                AND NOT fldCategory_ID = <cfqueryparam value = '#arguments.categoryId#' cfsqltype = "integer">
-        </cfquery>
-        <cfif queryRecordCount(local.findSameEditCategoryQuery)>
+        <cfset local.findSameCategoryQuery = getCategories(
+            categoryName = arguments.newCategory,
+            categoryId = arguments.categoryId
+        )>
+        <cfif queryRecordCount(local.findSameCategoryQuery)>
             <cfreturn true>
             <cfelse>
                 <cfquery name="local.editCategoryQuery">
@@ -108,8 +108,9 @@
         </cfquery>
     </cffunction>
 
-    <cffunction  name="listSubcategories" returnType="query" description="Function to get subcategory Details">
+    <cffunction name="listSubcategories" access="remote" returnFormat="JSON" returnType="any" description="Function to get subcategory Details">
         <cfargument  name="categoryId" type="integer">
+        <cfargument  name="jscall" type="string">
         <cfquery name="local.getSubcategoryQuery">
             SELECT 
                 fldSubCategory_ID,fldSubCategoryName 
@@ -119,25 +120,15 @@
                 fldCategoryId =  <cfqueryparam value = '#arguments.categoryId#' cfsqltype = "integer">
                 AND fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
         </cfquery>
-        <cfreturn local.getSubcategoryQuery>
-    </cffunction>
-    
-    <cffunction  name="listAllSubcategories" access="remote" returnFormat="JSON" returnType="struct" description="Function to get subcategory Details">
-        <cfargument name="categoryId" type="integer">
-        <cfset subcateStructure = structNew()>
-        <cfquery name="local.getSubcategoryQuery">
-            SELECT 
-                fldSubCategory_ID,fldSubCategoryName 
-            FROM 
-                tblSubCategory 
-            WHERE 
-                fldCategoryId =  <cfqueryparam value = '#arguments.categoryId#' cfsqltype = "integer">
-                AND fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
-        </cfquery>
-        <cfloop query="local.getSubcategoryQuery">
-            <cfset subcateStructure["#local.getSubcategoryQuery.fldSubCategory_ID#"] = "#local.getSubcategoryQuery.fldSubCategoryName #">
-        </cfloop>
-        <cfreturn subcateStructure>
+        <cfif structKeyExists(arguments, "jscall")>
+            <cfset local.subcateStructure = structNew()>
+            <cfloop query="local.getSubcategoryQuery">
+                <cfset local.subcateStructure["#local.getSubcategoryQuery.fldSubCategory_ID#"] = "#local.getSubcategoryQuery.fldSubCategoryName #">
+            </cfloop>
+            <cfreturn local.subcateStructure>
+            <cfelse>
+                <cfreturn local.getSubcategoryQuery>
+        </cfif>
     </cffunction>
 
     <cffunction name="getBrands" returnType="query" description="Function to get subcatBrandegory Details">
@@ -370,7 +361,7 @@
         <cfset local.imageStructure = structNew()>
         <cfset local.imageDefaultStruct = structNew()>
         <cfset local.imageinnerStruct = structNew()>
-        <cfquery name="getProductImageQuery">
+        <cfquery name="local.getProductImageQuery">
             SELECT 
                 fldImageFileName,fldProductImage_ID,fldDefaultImage
             FROM 
@@ -378,7 +369,7 @@
             WHERE
                 fldProductId = <cfqueryparam value = '#arguments.productId#' cfsqltype = "integer">
         </cfquery>
-        <cfloop query="getProductImageQuery">
+        <cfloop query="local.getProductImageQuery">
             <cfif local.getProductImageQuery.fldDefaultImage EQ 1>
                 <cfset local.imageStructure["imageDefaultStruct"][local.getProductImageQuery.fldProductImage_ID] = local.getProductImageQuery.fldImageFileName>
                 <cfelse>

@@ -7,13 +7,16 @@
         <link rel="stylesheet" href="./CSS/userStyle.css">
         <link rel="stylesheet" href="./Bootstrap/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
     </head>
-    <body>
+    <body class="hideScroll">
         <cfoutput>
             <cfset variables.userCateObject = new Component.userComponent()>
-            <cfset variables.categoryResult = variables.userCateObject.listCategories(decrypt(url.categoryId,application.encryptionString,"AES","Base64"))>
+            <cfset variables.categoryResult = variables.userCateObject.listCategories(categoryId = decrypt(url.categoryId,application.encryptionString,"AES","Base64"))>
             <cfset variables.randomProductsResult = variables.userCateObject.getRandomProducts(sort="negative")>
-            <cfset variables.subCategoryResult = variables.userCateObject.listSubCategories()>
+            <cfset variables.subCategoryResult = variables.userCateObject.listSubCategories(categoryId = decrypt(url.categoryId,application.encryptionString,"AES","Base64"))>
             <cfinclude  template="./userHeader.cfm">
             <div class="p-3">
                 <h2>#variables.categoryResult.fldCategoryName# - All Products</h2>

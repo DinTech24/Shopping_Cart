@@ -1,5 +1,6 @@
 *{
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-family: "Nunito";
+    font-size: 16px;
 }
 body{
     margin: 0px;
@@ -7,6 +8,11 @@ body{
     overflow-x:hidden;
     overflow-y:scroll;
 }
+
+.hideScroll::-webkit-scrollbar {
+    display: none;
+}
+  
 .inputStyle{
     margin-top: 2.5vh;
     border: 1px solid rgb(240, 237, 237);
@@ -130,9 +136,15 @@ body{
 }
 
 .subcategoryBar{
-    background-color: #c7c7c7;
+    background-color: #eec718;
     display: flex;
     justify-content: space-evenly;
+    top:8.8vh;
+    position: sticky;
+    z-index: 1;
+    border-bottom: 1px solid #c9a400;
+    border-top: 1px solid #c9a400;
+    font-weight: 500;
 }
 
 .subCategoryEach{
@@ -175,6 +187,8 @@ body{
 .randomAnchor{
     text-decoration: none;
     color: black;
+    font-size: 22px;
+    font-weight: 600;
 }
 
 .randProductImage{
@@ -206,7 +220,7 @@ body{
 
 .subCategoryEach .toolTipData{
     visibility: hidden;
-    width:10vw;
+    width:11vw;
     background-color: white;
     color: black;
     text-align: center;
@@ -224,7 +238,7 @@ body{
 }
 
 .subcategories{
-    width: 10VW;
+    width:11vw;
 }
 
 .subcategories:hover{
@@ -288,7 +302,6 @@ body{
     margin-right: 5px;
 }
 
-/*  */
 .screenDivision {
     display: flex;
     padding-left: 1rem;
@@ -302,11 +315,18 @@ body{
     max-width: 100%;
     height: auto;
 }
+
+.productBrand{
+    color: grey;
+    font-weight: bold;
+}
+
 .buttonClassDivion {
     margin-top: 1rem;
     display: flex;
     justify-content: center;
 }
+
 .screenDivisionButton1,
 .screenDivisionButton2 {
     padding: 0.5rem 1rem;
@@ -315,25 +335,30 @@ body{
     margin-right: 1rem;
     font-weight: bold;
 }
+
 .screenDivisionButton1 {
     background-color: #3f8d56;
     color: white;
     border-radius: 5px;
 }
+
 .screenDivisionButton2 {
     background-color: #2a6ba7;
     color: white;
     border-radius: 5px;
 }
+
 .screenSection2 {
     padding-left: 1rem;
 }
+
 .pathAndShare {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
 }
+
 .pageFullPath {
     font-size: 0.9rem;
     color: rgb(102, 101, 101);
@@ -347,7 +372,6 @@ body{
 .productName {
     font-size: 28px;
     font-weight: bolder;
-    margin-bottom: 0.5rem;
     margin-top: 3vh;
 }
 .productNametag {
@@ -488,7 +512,7 @@ body{
 }
 
 .orderDetailsSpan1{
-	font-size:13px;
+	font-size:15px;
 	margin-top:10px;
 	color:#a6a6a6;
 }
@@ -706,25 +730,25 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
+
 }
 
 .CardInnerDiv{
     width: 22vw;
     height: 30vh;
-    border: transparent;
+    border: black;
     border-radius: 10px;
-    background-image: url("../../Assets/SiteImages/CardDesign.PNG");
-    background-size: cover;
+    border:1px solid rgb(133, 133, 133);
 }
 
 .cardNumberDiv{
-    width: 88%;
-    border: 1px solid rgb(177, 177, 177);
+    width: 90%;
+    border: 1px solid rgb(133, 133, 133);
     height: 7vh;
-    margin: 1.5vw;
+    margin-left: 1vw;
     margin-top: 3vh;
     background-color: transparent;
-    color: white;
+    color: black;
     font-size: 24px;
 }
 
@@ -744,29 +768,33 @@ body{
 }
 .cardBottomDiv{
     margin-top: 10vh;
-    display: flex;
-    justify-content: space-between;
+    display: grid;
     background-color: transparent;
 }
 
 .validUpto{
-    width: 7.2vw;
-    border: 1px solid rgb(177, 177, 177);
+    width: 6w;
+    border: 1px solid rgb(133, 133, 133);
     display: flex;
     background-color: transparent;
 }
+
+.validThorughText{
+    font-size: 14px;
+}
+
 .cardValidDate{
     width: 3vw;
     border: transparent;
     background-color: transparent;
-    color: white;
+    color: black;
 }
 
 .cardCvv{
-    border: 1px solid rgb(177, 177, 177);
-    width: 30%;
+    border: 1px solid rgb(133, 133, 133);
+    width: 15%;
     background-color: transparent;
-    color: white;
+    color: black;
 }
 
 .cardMidSpan{
@@ -839,7 +867,7 @@ body{
     color: rgb(255, 123, 123);
     background-color: white;
     border: transparent;
-    border-radius: 7px;
+    border-radius: 2px;
     font-weight: bold;
     font-size: 12px;
     margin-left: 10px;

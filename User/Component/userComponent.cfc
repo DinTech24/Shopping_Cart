@@ -43,6 +43,7 @@
         <cfargument  name="userId" type="numeric" required = "false">
         <cfquery name="local.getUserQuery">
             SELECT
+                TOP 1
                 fldFirstName,
                 fldLastName, 
                 fldEmail,
@@ -66,7 +67,7 @@
         <cfreturn local.getUserQuery>
     </cffunction>
 
-    <cffunction  name="editUserProfile" returnType="boolean" returnFormat="JSON" access="remote">
+    <cffunction  name="editUserProfile" returnType="boolean" returnFormat="JSON" access="remote" description="To edit user profile">
         <cfargument  name="userId">
         <cfargument  name="userFirstName">
         <cfargument  name="userLastName">
@@ -112,7 +113,7 @@
         <cfargument  name="buyNow" required="false" type="boolean">
         <cfset local.loginExcepetion = structNew()>
         <cfif trim(arguments.enteredId) EQ "" OR trim(arguments.enteredPassword) EQ "">
-            <cfset local.loginExcepetion["Message"] = "Empty Fields are not alllowed!">
+            <cfset local.loginExcepetion["Message"] = "Empty Fields are not allowed!">
             <cfreturn local.loginExcepetion>
         </cfif>
         <cfquery name="local.checkPassword">
@@ -184,6 +185,7 @@
     </cffunction>
 
     <cffunction  name="listSubCategories" returnType="query" description="Get all sub-category details">
+        <cfargument  name="categoryId" type="numeric" required = "false">
         <cfargument  name="subCategoryId" type="numeric" required="false">
         <cfquery name="local.getSubCategoryQuery">
             SELECT 
@@ -194,6 +196,9 @@
                 fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
                 <cfif structKeyExists(arguments, "subCategoryId")>
                     AND fldsubCategory_ID = <cfqueryparam value = '#arguments.subCategoryId#' cfsqltype = "integer">
+                </cfif>
+                <cfif structKeyExists(arguments, "categoryId")>
+                    AND fldcategoryId = <cfqueryparam value = '#arguments.categoryId#' cfsqltype = "integer">
                 </cfif>
         </cfquery>
         <cfreturn local.getSubCategoryQuery>
@@ -227,9 +232,17 @@
             LEFT JOIN 
                 tblProductImages 
                 ON tblProductImages.fldProductId = tblProduct.fldProduct_ID
+            LEFT JOIN 
+                tblSubcategory
+                ON tblSubcategory.fldSubCategory_ID = tblProduct.fldSubCategoryId
+            LEFT JOIN 
+                tblCategory
+                ON tblCategory.fldCategory_ID = tblSubcategory.fldCategoryId
             WHERE
                 tblProductImages.fldDefaultImage = <cfqueryparam value = '1' cfsqltype = "integer">
                 AND tblProduct.fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
+                AND tblSubcategory.fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
+                AND tblCategory.fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
                 <cfif structKeyExists(arguments, "filterArray")>
                     AND fldPrice + fldTax >=  <cfqueryparam value = '#val(arguments.filterArray[1])#' cfsqltype = "decimal">
                     AND fldPrice + fldTax <=  <cfqueryparam value = '#val(arguments.filterArray[2])#' cfsqltype = "decimal">
@@ -350,8 +363,8 @@
     </cffunction>
 
     <cffunction  name="loadMoreData" returnType="array" returnFormat="JSON" access="remote">
-        <cfargument  name="productIdList">
-        <cfset local.productIdArray  = listToArray(productIdList)>
+        <cfargument name="productIdList"  type="string">
+        <cfset local.productIdArray  = listToArray(arguments.productIdList)>
         <cfset local.resultProductQuery = getRandomProducts(sort = "positive")>
         <cfset local.remainingProducts = []>
         <cfloop query="local.resultProductQuery">
@@ -474,7 +487,7 @@
     </cffunction>
 
     <cffunction  name="deleteAddress" access="remote"  description="Deactivate addresses from database">
-        <cfargument name="addressId">
+        <cfargument name="addressId" type="numeric">
         <cfquery name="deleteAddressQuery">
             UPDATE
                 tblAddress
@@ -487,7 +500,7 @@
 
     <cffunction  name="placeOrder" description="Function to place order" returnType="void">
         <cfargument name="orderStructure" type="struct">
-        <cfargument  name="orderType">
+        <cfargument  name="orderType" type="string">
         <cfset local.cardDetails = structNew()>
         <cfset local.cardDetails["cardNumber"] = "1111222233334444">
         <cfset local.cardDetails["cardMonth"] = "12">
@@ -500,6 +513,9 @@
         OR arguments.orderStructure.cardMonthName NEQ local.cardDetails["cardMonth"]
         OR arguments.orderStructure.cardYearName NEQ local.cardDetails["cardYear"]
         OR arguments.orderStructure.cardcvvName NEQ local.cardDetails["cardCvv"]>
+            <cfset local.flag = false>
+        </cfif>
+        <cfif NOT structKeyExists(orderStructure, "addressSelect")>
             <cfset local.flag = false>
         </cfif>
         <cfif NOT structKeyExists(arguments, "orderType")>
@@ -556,8 +572,8 @@
                     <cfset session.productQuantity = 0>
             </cfif>
             <cfset orderConfirmationMail(local.generatedUUID)>
+            <cflocation  url="./orderHistoryPage.cfm">
         </cfif>
-        <cflocation  url="./orderHistoryPage.cfm">
     </cffunction>
 
     <cffunction  name="orderConfirmationMail">
@@ -570,7 +586,7 @@
         </cfmail>
     </cffunction>
 
-    <cffunction  name="displayOrderHistory" description = "To disaply Order History">
+    <cffunction  name="displayOrderHistory" returnType="query" description = "To disaply Order History">
         <cfquery name="getOrderHistoryQuery">
             SELECT
                 fldQuantity,
@@ -617,8 +633,6 @@
             WHERE
                 tblOrder.fldUserId = <cfqueryparam value = '#session.userId#' cfsqltype = "integer">
                 AND tblProductImages.fldDefaultImage = <cfqueryparam value = '1' cfsqltype = "integer">
-                AND tblProduct.fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
-                AND tblAddress.fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
             ORDER BY
                 fldOrderDate DESC
         </cfquery>

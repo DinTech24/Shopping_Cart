@@ -7,6 +7,9 @@ body{
 }
 .adminNavBar{
     background-color: rgb(97, 166, 212);
+    top: 0px;
+    position: sticky;
+    z-index: 1;
 }
 .navHead{
     font-size: 30px;
