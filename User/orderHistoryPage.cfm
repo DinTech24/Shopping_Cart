@@ -82,7 +82,12 @@
            <cfloop query="variables.orderHistoryResult" group="fldOrder_ID">
                 <cfset variables.currentId = variables.orderHistoryResult.fldOrder_ID>
                 <cfif structKeyExists(form,"#variables.orderHistoryResult.fldOrder_ID#")>
-                    <cfdocument format="pdf" fileName="../Assets/OrderInvoices/#session.username# #dateTimeFormat(now(),'dd-mm-yyy-HH.nn.ss')#.pdf" overwrite="true" orientation = "landscape">
+                    <cfset variables.fileName = session.username & dateTimeFormat(now(),'dd-mm-yyy-HH.nn.ss') & '.pdf'>
+                    <cfdocument format="pdf" fileName="../Assets/OrderInvoices/#variables.fileName#"  overwrite="true" orientation = "landscape">
+                        <center>
+                            <h2>ORDER INVOICE</h2>
+                        </center>
+                        <hr>
                         <div>
                             <div>
                                 <div>Shipping Address:</div>
@@ -114,21 +119,30 @@
                                 </cfif>
                             </cfloop> 
                         </table>
-                        <br/>
                         <div>
-                            Total Amount : #variables.orderHistoryResult.fldTotalPrice + variables.orderHistoryResult.fldTotalTax#
-                        </div>
-                        <center>
-                            <div>
                                 Order Date : #dateFormat(variables.orderHistoryResult.fldorderDate,"dd mmmm yyyy")#
+                        </div>
+                        <div style="margin-left:40%;margin-right:40%;">
+                            <div>
+                                Total Price : #variables.orderHistoryResult.fldTotalPrice#
                             </div>
-                        </center>
+                            <div>
+                                Total Tax : #variables.orderHistoryResult.fldTotalTax#
+                            </div>
+                            <hr>
+                            <div>
+                                Total Amount : #variables.orderHistoryResult.fldTotalPrice + variables.orderHistoryResult.fldTotalTax#
+                            </div>
+                        </div>
                     </cfdocument>
+                    <cfheader name="content-disposition" value="attachment;filename=#variables.fileName#">
+                    <cfcontent  file="#expandpath('../Assets/OrderInvoices/'&variables.fileName)#"  type="application/pdf">
                 </cfif> 
            </cfloop>
             <cfinclude  template="./footer.cfm">
         </cfoutput>
         <script src="./Script/userPage.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     </body>

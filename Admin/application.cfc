@@ -7,19 +7,19 @@
     <cffunction  name="onRequestStart">
         <cfargument name="requestedPage" required="true">
         <cfset local.excludedPages = [
-                                        "/Shopping Cart/Admin/adminLoginpage.cfm"
+                                        "/Admin/adminLoginpage.cfm"
                                      ]>
         <cfif NOT arrayContains(local.excludedPages,arguments.requestedPage) AND NOT structKeyExists(session, "adminLogin") AND NOT structKeyExists(session, "username")>
-            <cflocation url="/Shopping Cart/Admin/adminLoginpage.cfm">
+            <cflocation url="/Admin/adminLoginpage.cfm">
         </cfif>
     </cffunction>
 
-<!---     <cffunction  name="onError" returnType="void">
+    <cffunction  name="onError" returnType="void">
         <cfargument name="exception" type="string">
         <cfargument name="eventName" type="string">
         <cflocation  url="./errorPage.cfm?error=#arguments.exception#">
     </cffunction>
- --->
+
     <cffunction  name="onApplicationStart">
         <cfset application.encryptionString = generateSecretKey("AES")>
     </cffunction>

@@ -150,7 +150,7 @@ function getFilterResult(subCategoryId){
         }else{
             if((i==4)&&(flag == false)){
                 if((minVal=="")&&(maxVal=="")){
-                    alert("Select a Range to continue")
+                    Swal.fire("Select a Range to continue");
                 }else{
                     var filterRangeVal=`["${minVal}","${maxVal}"]`
                     flag=true
@@ -281,7 +281,7 @@ function removeCart(cartId){
 function searchValidate(){
     var searchKey = document.getElementById("searchInput").value;
     if(searchKey.trim().length == 0){
-        alert("Enter keyword to search")
+        Swal.fire("Enter keyword to search");
         return false
     }else{
         document.getElementById("searchInput").value = searchKey.trim();
@@ -529,7 +529,7 @@ function verifyCard(cardData){
         document.getElementById("cardWarningId").classList.add("text-danger");
         document.getElementById("cardWarningId").classList.remove("text-success");
         document.getElementById("placeOrderButtonId").disabled = true;
-        alert(error)
+        Swal.fire(error);
     }
 }
 
@@ -568,14 +568,8 @@ function reduceBuyQuantity(){
 }
 
 function placeOrderFunction(){
-    var totalAmount = document.getElementById("totalprice").innerHTML;
-    var totalTax = document.getElementById("totaltax").innerHTML;
-    document.getElementById("placeOrderButtonId").value = totalAmount;
-    document.getElementById("hiddenTax").value = Number(totalTax)
-    document.getElementById("hiddenPrice").value = Number(totalAmount)
     if(document.getElementById("addressDetailsId").value == 0){
         alert('Add a delivery address to contitnue')
-        event.preventDefault();
         return false;
     }else{
         return true;
@@ -616,8 +610,15 @@ function downloadConfirmation(){
     if(confirm("Confirm to download")){
         alert("Invoice Downloaded successfully")
         return true;
+    }else{
+        return false;
     }
 }
+
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+  return new bootstrap.Tooltip(tooltipTriggerEl)
+})
 
 if ( window.history.replaceState ) {
     window.history.replaceState( null, null, window.location.href );

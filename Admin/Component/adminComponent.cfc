@@ -111,14 +111,23 @@
     <cffunction name="listSubcategories" access="remote" returnFormat="JSON" returnType="any" description="Function to get subcategory Details">
         <cfargument  name="categoryId" type="integer">
         <cfargument  name="jscall" type="string">
+        <cfargument  name="subCategoryName" type="string">
+        <cfargument  name="subCategoryId" type="string">
         <cfquery name="local.getSubcategoryQuery">
             SELECT 
-                fldSubCategory_ID,fldSubCategoryName 
+                fldSubCategory_ID,
+                fldSubCategoryName 
             FROM 
                 tblSubCategory 
             WHERE 
-                fldCategoryId =  <cfqueryparam value = '#arguments.categoryId#' cfsqltype = "integer">
-                AND fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
+                fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
+                <cfif structKeyExists(arguments,"subCategoryId")>
+                    AND NOT fldSubCategory_ID =  <cfqueryparam value = '#arguments.subCategoryId#' cfsqltype = "varchar">
+                </cfif>
+                <cfif structKeyExists(arguments,"subCategoryName")>
+                    AND fldSubCategoryName =  <cfqueryparam value = '#arguments.subCategoryName#' cfsqltype = "varchar">
+                </cfif>
+                AND fldCategoryId =  <cfqueryparam value = '#arguments.categoryId#' cfsqltype = "integer">
         </cfquery>
         <cfif structKeyExists(arguments, "jscall")>
             <cfset local.subcateStructure = structNew()>
@@ -149,7 +158,10 @@
         destination="#expandPath('../Assets/ProductImages')#"
         result="local.productImages"
         nameconflict="makeunique">
-        <cfset productResult = getProductCount(productname="#arguments.dataStructure.productname#",subcateid="#arguments.dataStructure.subcategoryname#")>
+        <cfset productResult = getProducts(
+            productName="#arguments.dataStructure.productname#",
+            subCategoryId="#arguments.dataStructure.subcategoryname#"
+        )>
         <cfif queryRecordCount(productResult)>
             <cfreturn false>
             <cfelse>
@@ -191,22 +203,6 @@
         </cfif>
     </cffunction>
 
-    <cffunction  name="getProductCount" returnType="query" description="Function to get ProductDetails">
-        <cfargument name="productname" type="string">
-        <cfargument  name="subcateid" type="integer">
-        <cfquery name="getProductQuery">
-            SELECT 
-                fldProduct_ID
-            FROM
-                tblProduct
-            WHERE
-                fldProductName = <cfqueryparam value = '#arguments.productname#' cfsqltype = "varchar">
-                    AND fldSubCategoryId = <cfqueryparam value = '#arguments.subcateid#' cfsqltype = "integer">
-                    AND fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
-        </cfquery>
-        <cfreturn getProductQuery>
-    </cffunction>
-
     <cffunction  name="updateProduct" returnType="void"  description="Function to update products">
         <cfargument  name="editDataStructure"  type="struct">
             <cfquery name="insertProductQuery" result="generatedVal">
@@ -242,19 +238,34 @@
         <cfargument  name="subCategoryId" type="integer">
         <cfargument  name="jscall"  required="false" type="boolean">
         <cfargument  name="productId" type="integer">
+        <cfargument  name="productName" type="string">
         <cfset newStructure = structNew()>
         <cfquery name="local.getproductsQuery">
-            SELECT fldProduct_ID,fldProductName,fldDescription,fldBrandId,fldBrandName,fldPrice,fldTax,fldImageFileName
-            FROM tblProduct  
-            LEFT JOIN tblbrands 
+            SELECT 
+                fldProduct_ID,
+                fldProductName,
+                fldDescription,
+                fldBrandId,
+                fldBrandName,
+                fldPrice,
+                fldTax,
+                fldImageFileName
+            FROM 
+                tblProduct  
+            LEFT JOIN 
+                tblbrands 
                 ON tblbrands.fldBrand_ID = tblProduct.fldBrandId
-            LEFT JOIN tblProductImages 
+            LEFT JOIN 
+                tblProductImages 
                 ON tblProductImages.fldProductId = tblProduct.fldProduct_ID
             WHERE 
                 fldSubCategoryId = <cfqueryparam value = '#arguments.subCategoryId#' cfsqltype = "integer">
                 AND fldDefaultImage = <cfqueryparam value = '1' cfsqltype = "integer">
                 AND tblProduct.fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
                 AND tblbrands.fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
+            <cfif structKeyExists(arguments, "productName")>
+                AND fldProductName = <cfqueryparam value = '#arguments.productName#' cfsqltype = "varchar">
+            </cfif>
             <cfif structKeyExists(arguments, "jscall")>
                 AND fldProduct_ID = <cfqueryparam value = '#arguments.productId#' cfsqltype = "integer">
             </cfif>
@@ -276,12 +287,10 @@
     <cffunction  name="addSubCategory" access="remote" returnFormat="JSON" returnType="boolean" description="Function to add subcategory">
         <cfargument  name="categoryId" type="integer">
         <cfargument name="newsubCategory" type="string">
-        <cfquery name="findSameSubCategory">
-            SELECT fldSubCategoryName
-            FROM tblSubCategory
-            WHERE fldSubCategoryName = <cfqueryparam value = '#arguments.newsubCategory#' cfsqltype = "varchar">
-                AND fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
-        </cfquery>
+        <cfset findSameSubCategory = listSubcategories(
+            subCategoryName = arguments.newsubCategory,
+            categoryId = arguments.categoryId
+        )>
         <cfif queryRecordCount(findSameSubCategory)>
             <cfreturn true>
             <cfelse>
@@ -320,18 +329,26 @@
         </cfquery>
     </cffunction>
 
-    <cffunction  name="editSubCategoryFunction" returnType="void" description="Function to edit Subcategory">
+    <cffunction  name="editSubCategoryFunction" returnType="boolean" description="Function to edit Subcategory">
         <cfargument name="newSubCategory" type="string">
         <cfargument name="selectedCategory" type="integer">
-        <cfargument name="subCategoryId" type="integer">
-        <cfquery name="editSubcategoryQuery">
-            UPDATE tblSubCategory
-            SET fldSubCategoryName = <cfqueryparam value = '#arguments.newsubCategory#' cfsqltype = "varchar">,
-            fldCategoryId = <cfqueryparam value = '#arguments.selectedCategory#' cfsqltype = "integer">,
-            fldupdatedby = <cfqueryparam value = '#session.adminUserId#' cfsqltype = "integer">,
-            fldUpdatedDate = <cfqueryparam value = '#now()#' cfsqltype = "timestamp">
-            WHERE fldSubCategory_ID = <cfqueryparam value = '#arguments.subCategoryId#' cfsqltype = "integer">
-        </cfquery>
+        <cfset findSameSubCategory = listSubcategories(
+            subCategoryName = arguments.newsubCategory,
+            categoryId = arguments.selectedCategory
+        )>
+        <cfif queryRecordCount(findSameSubCategory)>
+            <cfreturn false>
+            <cfelse>
+                <cfquery name="editSubcategoryQuery">
+                    UPDATE tblSubCategory
+                    SET fldSubCategoryName = <cfqueryparam value = '#arguments.newsubCategory#' cfsqltype = "varchar">,
+                    fldCategoryId = <cfqueryparam value = '#arguments.selectedCategory#' cfsqltype = "integer">,
+                    fldupdatedby = <cfqueryparam value = '#session.adminUserId#' cfsqltype = "integer">,
+                    fldUpdatedDate = <cfqueryparam value = '#now()#' cfsqltype = "timestamp">
+                    WHERE fldSubCategory_ID = <cfqueryparam value = '#arguments.subCategoryId#' cfsqltype = "integer">
+                </cfquery>
+                <cfreturn true>
+        </cfif>
     </cffunction>
 
     <cffunction  name="deleteSubcategory" access="remote" returnType="void"  description="Function to delete subcategory">

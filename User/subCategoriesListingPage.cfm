@@ -40,10 +40,10 @@
                                 <div class="d-flex">
                                     <div class="me-3">
                                         <span class="sortText">Sort :</span>
-                                        <button class="sortArrow text-success" value="ASC" name="highSort">
+                                        <button class="sortArrow text-success"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="Sort in ascending Order" value="ASC" name="highSort">
                                             <i class="fa-solid fa-arrow-up"></i>
                                         </button>
-                                        <button class="sortArrow text-danger" value="DESC" name="lowSort">
+                                        <button class="sortArrow text-danger"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="Sort in descending Order" value="DESC" name="lowSort">
                                             <i class="fa-solid fa-arrow-down"></i>
                                         </button>
                                     </div>
@@ -151,6 +151,7 @@
             <cfinclude  template="./footer.cfm">
         </cfoutput>
         <script src="./Script/userPage.js"></script>
+        <script src="./Bootstrap/popper.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     </body>

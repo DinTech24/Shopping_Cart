@@ -62,20 +62,7 @@ function subCategoryValidation(){
         document.getElementById("addcategoryWarning").innerHTML = "enter Sub-Category name"
         return false;
     }else{
-        var categoryId = document.getElementById("categorySubmitButton").value
-        $.ajax({
-            type:"POST",
-            url:"Component/adminComponent.cfc?method=addSubCategory",
-            data:{categoryId:categoryId,newsubCategory:newsubCategory},
-            success:function(result){
-                result = JSON.parse(result)
-                if(result == true){
-                    alert("Same Sub-category Exists")
-                }else{
-                    location.reload()
-                }
-            }
-        })
+        return true;
     }
 }
 

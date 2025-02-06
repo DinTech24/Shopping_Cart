@@ -137,7 +137,6 @@
                                                                 #productResult.fldPrice#
                                                             </span>
                                                         </span>
-                                                        <input name="unitPriceHidden" type="hidden" value="#productResult.fldPrice#">
                                                     </div>
                                                     <div class="orderDetailsSpan3 mt-1">
                                                         Product Tax : 
@@ -147,7 +146,6 @@
                                                                 #productResult.fldTax#
                                                             </span>
                                                         </span>
-                                                        <input name="unitTaxHidden" type="hidden" value="#productResult.fldTax#">
                                                     </div>
                                                     <div class="orderDetailsSpan mt-4">
                                                         Product Total Amount : <i class="fa-solid fa-indian-rupee-sign"></i>
@@ -247,12 +245,10 @@
                             </div>
                         </div>
                         <div class="w-100 placeOrderDiv d-flex justify-content-end">
-                            <button id="placeOrderButtonId" onclick="return placeOrderFunction()" disabled class="placeOrderButton btn" name="orderProduct">
+                            <button id="placeOrderButtonId" type="submit" onclick="return placeOrderFunction()" disabled class="placeOrderButton btn" name="orderProduct">
                                 CONTINUE TO PAY
                                 <span id="paymentsAmount"></span>
                             </button>
-                            <input type="hidden" id="hiddenTax" name="hiddenTotalTax">
-                            <input type="hidden" id="hiddenPrice" name="hiddenTotalPrice">
                         </div>
                     </div>
                     <div class="productPrice">
@@ -317,6 +313,7 @@
         </cfoutput>
         <cfinclude  template="./footer.cfm">
         <script src="./Script/userPage.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     </body>

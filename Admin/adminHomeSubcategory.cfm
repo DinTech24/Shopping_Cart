@@ -12,25 +12,36 @@
         <cfoutput>
             <cfset variables.adminSubCateObject = new Component.adminComponent()>
             <cfif structKeyExists(form,"subcatgoryEdit")>
-                <cfset variables.subcategoryEditResult = variables.adminSubCateObject.editSubCategoryFunction(editSubCategory,form.categorySelect,form.subcatgoryEdit)>
+                <cfset variables.subcategoryEditResult = variables.adminSubCateObject.editSubCategoryFunction(
+                    newSubCategory = form.editSubCategory,
+                    selectedCategory = form.categorySelect
+                )>
+            </cfif>
+            <cfif structKeyExists(form,"subcategoryAddButton")>
+                <cfset variables.subcategoryEditResult = variables.adminSubCateObject.addSubCategory(
+                    newsubCategory = form.category,
+                    categoryId = url.categoryId
+                )>
             </cfif>
             <cfset variables.subcategoriesResult = variables.adminSubCateObject.listSubcategories("#url.categoryId#")>
             <!---Add Modal --->
             <div class="modal fade" id="staticBackdropAdd" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="staticBackdropLabel">Add New Subcategories</h5>
+                    <form method="POST">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel">Add New Subcategories</h5>
+                            </div>
+                            <div class="modal-body">
+                                <input type="text" class="form-control border-dark" id="subCategoryId" name="category" placeholder="Enter new sub-category name">
+                                <div class="warning" id="addcategoryWarning"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" onclick="closeAdminModal()" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" id="categorySubmitButton" name="subcategoryAddButton" onclick="return subCategoryValidation()" class="btn btn-primary">Submit</button>
+                            </div>
                         </div>
-                        <div class="modal-body">
-                            <input type="text" class="form-control border-dark" id="subCategoryId" name="category" placeholder="Enter new sub-category name">
-                            <div class="warning" id="addcategoryWarning"></div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" onclick="closeAdminModal()" data-bs-dismiss="modal">Close</button>
-                            <button type="button" id="categorySubmitButton" value="#url.categoryId#" onclick="subCategoryValidation()" class="btn btn-primary">Submit</button>
-                        </div>
-                    </div>
+                    </form>
                 </div>
             </div>
 
@@ -77,6 +88,10 @@
                     <div class="my-2">
                         <span>Sub-Categories</span>
                         <button class="categoriesAdd" data-bs-toggle="modal" data-bs-target="##staticBackdropAdd">Add +</button>
+                        <cfif structKeyExists(variables,"subcategoryEditResult") AND  variables.subcategoryEditResult EQ false>
+                            <span class="text-danger">Same name exists</span>
+                        </cfif>
+                        <span id="warningText" class="text-danger"></span>
                     </div>
                     <cfloop query="variables.subcategoriesResult">
                         <div class="eachCategory mb-2" id="eachSub#variables.subcategoriesResult.fldSubCategory_ID#">

@@ -518,12 +518,14 @@
         <cfif NOT structKeyExists(orderStructure, "addressSelect")>
             <cfset local.flag = false>
         </cfif>
-        <cfif NOT structKeyExists(arguments, "orderType")>
-            <cfset local.cartResult = displayCart()>
-        </cfif>
         <cfif local.flag EQ true>
             <cfset local.generatedUUID = createUUID()>
             <cfif structKeyExists(arguments, "orderType")>
+                <cfset local.productResult = getRandomProducts(
+                    productId = arguments.orderStructure.productIdHidden
+                )>
+                <cfset local.TotalPrice = local.productResult.fldPrice * arguments.orderStructure.productQuantity>
+                <cfset local.TotalTax = local.productResult.fldTax * arguments.orderStructure.productQuantity>
                 <cfquery name="local.insertOrderQuery">
                     INSERT INTO
                         tblOrder(
@@ -538,8 +540,8 @@
                         <cfqueryparam value = '#local.generatedUUID#' cfsqltype = "varchar">,
                         <cfqueryparam value = '#session.userId#' cfsqltype = "integer">,
                         <cfqueryparam value = '#arguments.orderStructure.addressSelect#' cfsqltype = "integer">,
-                        <cfqueryparam value = '#arguments.orderStructure.hiddenTotalPrice#' cfsqltype = "decimal">,
-                        <cfqueryparam value = '#arguments.orderStructure.hiddenTotalTax#' cfsqltype = "decimal">,
+                        <cfqueryparam value = '#local.TotalPrice#' cfsqltype = "decimal">,
+                        <cfqueryparam value = '#local.TotalTax#' cfsqltype = "decimal">,
                         <cfqueryparam value = '#local.cardPart#' cfsqltype = "integer">
                     )
                 </cfquery>
@@ -556,8 +558,8 @@
                             <cfqueryparam value = '#local.generatedUUID#' cfsqltype = "varchar">,
                             <cfqueryparam value = '#arguments.orderStructure.productIdHidden#' cfsqltype = "integer">,
                             <cfqueryparam value = '#arguments.orderStructure.productQuantity#' cfsqltype = "integer">,
-                            <cfqueryparam value = '#arguments.orderStructure.unitPriceHidden#' cfsqltype = "decimal">,
-                            <cfqueryparam value = '#arguments.orderStructure.unitTaxHidden#' cfsqltype = "decimal">
+                            <cfqueryparam value = '#local.productResult.fldPrice#' cfsqltype = "decimal">,
+                            <cfqueryparam value = '#local.productResult.fldTax#' cfsqltype = "decimal">
                         )
                 </cfquery>
                 <cfelse>
