@@ -1,0 +1,166 @@
+*{
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+body{
+    margin: 0px;
+    padding:0px;
+}
+.adminNavBar{
+    background-color: rgb(97, 166, 212);
+    top: 0px;
+    position: sticky;
+    z-index: 1;
+}
+.navHead{
+    font-size: 30px;
+    font-weight: 700;
+    color: white;
+}
+
+.categoriesDivision{
+    width: 30vw;
+    border: 1px solid rgb(180, 180, 180);
+    box-shadow: 1px 1px 1px;
+    padding: 10px;
+}
+.categoriesAdd{
+    border: transparent;
+    background-color: rgb(81, 156, 255);
+    border-radius: 3px;
+}
+.eachCategory{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgb(160, 201, 255);
+    padding:10px ;
+    border-radius: 10px;
+    border: 2px solid rgb(72, 106, 150);
+}
+.categoriesButton{
+    background-color: transparent;
+    border: whitesmoke 1px solid;
+    border-radius: 5px;
+    text-decoration: none;
+    color: black;
+    cursor: pointer;
+}
+.loginMainDiv{
+    width: 50vw;
+    text-align: center;
+    padding: 20px;
+    box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
+    margin-top: 10vh;
+    border-radius: 10px;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(126, 181, 233);
+}
+.adminLoginHead{
+    font-size: 26px;
+    font-weight: 600;
+}
+.adminLoginButton{
+    border-radius: 5px;
+    width: 10vw;
+    border: transparent;
+    color: white;
+    background-color: rgb(48, 116, 204);
+    font-weight: 500;
+    border: 1px solid rgb(48, 116, 204);
+}
+.adminLoginInput{
+    border:1px solid rgb(142, 178, 228);
+    width: 100%;
+    border-radius: 5px;
+    height: 7vh;
+}
+.warning{
+    font-size: 12px;
+    font-weight: 700;
+    color: crimson;
+}
+
+.backToCategories{
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.productDivision{
+    width: 40vw;
+    border: 1px solid rgb(180, 180, 180);
+    background-color: rgb(230, 242, 252);
+    box-shadow: 1px 1px 1px;
+    padding: 10px;
+}
+
+.productData{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.productName{
+    font-size: 30px;
+    font-weight: 600;
+}
+
+.productBrand{
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 500;
+}
+
+.productPrice{
+    font-size: large;
+    font-size: 24px;
+    font-weight: 700;
+    color: crimson;
+}
+
+.imagePoint{
+    cursor: pointer;
+}
+
+.carousalimageButton{
+    border: transparent;
+    color: transparent;
+}
+
+.carousel{
+    background-color: rgb(179, 179, 179);
+}
+
+.carousel-inner{
+    margin-left: 5vw;
+}
+
+
+.logoutButton{
+    border:transparent;
+    color: white;
+    background-color: rgb(18, 95, 196);
+    border-radius: 5px;
+    padding: 5px;
+
+}
+
+.toolti {
+    position: relative;
+}
+
+.toolti .tooltiptext {
+    visibility: hidden;
+    width:20vw;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    position: absolute;
+    opacity: 0.8;
+    z-index: 1;
+}
+  
+.toolti:hover .tooltiptext {
+    visibility: visible;
+  }
