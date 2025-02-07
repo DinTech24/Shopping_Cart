@@ -55,9 +55,11 @@
                                 <h5 class="modal-title" id="staticBackdropLabelEdit">Edit Subcategory</h5>
                             </div>
                             <div class="modal-body">
+                                <div>Enter Sub-Category Name</div>
                                 <input type="text" class="form-control" name="editSubCategory" id="editSubCategoryId" name="category" placeholder="Enter new sub-category name">
                                 <div class="warning" id="addDiffcategoryWarning"></div>
-                                <select class="form-control mt-3" name="categorySelect">
+                                <div class=" mt-3">Select Category Name</div>
+                                <select class="form-control" name="categorySelect">
                                     <cfloop query="variables.editSubcategoriesResult">
                                         <option id='#variables.editSubcategoriesResult.fldCategory_ID#Category' value="#variables.editSubcategoriesResult.fldCategory_ID#">#variables.editSubcategoriesResult.fldCategoryName#</option>
                                     </cfloop>

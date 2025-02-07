@@ -17,7 +17,7 @@
             <div class="d-flex accessPageHead justify-content-between py-2">
                 <div class="ms-5">
                     <i class="fa-brands fa-shopify fs-1 text-dark"></i>
-                    <span>SHOPPING CART</span>
+                    <span>ecart</span>
                 </div>
                 <div class="d-flex me-5">
                     <div class="me-4"><a class="accessNames" href="./userSignUp.cfm"><img src=""> Sign Up</a></div>
@@ -48,24 +48,22 @@
             </div>
             <cfif structKeyExists(form,"loginButton")>
                 <cfset userLoginObject = new Component.userComponent()>
+                <cfset variables.result = userLoginObject.loginUser(
+                    enteredId = form.emailId,
+                    enteredPassword = form.password
+                )>
                 <cfif structKeyExists(url, "productId") AND structKeyExists(url, "buyNow")>
-                    <cfset result = userLoginObject.loginUser(
-                        enteredId = form.emailId,
-                        enteredPassword = form.password,
-                        productId = url.productId,
-                        buyNow = true
-                    )>
+                    <cfif variables.result["Message"] EQ true>
+                        <cflocation url="../User/userOrderPage.cfm?productId=#url.productId#" addToken="no">
+                    </cfif>
                     <cfelseif structKeyExists(url, "productId")>
-                        <cfset result = userLoginObject.loginUser(
-                            enteredId = form.emailId,
-                            enteredPassword = form.password,
-                            productId = url.productId
-                        )>
+                        <cfif variables.result["Message"] EQ true>
+                            <cflocation url="../User/userCartPage.cfm?productId=#url.productId#" addToken="no">
+                        </cfif>
                     <cfelse>
-                        <cfset result = userLoginObject.loginUser(
-                            enteredId = form.emailId,
-                            enteredPassword = form.password
-                        )>
+                        <cfif variables.result["Message"] EQ true>
+                            <cflocation url="../User/userhomePage.cfm" addToken="no">
+                        </cfif>
                 </cfif>
                 <div class="text-center">
                     <div class="text-danger fw-bold">#result["message"]#</div>

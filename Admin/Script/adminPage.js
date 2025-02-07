@@ -4,12 +4,14 @@ function adminLogin(){
     var flag = true;
     if(adminuser.trim().length == 0){
         document.getElementById("userWarning").innerHTML = "enter username to login"
+        document.getElementById("loginException").innerHTML = ""
         flag = false;
     }else{
         document.getElementById("userWarning").innerHTML = ""
     }
     if(adminpassword.trim().length == 0){
         document.getElementById("passwordWarning").innerHTML = "enter password to login"
+        document.getElementById("loginException").innerHTML = ""
         flag = false;
     }else{
         document.getElementById("passwordWarning").innerHTML = ""

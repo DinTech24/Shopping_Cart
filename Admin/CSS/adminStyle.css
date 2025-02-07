@@ -150,7 +150,7 @@ body{
 
 .toolti .tooltiptext {
     visibility: hidden;
-    width:20vw;
+    width:12svw;
     background-color: black;
     color: #fff;
     text-align: center;
@@ -159,6 +159,7 @@ body{
     position: absolute;
     opacity: 0.8;
     z-index: 1;
+    font-size: 13px;
 }
   
 .toolti:hover .tooltiptext {

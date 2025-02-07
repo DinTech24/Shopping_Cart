@@ -12,7 +12,9 @@
             "/User/userOrderPage.cfm",
             "/User/orderHistoryPage.cfm"
         ]>
-        <cfif arrayContains(local.includedPages,arguments.requestedPage) AND NOT structKeyExists(session, "userLogin") AND NOT structKeyExists(session, "username")>
+        <cfif arrayContains(local.includedPages,arguments.requestedPage) 
+        AND NOT structKeyExists(session, "userLogin") 
+        AND NOT structKeyExists(session, "username")>
             <cflocation url="/User/userhomePage.cfm" addToken="no">
         </cfif>
         <cfif structKeyExists(url, "reload")>

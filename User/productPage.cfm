@@ -112,17 +112,17 @@
                     AND variables.randomProductsResult.fldProduct_ID NEQ url.productId>
                         <cfset variables.productsCount = variables.productsCount + 1>
                         <div class="card randomProductCard" style="width: 13rem;">
-                            <a href="./productPage.cfm?productId=#variables.randomProductsResult.fldProduct_ID#">
+                            <a class='text-decoration-none' href="./productPage.cfm?productId=#variables.randomProductsResult.fldProduct_ID#">
                                 <img src="../Assets/ProductImages/#variables.randomProductsResult.fldImageFileName#" class="card-img-top randProductImage" alt="Product Image">
-                            </a>
-                            <div class="card-body randProductbody">
-                                <div class="card-text randProductName">#randomProductsResult.fldProductName#</div>
-                                <div>#variables.randomProductsResult.fldBrandName#</div>
-                                <div class="card-text randProductPrice">
-                                    <i class="fa-solid fa-indian-rupee-sign"></i>
-                                    #variables.randomProductsResult.fldPrice + randomProductsResult.fldTax#
+                                <div class="card-body randProductbody">
+                                    <div class="card-text randProductName">#randomProductsResult.fldProductName#</div>
+                                    <div class="text-dark">#variables.randomProductsResult.fldBrandName#</div>
+                                    <div class="card-text randProductPrice">
+                                        <i class="fa-solid fa-indian-rupee-sign"></i>
+                                        #variables.randomProductsResult.fldPrice + randomProductsResult.fldTax#
+                                    </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     </cfif>
                 </cfloop>

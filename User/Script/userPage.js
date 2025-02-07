@@ -67,15 +67,25 @@ function registerUser(){
 }
 
 function logoutFunction(){
-    if(confirm("Confirm to logout")){
-        $.ajax({
+    Swal.fire({
+        title: "Confirm to logout?",
+        showDenyButton: true,
+        confirmButtonText: "Yes",
+        denyButtonText: `Cancel`
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire("Saved!", "", "success");
+          $.ajax({
             type:"POST",
             url:"Component/userComponent.cfc?method=logoutUser",
             success:function(){
                     window.location.href = "./userhomePage.cfm"
                 }
         })
-    }
+        } else if (result.isDenied) {
+          Swal.fire("Changes are not saved", "", "info");
+        }
+      });
 }
 
 function closeUserModal(){
@@ -110,7 +120,7 @@ function loginModal(){
                 if(result){
                     result = JSON.parse(result);
                     event.preventDefault();
-                    if(result["Message"] == "true"){
+                    if(result["Message"] == true){
                         location.reload();
                     }else{
                         document.getElementById("passWarning").innerHTML = result["Message"]
@@ -281,7 +291,7 @@ function removeCart(cartId){
 function searchValidate(){
     var searchKey = document.getElementById("searchInput").value;
     if(searchKey.trim().length == 0){
-        Swal.fire("Enter keyword to search");
+        alert("Enter keyword to search");
         return false
     }else{
         document.getElementById("searchInput").value = searchKey.trim();
@@ -389,8 +399,16 @@ function clearModal(){
 }
 
 function removeAddress(addressId){
-    if(confirm("Confirm to remove address")){
-        $.ajax({
+    Swal.fire({
+        title: "Do you want to remove item from cart?",
+        showDenyButton: true,
+        confirmButtonText: "Yes",
+        denyButtonText: `Cancel`
+      }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          Swal.fire("Saved!", "", "success");
+          $.ajax({
             type:"POST",
             url:"Component/userComponent.cfc?method=deleteAddress",
             data:{addressId:addressId.value},
@@ -398,7 +416,10 @@ function removeAddress(addressId){
                     document.getElementById(addressId.value+"address").remove();
                 }
         })
-    }
+        } else if (result.isDenied) {
+          Swal.fire("Changes are not saved", "", "info");
+        }
+      });
 }
 
 function editUserProfile(userId){
@@ -452,7 +473,7 @@ function editUserProfile(userId){
                         document.getElementById("userDataPhone").innerHTML = userPhone;
                         document.getElementById("profileModalClose").click();
                     }else{
-                        alert("User already exists")
+                        Swal.fire("User already exists");
                     }
                 }
         })
@@ -569,7 +590,7 @@ function reduceBuyQuantity(){
 
 function placeOrderFunction(){
     if(document.getElementById("addressDetailsId").value == 0){
-        alert('Add a delivery address to contitnue')
+        Swal.fire('Add a delivery address to continue');
         return false;
     }else{
         return true;

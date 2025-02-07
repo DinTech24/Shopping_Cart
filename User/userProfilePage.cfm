@@ -114,24 +114,36 @@
             <cfset userAddressResult = userProfileObject.getSavedAddress()>
             <cfinclude  template="./userHeader.cfm">
             <div class="d-flex justify-content-between">
-                <div>
+                <div class="userDetailsmainDiv">
+                    <div class="d-flex justify-content-start align-items-center">
+                        <img src="../Assets/SiteImages/userProfilepic.jpg" class="userProfileLogo my-2">
+                        <div class="userDataDiv">
+                            <div class="userDetails" id="userDataName">
+                                <span class="fw-bold m-0">Account Name</span> : #userResult.fldFirstName &" "& userResult.fldLastName#
+                            </div>
+                            <div class="userDetails" id="userDataEmail">
+                                <span class="fw-bold m-0">Email Id</span> : #userResult.fldEmail#
+                            </div>
+                            <div class="userDetails" id="userDataPhone">
+                                <span class="fw-bold m-0">Phone Number</span> : #userResult.fldPhone#
+                            </div>
+                        </div>
+                    </div>
+                    <button data-bs-toggle="modal" onclick="clearEditModal()" data-bs-target="##staticBackdropProfile" class="profileEditbuttton">
+                        EDIT <i class="fa-solid fa-pen-to-square ms-2"></i>
+                    </button>
                 </div>
-                <div class="text-center ms-3 userDataDiv">
-                    <img src="../Assets/SiteImages/userProfile.png" class="userProfileLogo my-2">
-                    <div id="userDataName">#userResult.fldFirstName &" "& userResult.fldLastName#</div>
-                    <div id="userDataEmail">#userResult.fldEmail#</div>
-                    <div id="userDataPhone">#userResult.fldPhone#</div>
-                    <button data-bs-toggle="modal" onclick="clearEditModal()" data-bs-target="##staticBackdropProfile" class="w-100 btn btn-success">Edit Profile</button>
-                </div>
-                <a href="./orderHistoryPage.cfm" class="text-decoration-none fw-bold me-3 mt-2 text-danger">Your Orders</a>
+                <a href="./orderHistoryPage.cfm" class="text-decoration-none fw-bold me-3 mt-2 ordersText">
+                    Your Orders <i class="fa-solid fa-circle-chevron-right"></i>
+                </a>
             </div>
             <div class="d-flex justify-content-between mt-5 mx-3">
                 <div class="fs-3">Saved Adresses</div>
-                <button class="btn btn-primary" onclick="clearModal()" data-bs-toggle="modal" data-bs-target="##staticBackdropAddress">Add new address +</button>
+                <button class="addAddressButton" onclick="clearModal()" data-bs-toggle="modal" data-bs-target="##staticBackdropAddress">Add new address +</button>
             </div>
             <div class="addressesDiv">
                 <cfloop query="userAddressResult">
-                    <div class="card addressCard border border-secondary m-3" id="#userAddressResult.fldAddress_ID#address">
+                    <div class="addressCard m-3" id="#userAddressResult.fldAddress_ID#address">
                         <div class="list-group list-group-flush">
                             <div class="list-group-item d-grid">
                                 <div>#userAddressResult.fldFirstName &" "&userAddressResult.fldLastName#</div>
@@ -142,7 +154,9 @@
                                 <div>#userAddressResult.fldPhoneNumber#</div>
                             </div>
                             <div class="list-group-item">
-                                <button class="btn btn-danger w-100"onclick="removeAddress(this)" value="#userAddressResult.fldAddress_ID#">REMOVE</button>
+                                <button class="btn btn-danger w-100"onclick="removeAddress(this)" value="#userAddressResult.fldAddress_ID#">
+                                    REMOVE
+                                </button>
                             </div>
                         </div>
                     </div>

@@ -2,11 +2,16 @@
     font-family: "Nunito";
     font-size: 16px;
 }
+
 body{
     margin: 0px;
     padding:0px;
     overflow-x:hidden;
     overflow-y:scroll;
+}
+
+a > img{
+    object-fit: contain;
 }
 
 .hideScroll::-webkit-scrollbar {
@@ -175,14 +180,17 @@ body{
 .randomProductCard{
     margin-right: 15.1px;
     margin-bottom: 15.1px;
-    box-shadow: rgba(173, 173, 173, 0.726) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
 .randProductbody{
     text-align: center;
-    background-color: #81818154;
+    /* background-color: #81818154; */
+    background-color: #e2e9ec;
     padding: 0px;
 }
+
+
 
 .randomAnchor{
     text-decoration: none;
@@ -266,6 +274,12 @@ body{
 .sortText{
     font-size: 14px;
     font-weight: 600;
+    background: transparent;
+}
+
+.filterClass{
+    border: 1px solid rgb(212, 212, 212);
+    border-radius: 5px;
 }
 
 .sortArrow{
@@ -273,30 +287,19 @@ body{
     background-color: transparent;
     border-radius: 6px;
 }
-
-.filterMainClass{
-    position: relative;
-    cursor: pointer; 
-}
-
 .filterMainClass .filterInner{
     border: 1px solid rgb(226, 226, 226);
     box-shadow: 1px 1px 1px black;
     padding: 10px;
-    visibility: hidden;
     width:20vw;
     background-color: white;
     color: black;
     border-radius: 6px;
-    position: absolute;
     z-index: 1;
     top: 100%;
     right:10%;
 }
 
-.filterMainClass:hover .filterInner{
-    visibility: visible;
-}
 
 .filterInput{
     margin-right: 5px;
@@ -603,7 +606,10 @@ body{
     background-color:#307197;
     text-decoration: none;
     color: white;
+    height: 100%;
+    width: 100%;
 }
+
 .placeorderAnchor:hover{
     color: white;
 }
@@ -686,13 +692,43 @@ body{
 .userProfileLogo{
     width:10vw;
     height:10vw;
-    border: 3px solid rgb(58, 116, 182);
-    border-radius: 15px;
 }
 
 .userDataDiv *{
     font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     font-size:18px;
+    margin-left: 4vw;
+}
+
+.userDetailsmainDiv{
+    width: 50vw;
+    display: flex;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    border-radius: 8px;
+    margin: 2vw;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.userDetails{
+    margin-left: 1vw;
+}
+
+.profileEditbuttton{
+    width: 15%;
+    height: 100%;
+    border: transparent;
+    background-color: #2a6ba7;
+    color: white;
+    border-radius:0px 8px 8px  0px;
+}
+
+.addAddressButton{
+    border: transparent;
+    background-color: #2a6ba7;
+    color: white;
+    padding: 0.7vw;
+    border-radius: 6px;
 }
 
 .addressesDiv{
@@ -702,6 +738,12 @@ body{
 
 .addressCard{
     width: 15rem;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.ordersText{
+    color: #b9990b;
+    height: 10%;
 }
 
 .modal-header{
@@ -710,6 +752,8 @@ body{
 
 .addressCard *{
     font-size: 15px;
+    background-color: white;
+    
 }
 
 .deliveryAddressDiv{
@@ -893,4 +937,53 @@ body{
 
 .shippingAddressInner{
     padding: 1vw;
+}
+
+.orderConfirmModal{
+    width: 100vw;
+    height: 100vh;
+    position:absolute;
+    top:0;
+    z-index:5;
+    text-align: center;
+    background:fixed;
+    background-color: white;
+    overflow-y: hidden;
+}
+
+.confirmationImage{
+    width:50%;
+    height: 50%;
+    margin-top: 10vh;
+}
+
+.orderText{
+    font-size: 30px;
+    font-weight: bolder;
+    color: #008000;
+}
+
+.orderAcknowledge{
+    width: 10%;
+    height: 15%;
+    background-color: #3b517a;
+    color: white;
+    border: transparent;
+    border-radius: 5px;
+    margin-top:5vh;
+    font-size: 18px;
+}
+
+.orderTextEmail{
+    font-size: 20px;
+    color: #e28b00;
+}
+
+.continueShopping{
+    color: #e28b00;
+    font-size: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+
 }

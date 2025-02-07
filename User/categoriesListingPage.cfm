@@ -33,19 +33,19 @@
                             <div class="randomProductsMainDiv">
                                 <cfloop query="randomProductsResult">
                                     <cfif randomProductsResult.fldSubCategoryId EQ variables.subCategoryResult.fldsubCategory_ID>
-                                        <div class="card randomProductCard" style="width: 13rem;">
-                                            <a href="./productPage.cfm?productId=#variables.randomProductsResult.fldProduct_ID#">
-                                                <img src="../Assets/ProductImages/#variables.randomProductsResult.fldImageFileName#" class="card-img-top randProductImage" alt="Product Image">
-                                            </a>
-                                            <div class="card-body randProductbody">
-                                                <div class="card-text randProductName">#variables.randomProductsResult.fldProductName#</div>
-                                                <div>#variables.randomProductsResult.fldBrandName#</div>
-                                                <div class="card-text randProductPrice">
-                                                    <i class="fa-solid fa-indian-rupee-sign"></i>
-                                                    #variables.randomProductsResult.fldPrice + variables.randomProductsResult.fldTax#
-                                                </div>
+                                            <div class="card randomProductCard" style="width: 13rem;">
+                                                <a class="text-decoration-none" href="./productPage.cfm?productId=#variables.randomProductsResult.fldProduct_ID#">
+                                                    <img src="../Assets/ProductImages/#variables.randomProductsResult.fldImageFileName#" class="card-img-top randProductImage" alt="Product Image">
+                                                    <div class="card-body randProductbody">
+                                                        <div class="card-text randProductName">#variables.randomProductsResult.fldProductName#</div>
+                                                        <div class='text-dark'>#variables.randomProductsResult.fldBrandName#</div>
+                                                        <div class="card-text randProductPrice">
+                                                            <i class="fa-solid fa-indian-rupee-sign"></i>
+                                                            #variables.randomProductsResult.fldPrice + variables.randomProductsResult.fldTax#
+                                                        </div>
+                                                    </div>
+                                                </a>
                                             </div>
-                                        </div>
                                     </cfif>
                                 </cfloop>
                             </div>

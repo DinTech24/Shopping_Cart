@@ -20,7 +20,11 @@
                 <i class="fa-solid fa-lg fa-cart-shopping"></i>
                 <cfif structKeyExists(session, "userLogin") AND structKeyExists(session, "username")>
                     <span id="productQuantityId" class="position-absolute mt-1 start-100 translate-middle badge rounded-circle bg-danger">
-                        #session.productQuantity# 
+                    <cfif session.productQuantity  GT 99>
+                        99+
+                        <cfelse>
+                            #session.productQuantity# 
+                    </cfif>
                     </span>
                 </cfif>
             </a>
@@ -29,7 +33,10 @@
                     <i class="fa-solid fa-lg fa-user"></i>
                     #session.username#
                 </a>
-                <button class="logoutButton" onclick="logoutFunction()">Logout</button>
+                <button class="logoutButton" onclick="logoutFunction()">
+                    Logout
+                    <i class="fa-solid fa-right-from-bracket"></i>    
+                </button>
                 <cfelse>
                     <button class="mx-2 LoginButton px-3 py-1" onclick="modalClear()"  data-bs-toggle="modal" data-bs-target="##staticBackdropLogin">Login</button>
             </cfif>

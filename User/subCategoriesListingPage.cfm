@@ -11,7 +11,7 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
     </head>
-    <body class="hideScroll">
+    <body>
         <cfoutput>
             <cfset variables.userCateObject = new Component.userComponent()>
             <cfset variables.subCategoryResult = variables.userCateObject.listSubCategories()>
@@ -39,7 +39,7 @@
                             <form method="POST">
                                 <div class="d-flex">
                                     <div class="me-3">
-                                        <span class="sortText">Sort :</span>
+                                        <span class="sortText">Sort on price :</span>
                                         <button class="sortArrow text-success"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="Sort in ascending Order" value="ASC" name="highSort">
                                             <i class="fa-solid fa-arrow-up"></i>
                                         </button>
@@ -47,9 +47,12 @@
                                             <i class="fa-solid fa-arrow-down"></i>
                                         </button>
                                     </div>
-                                    <div class="filterMainClass">
-                                        <div class="sortText filterClass mt-1">Filter<i class="fa-solid fa-filter"></i></div>
-                                        <div class="d-grid filterInner">
+                                    <div class="filterMainClass dropdown">
+                                        <button class="sortText filterClass dropdown-toggle type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" mt-1">
+                                            Filter
+                                            <i class="fa-solid fa-filter"></i>
+                                        </button>
+                                        <div class="filterInner dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                             <div>Select Price Range :</div>
                                             <div class="d-flex">
                                                 <input type="radio" id="filterRadio1" onclick="disableInputs()" value='["0","1000"]' class="filterInput" name="filter">
@@ -103,33 +106,33 @@
                                 <cfif variables.randomProductsResult.fldSubCategoryId EQ variables.subCategoryId>
                                     <cfset variables.productsCount = variables.productsCount + 1>
                                     <div class="card randomProductCard" style="width: 13rem;">
-                                        <a href="./productPage.cfm?productId=#variables.randomProductsResult.fldProduct_ID#">
+                                        <a class="text-decoration-none" href="./productPage.cfm?productId=#variables.randomProductsResult.fldProduct_ID#">
                                             <img src="../Assets/ProductImages/#variables.randomProductsResult.fldImageFileName#" class="card-img-top randProductImage" alt="Product Image">
-                                        </a>
-                                        <div class="card-body randProductbody">
-                                            <div class="card-text randProductName">#variables.randomProductsResult.fldProductName#</div>
-                                            <div>#variables.randomProductsResult.fldBrandName#</div>
-                                            <div class="card-text randProductPrice">
-                                                <i class="fa-solid fa-indian-rupee-sign"></i>
-                                                #variables.randomProductsResult.fldPrice + variables.randomProductsResult.fldTax#
+                                            <div class="card-body randProductbody">
+                                                <div class="card-text randProductName">#variables.randomProductsResult.fldProductName#</div>
+                                                <div class="text-dark">#variables.randomProductsResult.fldBrandName#</div>
+                                                <div class="card-text randProductPrice">
+                                                    <i class="fa-solid fa-indian-rupee-sign"></i>
+                                                    #variables.randomProductsResult.fldPrice + variables.randomProductsResult.fldTax#
+                                                </div>
                                             </div>
-                                        </div>
+                                        </a>
                                     </div>
                                 </cfif>
                                 <cfelseif variables.productsCount LT 12>
                                     <cfset variables.productsCount = variables.productsCount + 1>
                                     <div class="card randomProductCard" style="width: 13rem;">
-                                        <a href="./productPage.cfm?productId=#variables.randomProductsResult.fldProduct_ID#">
+                                        <a class="text-decoration-none" href="./productPage.cfm?productId=#variables.randomProductsResult.fldProduct_ID#">
                                             <img src="../Assets/ProductImages/#variables.randomProductsResult.fldImageFileName#" class="card-img-top randProductImage" alt="Product Image">
-                                        </a>
-                                        <div class="card-body randProductbody">
-                                            <div class="card-text randProductName">#variables.randomProductsResult.fldProductName#</div>
-                                            <div>#variables.randomProductsResult.fldBrandName#</div>
-                                            <div class="card-text randProductPrice">
-                                                <i class="fa-solid fa-indian-rupee-sign"></i>
-                                                #variables.randomProductsResult.fldPrice + variables.randomProductsResult.fldTax#
+                                            <div class="card-body randProductbody">
+                                                <div class="card-text randProductName">#variables.randomProductsResult.fldProductName#</div>
+                                                <div class="text-dark">#variables.randomProductsResult.fldBrandName#</div>
+                                                <div class="card-text randProductPrice">
+                                                    <i class="fa-solid fa-indian-rupee-sign"></i>
+                                                    #variables.randomProductsResult.fldPrice + variables.randomProductsResult.fldTax#
+                                                </div>
                                             </div>
-                                        </div>
+                                        </a>
                                     </div>
                                 <cfelse>
                                     <cfset arrayAppend(variables.productsArray,randomProductsResult.fldProduct_ID)>

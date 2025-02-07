@@ -82,7 +82,13 @@
                         </div>
                         <cfelse>
                             <div class="d-flex justify-content-center">
-                                <img src="../Assets/SiteImages/Empty_Shopping.jpg">
+                                <img class="" src="../Assets/SiteImages/Empty_Shopping.jpg">
+                            </div>
+                            <div class="text-center mt-3">
+                                <a class="continueShopping">
+                                    Continue Shopping
+                                    <i class="fa-solid fa-right-long"></i>
+                                </a>
                             </div>
                     </cfif>
                 </div>
