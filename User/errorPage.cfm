@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../Assets/SiteImages/LogoImage.png">
     <title>ERROR PAGE</title>
     <link rel="stylesheet" href="./Bootstrap/bootstrap.min.css"/>
 </head>

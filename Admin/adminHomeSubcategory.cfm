@@ -14,7 +14,8 @@
             <cfif structKeyExists(form,"subcatgoryEdit")>
                 <cfset variables.subcategoryEditResult = variables.adminSubCateObject.editSubCategoryFunction(
                     newSubCategory = form.editSubCategory,
-                    selectedCategory = form.categorySelect
+                    selectedCategory = form.categorySelect,
+                    subCategoryId = form.subcatgoryEdit
                 )>
             </cfif>
             <cfif structKeyExists(form,"subcategoryAddButton")>

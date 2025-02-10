@@ -4,6 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>User Home Page</title>
+        <link rel="icon" type="image/x-icon" href="../Assets/SiteImages/LogoImage.png">
         <link rel="stylesheet" href="./CSS/userStyle.css">
         <link rel="stylesheet" href="./Bootstrap/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -11,7 +12,7 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
     </head>
-    <body class="hideScroll">
+    <body >
         <cfoutput>
             <cfset userProfileObject = new Component.userComponent()>
             <cfset userResult = userProfileObject.isUserExist(userId = session.userId)>
@@ -118,14 +119,14 @@
                     <div class="d-flex justify-content-start align-items-center">
                         <img src="../Assets/SiteImages/userProfilepic.jpg" class="userProfileLogo my-2">
                         <div class="userDataDiv">
-                            <div class="userDetails" id="userDataName">
-                                <span class="fw-bold m-0">Account Name</span> : #userResult.fldFirstName &" "& userResult.fldLastName#
+                            <div class="userDetails" >
+                                <span class="fw-bold m-0">Account Name</span> : <span class="m-0" id="userDataName">#userResult.fldFirstName &" "& userResult.fldLastName#</span>
                             </div>
-                            <div class="userDetails" id="userDataEmail">
-                                <span class="fw-bold m-0">Email Id</span> : #userResult.fldEmail#
+                            <div class="userDetails">
+                                <span class="fw-bold m-0">Email Id</span> : <span class="m-0" id="userDataEmail">#userResult.fldEmail#</span>
                             </div>
-                            <div class="userDetails" id="userDataPhone">
-                                <span class="fw-bold m-0">Phone Number</span> : #userResult.fldPhone#
+                            <div class="userDetails">
+                                <span class="fw-bold m-0">Phone Number</span> : <span class="m-0" id="userDataPhone">#userResult.fldPhone#</span>
                             </div>
                         </div>
                     </div>

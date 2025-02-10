@@ -4,6 +4,7 @@
         <link rel="stylesheet" href="./Bootstrap/bootstrap.min.css">
         <link rel="stylesheet" href="./CSS/userStyle.css">
         <title>User_Cart_Page</title>
+        <link rel="icon" type="image/x-icon" href="../Assets/SiteImages/LogoImage.png">
  	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -113,8 +114,21 @@
                                 <button name="orderAcknowledgeButton" class="orderAcknowledge">Okay</button>
                             </div>
                         </div>
+                        <cfelse>
+                            <div class="fs-3 fw-bold m-3 text-danger">
+                                Oops! Something happened with your Order
+                                <a href="./userhomePage.cfm">
+                                    Back to Order
+                                </a>
+                            </div>
                     </cfif>
                     <cfelse>
+                        <div class="cartPath">
+                            <div class="pageFullPath">
+                                <a href="./userCartPage.cfm">Return to Cart Page</a>
+                                <i class="fa-solid fa-chevron-right fa-xs"></i> 
+                            </div>
+                        </div>
                         <div class="cartPageMain" id="cartPageMainId">
                             <div class="productDescription accordion" id='accordionMain'>
                                 <div>

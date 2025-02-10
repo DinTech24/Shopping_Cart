@@ -88,11 +88,25 @@ a > img{
     box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
 }
 
+.modal-title{
+    color: white;
+}
+
 .accessButton{
     border: transparent;
     background-color: #17879b;
     width: 15vw;
     border: 1px slid #162e41;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    color: white;
+}
+
+.logoutModalButton{
+    border: transparent;
+    background-color: #9c0202;
+    width: 15vw;
+    border: 1px slid #9c0202;
     margin-bottom: 10px;
     border-radius: 5px;
     color: white;
@@ -362,6 +376,13 @@ a > img{
     margin-bottom: 1rem;
 }
 
+.cartPath{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 3vw;
+}
+
 .pageFullPath {
     font-size: 0.9rem;
     color: rgb(102, 101, 101);
@@ -473,7 +494,7 @@ a > img{
 /* cart */
 .cartPageMain{
 	display:flex;
-	margin:2vw 3vw;
+	margin:2vw 0vw 2vw 3vw;
 	width:90%;
 
 }

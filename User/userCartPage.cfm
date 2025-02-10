@@ -4,13 +4,15 @@
         <link rel="stylesheet" href="./Bootstrap/bootstrap.min.css">
         <link rel="stylesheet" href="./CSS/userStyle.css">
         <title>User_Cart_Page</title>
+        <link rel="icon" type="image/x-icon" href="../Assets/SiteImages/LogoImage.png">
  	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="../Assets/SiteImages/LogoImage.png">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
     </head>
-    <body class="hideScroll">
+    <body>
         <cfoutput>
             <cfset variables.userCartObject = new Component.userComponent()>
             <cfif structKeyExists(url,"productId")>
@@ -24,6 +26,12 @@
             <cfset variables.quantityTax = 0>
             <cfset variables.productQuantity = 0>
             <cfinclude  template="./userHeader.cfm">
+            <div class="cartPath">
+                <div class="pageFullPath">
+                    <a href="./userhomePage.cfm">Return to Home Page</a>
+                    <i class="fa-solid fa-chevron-right fa-xs"></i> 
+                </div>
+            </div>
             <div class="cartPageMain" id="cartPageMainId">
                 <div class="productDescription">
                     <cfloop query="variables.cartProductDisplayResult">
@@ -85,7 +93,7 @@
                                 <img class="" src="../Assets/SiteImages/Empty_Shopping.jpg">
                             </div>
                             <div class="text-center mt-3">
-                                <a class="continueShopping">
+                                <a class="continueShopping" href="./userhomePage.cfm">
                                     Continue Shopping
                                     <i class="fa-solid fa-right-long"></i>
                                 </a>

@@ -61,31 +61,20 @@ function registerUser(){
     }
     
     if(flag == false){
+        document.getElementById("signupError").innerHTML = "";
         event.preventDefault();
     }
     return flag;
 }
 
 function logoutFunction(){
-    Swal.fire({
-        title: "Confirm to logout?",
-        showDenyButton: true,
-        confirmButtonText: "Yes",
-        denyButtonText: `Cancel`
-      }).then((result) => {
-        if (result.isConfirmed) {
-          Swal.fire("Saved!", "", "success");
-          $.ajax({
-            type:"POST",
-            url:"Component/userComponent.cfc?method=logoutUser",
-            success:function(){
-                    window.location.href = "./userhomePage.cfm"
-                }
-        })
-        } else if (result.isDenied) {
-          Swal.fire("Changes are not saved", "", "info");
-        }
-      });
+    $.ajax({
+        type:"POST",
+        url:"Component/userComponent.cfc?method=logoutUser",
+        success:function(){
+                window.location.href = "./userhomePage.cfm"
+            }
+    })
 }
 
 function closeUserModal(){
@@ -214,9 +203,9 @@ function addProductQuantity(cartId){
     var totalprice = document.getElementById("totalprice").innerHTML;
     var totaltax = document.getElementById("totaltax").innerHTML;
     var totalamount = document.getElementById("totalamount").innerHTML;
-    document.getElementById("totalprice").innerHTML = Number(totalprice) + Number(price);
-    document.getElementById("totaltax").innerHTML = Number(totaltax) +Number(tax);
-    document.getElementById("totalamount").innerHTML = Number(totalamount) + Number(tax) + Number(price);
+    document.getElementById("totalprice").innerHTML = (Number(totalprice) + Number(price)).toFixed(1);
+    document.getElementById("totaltax").innerHTML = (Number(totaltax) +Number(tax)).toFixed(1);
+    document.getElementById("totalamount").innerHTML = (Number(totalamount) + Number(tax) + Number(price)).toFixed(1);
     $.ajax({
         type:"POST",
         url:"Component/userComponent.cfc?method=updateCartQuantity",
@@ -233,9 +222,9 @@ function reduceProductQuantity(cartId){
     var totalprice = document.getElementById("totalprice").innerHTML;
     var totaltax = document.getElementById("totaltax").innerHTML;
     var totalamount = document.getElementById("totalamount").innerHTML;
-    document.getElementById("totalprice").innerHTML = Number(totalprice) - Number(price);
-    document.getElementById("totaltax").innerHTML = Number(totaltax) - Number(tax);
-    document.getElementById("totalamount").innerHTML = (Number(totalamount) - Number(tax)) - Number(price);
+    document.getElementById("totalprice").innerHTML = (Number(totalprice) - Number(price)).toFixed(1);
+    document.getElementById("totaltax").innerHTML = (Number(totaltax) - Number(tax)).toFixed(1);
+    document.getElementById("totalamount").innerHTML = ((Number(totalamount) - Number(tax)) - Number(price)).toFixed(1);
     if(prQuantity == 0){
         document.getElementById(cartId.value+"CartProduct").remove()
         var producttotalQuantity = document.getElementById("productQuantityId").innerHTML;
@@ -243,9 +232,20 @@ function reduceProductQuantity(cartId){
         var producttotalQuantity = document.getElementById("productQuantityId").innerHTML;
         if(producttotalQuantity == 0){
             document.getElementById("cartPageMainId").innerHTML = 
-                `<div class="d-flex justify-content-center">
-                    <img src="../Assets/SiteImages/Empty_Shopping.jpg">
-                </div>`
+                `
+                <div>
+                    <div class="d-flex justify-content-center">
+                        <img src="../Assets/SiteImages/Empty_Shopping.jpg">
+                    </div>
+                    <div class="text-center mt-3">
+                        <a class="continueShopping" href="./userhomePage.cfm">
+                            Continue Shopping
+                            <i class="fa-solid fa-right-long"></i>
+                        </a>
+                    </div>
+                </div>
+                `
+                
         }
     }
     $.ajax({
@@ -256,7 +256,21 @@ function reduceProductQuantity(cartId){
 }
 
 function removeCart(cartId){
-    if(confirm("Are you sure to remove product from cart?")){
+    Swal.fire({
+        title: "Are you sure to remove?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, remove it!"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: "Deleted!",
+            text: "Product has been removed from cart.",
+            icon: "success"
+        });
         var prQuantity = document.getElementById(cartId.value+"quantity").innerHTML;
         var price = document.getElementById(cartId.value+"unitprice").innerHTML;
         var tax = document.getElementById(cartId.value+"unittax").innerHTML;
@@ -267,8 +281,8 @@ function removeCart(cartId){
         var qtyTax = Number(prQuantity)*Number(tax)
         var totalQtyAmount = qtyPrice + qtyTax;
         document.getElementById("totalamount").innerHTML = Number(totalamount) - totalQtyAmount;
-        document.getElementById("totalprice").innerHTML = Number(totalprice) - Number(qtyPrice)
-        document.getElementById("totaltax").innerHTML = Number(totaltax) - Number(qtyTax)
+        document.getElementById("totalprice").innerHTML = (Number(totalprice) - Number(qtyPrice)).toFixed(1)
+        document.getElementById("totaltax").innerHTML = (Number(totaltax) - Number(qtyTax)).toFixed(1)
         document.getElementById(cartId.value+"CartProduct").remove()
         var producttotalQuantity = document.getElementById("productQuantityId").innerHTML;
         document.getElementById("productQuantityId").innerHTML = Number(producttotalQuantity)-1;
@@ -280,11 +294,22 @@ function removeCart(cartId){
         var producttotalQuantity = document.getElementById("productQuantityId").innerHTML;
         if(producttotalQuantity == 0){
             document.getElementById("cartPageMainId").innerHTML = 
-            `<div class="d-flex justify-content-center">
-                <img src="../Assets/SiteImages/Empty_Shopping.jpg">
-            </div>`
+            `
+            <div>
+                <div class="d-flex justify-content-center">
+                    <img src="../Assets/SiteImages/Empty_Shopping.jpg">
+                </div>
+                <div class="text-center mt-3">
+                    <a class="continueShopping" href="./userhomePage.cfm">
+                        Continue Shopping
+                        <i class="fa-solid fa-right-long"></i>
+                    </a>
+                </div>
+            </div>
+            `
         }
     }
+    });
 }
 
 
@@ -403,7 +428,7 @@ function removeAddress(addressId){
         title: "Do you want to remove item from cart?",
         showDenyButton: true,
         confirmButtonText: "Yes",
-        denyButtonText: `Cancel`
+        denyButtonText: `No`
       }).then((result) => {
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
@@ -564,9 +589,9 @@ function addBuyQuantity(){
     document.getElementById("reduceQuantity").disabled = false;
     document.getElementById("ProductQuantitySpan").innerHTML = Number(productQuantity) + 1
     var productQuantity = document.getElementById("ProductQuantitySpan").innerHTML;
-    document.getElementById("totalprice").innerHTML = Number(totalprice) + Number(unitPrice);
-    document.getElementById("totaltax").innerHTML = Number(totaltax) + Number(unitTax);
-    document.getElementById("totalAmount").innerHTML = Number(totalAmount) + Number(unitPrice) + Number(unitTax)
+    document.getElementById("totalprice").innerHTML = (Number(totalprice) + Number(unitPrice)).toFixed(1);
+    document.getElementById("totaltax").innerHTML = (Number(totaltax) + Number(unitTax)).toFixed(1);
+    document.getElementById("totalAmount").innerHTML = (Number(totalAmount) + Number(unitPrice) + Number(unitTax)).toFixed(1)
     document.getElementById("productQuanityHidden").value = Number(productQuantity);
 }
 
@@ -579,9 +604,9 @@ function reduceBuyQuantity(){
     var totalAmount = document.getElementById("totalAmount").innerHTML
     document.getElementById("ProductQuantitySpan").innerHTML = Number(productQuantity) - 1
     var productQuantity = document.getElementById("ProductQuantitySpan").innerHTML;
-    document.getElementById("totalprice").innerHTML = Number(totalprice) - Number(unitPrice);
-    document.getElementById("totaltax").innerHTML = Number(totaltax) - Number(unitTax);
-    document.getElementById("totalAmount").innerHTML = Number(totalAmount) - Number(unitPrice) - Number(unitTax)
+    document.getElementById("totalprice").innerHTML = (Number(totalprice) - Number(unitPrice)).toFixed(1);
+    document.getElementById("totaltax").innerHTML = (Number(totaltax) - Number(unitTax)).toFixed(1);
+    document.getElementById("totalAmount").innerHTML = (Number(totalAmount) - Number(unitPrice) - Number(unitTax)).toFixed(1)
     document.getElementById("productQuanityHidden").value = Number(productQuantity);
     if(productQuantity == 1){
         document.getElementById("reduceQuantity").disabled = true;
@@ -610,13 +635,18 @@ function clearEditModal(){
 
 }
 
+
 function searchOrder(){
-    searchKeyWord = document.getElementById("searchOrderId").value;
+    $('#searchOrderId').keyup(function() { 
+        this.value = this.value.toLocaleUpperCase(); 
+    });
+    searchKeyWord = document.getElementById("searchOrderId").value.toUpperCase();
     const container = document.getElementById("orderHistorymainDivId")
     const allElements = container.querySelectorAll("[id]");
     var dataDiv = Array.from(allElements).filter(item => item.id.includes(searchKeyWord));
     var falseDiv = Array.from(allElements).filter(item => !item.id.includes(searchKeyWord));
     if(dataDiv.length>0){
+        document.getElementById("idSearchResult").innerHTML = ""
         for(i=0;i<=dataDiv.length;i++){
             console.log(dataDiv)
             $(dataDiv[i]).show();
@@ -624,6 +654,8 @@ function searchOrder(){
         for(i=0;i<=falseDiv.length;i++){
             $(falseDiv[i]).hide();
         }
+    }else{
+        document.getElementById("idSearchResult").innerHTML = "No Orders with the ID"
     }
 }
 
@@ -635,12 +667,6 @@ function downloadConfirmation(){
         return false;
     }
 }
-
-var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-  return new bootstrap.Tooltip(tooltipTriggerEl)
-})
-
 if ( window.history.replaceState ) {
     window.history.replaceState( null, null, window.location.href );
 }

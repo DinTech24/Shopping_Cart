@@ -49,13 +49,16 @@
         <cfargument  name="emailId" type="string" required = "false">
         <cfargument  name="phonenumber" type="string" required = "false">
         <cfargument  name="userId" type="numeric" required = "false">
+        <cfargument  name="givenPassword" type="string" required = "false">
+        <cfargument  name="enteredId" type="string" required="false">
         <cfquery name="local.getUserQuery">
             SELECT
                 TOP 1
                 fldFirstName,
                 fldLastName, 
                 fldEmail,
-                fldPhone
+                fldPhone,
+                fldUser_ID
             FROM
                 tblUser 
             WHERE
@@ -65,6 +68,10 @@
                     OR fldPhone = <cfqueryparam value = '#arguments.phonenumber#' cfsqltype = "varchar">)
                     <cfelseif structKeyExists(arguments,"userId")>
                         fldUser_ID = <cfqueryparam value = '#arguments.userId#' cfsqltype = "varchar">
+                    <cfelseif structKeyExists(arguments,"givenPassword")>
+                        fldHashedPassword  = <cfqueryparam value = '#arguments.givenPassword#' cfsqltype = "varchar">
+                        AND (fldEmail = <cfqueryparam value = '#arguments.enteredId#' cfsqltype = "varchar">
+                        OR fldPhone = <cfqueryparam value = '#arguments.enteredId#' cfsqltype = "varchar">)
                     <cfelse>
                         (fldEmail = <cfqueryparam value = '#arguments.emailId#' cfsqltype = "varchar">
                         OR fldPhone = <cfqueryparam value = '#arguments.phonenumber#' cfsqltype = "varchar">)
@@ -132,19 +139,10 @@
         </cfquery>
         <cfif queryRecordCount(local.checkPassword)>
             <cfset local.givenPassword = hash("#arguments.enteredPassword#"&"#local.checkPassword.fldUserSaltString#","SHA-256","UTF-8")>
-            <cfquery name="local.checkUser">
-                SELECT 
-                    fldUser_ID,
-                    fldFirstName,
-                    fldEmail
-                FROM
-                    tblUser 
-                WHERE
-                    (fldEmail = <cfqueryparam value = '#arguments.enteredId#' cfsqltype = "varchar">
-                    OR fldPhone = <cfqueryparam value = '#arguments.enteredId#' cfsqltype = "varchar">)
-                    AND fldHashedPassword  = <cfqueryparam value = '#local.givenPassword#' cfsqltype = "varchar">
-                    AND fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
-            </cfquery>
+            <cfset local.checkUser = isUserExist(
+                givenPassword = local.givenPassword,
+                enteredId = arguments.enteredId
+            )>
             <cfif queryRecordCount(local.checkUser)>
                 <cfset session.userLogin = true>
                 <cfset session.userId = local.checkUser.fldUser_ID>
@@ -486,7 +484,7 @@
         </cfquery>
     </cffunction>
 
-    <cffunction  name="placeOrder" description="Function to place order" returnType="boolean">
+    <cffunction  name="placeOrder" description="Function to place order" returnType="any">
         <cfargument name="orderStructure" type="struct">
         <cfargument  name="orderType" type="string">
         <cfset local.cardDetails = structNew()>
@@ -514,52 +512,66 @@
                 )>
                 <cfset local.TotalPrice = local.productResult.fldPrice * arguments.orderStructure.productQuantity>
                 <cfset local.TotalTax = local.productResult.fldTax * arguments.orderStructure.productQuantity>
-                <cfquery name="local.insertOrderQuery">
-                    INSERT INTO
-                        tblOrder(
-                            fldOrder_ID,
-                            fldUserId,
-                            fldAddressId,
-                            fldTotalPrice,
-                            fldTotalTax,
-                            fldCardPart
-                        )
-                    VALUES(
-                        <cfqueryparam value = '#local.generatedUUID#' cfsqltype = "varchar">,
-                        <cfqueryparam value = '#session.userId#' cfsqltype = "integer">,
-                        <cfqueryparam value = '#arguments.orderStructure.addressSelect#' cfsqltype = "integer">,
-                        <cfqueryparam value = '#local.TotalPrice#' cfsqltype = "decimal">,
-                        <cfqueryparam value = '#local.TotalTax#' cfsqltype = "decimal">,
-                        <cfqueryparam value = '#local.cardPart#' cfsqltype = "integer">
-                    )
-                </cfquery>
-                <cfquery name="local.insertOrderItemQuery">
-                    INSERT INTO
-                        tblOrderedItems(
-                            fldOrderId,
-                            fldProductId,
-                            fldQuantity,
-                            fldUnitPrice,
-                            fldUnitTax
-                        )
-                        VALUES(
-                            <cfqueryparam value = '#local.generatedUUID#' cfsqltype = "varchar">,
-                            <cfqueryparam value = '#arguments.orderStructure.productIdHidden#' cfsqltype = "integer">,
-                            <cfqueryparam value = '#arguments.orderStructure.productQuantity#' cfsqltype = "integer">,
-                            <cfqueryparam value = '#local.productResult.fldPrice#' cfsqltype = "decimal">,
-                            <cfqueryparam value = '#local.productResult.fldTax#' cfsqltype = "decimal">
-                        )
-                </cfquery>
+                <cftransaction>
+                    <cftry>
+                        <cfquery name="local.insertOrderQuery">
+                            INSERT INTO
+                                tblOrder(
+                                    fldOrder_ID,
+                                    fldUserId,
+                                    fldAddressId,
+                                    fldTotalPrice,
+                                    fldTotalTax,
+                                    fldCardPart
+                                )
+                            VALUES(
+                                <cfqueryparam value = '#local.generatedUUID#' cfsqltype = "varchar">,
+                                <cfqueryparam value = '#session.userId#' cfsqltype = "integer">,
+                                <cfqueryparam value = '#arguments.orderStructure.addressSelect#' cfsqltype = "integer">,
+                                <cfqueryparam value = '#local.TotalPrice#' cfsqltype = "decimal" scale="2">,
+                                <cfqueryparam value = '#local.TotalTax#' cfsqltype = "decimal" scale="2">,
+                                <cfqueryparam value = '#local.cardPart#' cfsqltype = "integer">
+                            )
+                        </cfquery>
+                        <cfquery name="local.insertOrderItemQuery">
+                            INSERT INTO
+                                tblOrderedItems(
+                                    fldOrderId,
+                                    fldProductId,
+                                    fldQuantity,
+                                    fldUnitPrice,
+                                    fldUnitTax
+                                )
+                            VALUES(
+                                <cfqueryparam value = '#local.generatedUUID#' cfsqltype = "varchar">,
+                                <cfqueryparam value = '#arguments.orderStructure.productIdHidden#' cfsqltype = "integer">,
+                                <cfqueryparam value = '#arguments.orderStructure.productQuantity#' cfsqltype = "integer">,
+                                <cfqueryparam value = '#local.productResult.fldPrice#' cfsqltype = "decimal" scale="2">,
+                                <cfqueryparam value = '#local.productResult.fldTax#' cfsqltype = "decimal" scale="2">
+                            )
+                        </cfquery>
+                        <cfcatch>
+                            <cftransaction action="rollback">
+                            <cfset local.errorMessage = cfcatch.message>
+                            <cfset local.errorDetail = cfcatch.detail>
+                            <cfset local.flag = false>
+                        </cfcatch>
+                    </cftry>
+                </cftransaction>
                 <cfelse>
-                    <cfquery name="executeSPQuery">
-                        EXEC 
-                        orderProduct_SP 
-                            @userId = <cfqueryparam value = '#session.userId#' cfsqltype = "integer">,
-                            @addressId = <cfqueryparam value = '#arguments.orderStructure.addressSelect#' cfsqltype = "integer">,
-                            @generatedUuid = <cfqueryparam value = '#local.generatedUUID#' cfsqltype = "varchar">,
-                            @cardPart = <cfqueryparam value = '#local.cardPart#' cfsqltype = "varchar">
-                    </cfquery>
-                    <cfset session.productQuantity = 0>
+                    <cfif session.productQuantity NEQ 0>
+                        <cfquery name="executeSPQuery">
+                            EXEC 
+                            orderProduct_SP 
+                                @userId = <cfqueryparam value = '#session.userId#' cfsqltype = "integer">,
+                                @addressId = <cfqueryparam value = '#arguments.orderStructure.addressSelect#' cfsqltype = "integer">,
+                                @generatedUuid = <cfqueryparam value = '#local.generatedUUID#' cfsqltype = "varchar">,
+                                @cardPart = <cfqueryparam value = '#local.cardPart#' cfsqltype = "varchar">
+                        </cfquery>
+                        <cfset session.productQuantity = 0>
+                        <cfelse>
+                            <cfset local.flag = false>
+                    </cfif>
             </cfif>
             <cfset orderConfirmationMail(local.generatedUUID)>
             <cfreturn flag>
@@ -577,7 +589,7 @@
     </cffunction>
 
     <cffunction  name="displayOrderHistory" returnType="query" description = "To disaply Order History">
-        <cfquery name="getOrderHistoryQuery">
+        <cfquery name="local.getOrderHistoryQuery">
             SELECT
                 fldQuantity,
                 fldProduct_ID,
@@ -616,7 +628,7 @@
             ORDER BY
                 fldOrderDate DESC
         </cfquery>
-        <cfreturn getOrderHistoryQuery>
+        <cfreturn local.getOrderHistoryQuery>
     </cffunction>
 
     <cffunction  name="logoutUser" access="remote" returnType="void"  description="Logout user">

@@ -149,7 +149,7 @@
     </cffunction>
 
     <cffunction name="getBrands" returnType="query" description="Function to get subcatBrandegory Details">
-        <cfquery name="getBrandQuery">
+        <cfquery name="local.getBrandQuery">
             SELECT 
                 fldBrandName,
                 fldBrand_ID
@@ -158,7 +158,7 @@
             WHERE 
                 fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
         </cfquery>
-        <cfreturn getBrandQuery>
+        <cfreturn local.getBrandQuery>
     </cffunction>
 
     <cffunction  name="insertProduct" returnType="boolean" description="Function to insert product">
@@ -174,7 +174,7 @@
         <cfif queryRecordCount(productResult)>
             <cfreturn false>
             <cfelse>
-            <cfquery name="insertProductQuery" result="generatedVal">
+            <cfquery name="local.insertProductQuery" result="generatedVal">
                 INSERT INTO 
                     tblProduct(
                         fldSubCategoryId,
@@ -196,7 +196,7 @@
             </cfquery>
             <cfset local.imagedefaultval = 1>
             <cfloop array="#local.productImages#" item="item">
-                <cfquery name="insertImages">
+                <cfquery name="local.insertImages">
                     INSERT INTO 
                         tblProductImages(
                             fldProductId,
@@ -218,7 +218,7 @@
 
     <cffunction  name="updateProduct" returnType="void"  description="Function to update products">
         <cfargument  name="editDataStructure"  type="struct" required="true">
-        <cfquery name="insertProductQuery" result="generatedVal">
+        <cfquery name="local.insertProductQuery" result="generatedVal">
             UPDATE 
                 tblProduct 
             SET 
@@ -238,7 +238,7 @@
         result="local.productImages"
         nameconflict="makeunique">
         <cfloop array="#local.productImages#" item="item">
-            <cfquery name="insertImages">
+            <cfquery name="local.insertImages">
                 INSERT INTO 
                     tblProductImages(
                         fldProductId,
@@ -278,12 +278,12 @@
                 AND fldDefaultImage = <cfqueryparam value = '1' cfsqltype = "integer">
                 AND tblProduct.fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
                 AND tblbrands.fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
-            <cfif structKeyExists(arguments, "productName")>
-                AND fldProductName = <cfqueryparam value = '#arguments.productName#' cfsqltype = "varchar">
-            </cfif>
-            <cfif structKeyExists(arguments, "jscall")>
-                AND fldProduct_ID = <cfqueryparam value = '#arguments.productId#' cfsqltype = "integer">
-            </cfif>
+                <cfif structKeyExists(arguments, "productName")>
+                    AND fldProductName = <cfqueryparam value = '#arguments.productName#' cfsqltype = "varchar">
+                </cfif>
+                <cfif structKeyExists(arguments, "jscall")>
+                    AND fldProduct_ID = <cfqueryparam value = '#arguments.productId#' cfsqltype = "integer">
+                </cfif>
         </cfquery>
         <cfif structKeyExists(arguments, "jscall")>
             <cfset newStructure["productid"] =local.getproductsQuery.fldProduct_ID>
@@ -293,7 +293,7 @@
             <cfset newStructure["productprice"] =local.getproductsQuery.fldPrice>
             <cfset newStructure["fldtax"] =local.getproductsQuery.fldTax>
             <cfset newStructure["fldimage"] =local.getproductsQuery.fldImageFileName>
-             <cfreturn newStructure>
+            <cfreturn newStructure>
             <cfelse>
                 <cfreturn local.getproductsQuery>
         </cfif>
@@ -321,14 +321,14 @@
                             <cfqueryparam value = '#session.adminUserId#' cfsqltype = "integer">
                         )
                 </cfquery>
-                <cfreturn false>
+                <cfreturn true>
         </cfif>
     </cffunction>
 
     <cffunction  name="setDefaultImage" access="remote" returnType="void" description="Function to set Default Image of products">
         <cfargument  name="imageId" type="integer" required="true">
         <cfargument  name="productId" type="integer" required="true">
-        <cfquery name="setDefaultImageQuery">
+        <cfquery name="local.setDefaultImageQuery">
             UPDATE 
                 tblProductImages
             SET
@@ -336,7 +336,7 @@
             WHERE 
                 fldProductImage_ID = <cfqueryparam value = '#arguments.imageId#' cfsqltype = "integer">
         </cfquery>
-        <cfquery name="unsetDefaultImageQuery">
+        <cfquery name="local.unsetDefaultImageQuery">
             UPDATE 
                 tblProductImages
             SET
@@ -350,14 +350,16 @@
     <cffunction  name="editSubCategoryFunction" returnType="boolean" description="Function to edit Subcategory">
         <cfargument name="newSubCategory" type="string" required="true">
         <cfargument name="selectedCategory" type="integer" required="true">
+        <cfargument  name="subCategoryId" type="integer" required="true">
         <cfset findSameSubCategory = listSubcategories(
             subCategoryName = arguments.newsubCategory,
-            categoryId = arguments.selectedCategory
+            categoryId = arguments.selectedCategory,
+            subCategoryId = arguments.subCategoryId
         )>
         <cfif queryRecordCount(findSameSubCategory)>
             <cfreturn false>
             <cfelse>
-                <cfquery name="editSubcategoryQuery">
+                <cfquery name="local.editSubcategoryQuery">
                     UPDATE 
                         tblSubCategory
                     SET 
@@ -427,7 +429,7 @@
 
     <cffunction  name="deleteProductImage" access="remote" returnType="void"  description="Function to delete product images">
         <cfargument  name="imageId" type="integer" required="true">
-        <cfquery name="deleteImageQuery">
+        <cfquery name="local.deleteImageQuery">
             DELETE FROM
                 tblProductImages  
             WHERE
