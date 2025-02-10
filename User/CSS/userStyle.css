@@ -1,0 +1,1010 @@
+*{
+    font-family: "Nunito";
+    font-size: 16px;
+}
+
+body{
+    margin: 0px;
+    padding:0px;
+    overflow-x:hidden;
+    overflow-y:scroll;
+}
+
+a > img{
+    object-fit: contain;
+}
+
+.hideScroll::-webkit-scrollbar {
+    display: none;
+}
+  
+.inputStyle{
+    margin-top: 2.5vh;
+    border: 1px solid rgb(240, 237, 237);
+    border-radius: 6px;
+    width: 30vw;
+    height: 6vh;
+    border: 1px solid grey;
+}
+
+.addressLabel{
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    margin-top:10px;
+}
+
+.inputStyleNew{
+    border: 1px solid rgb(240, 237, 237);
+    border-radius: 6px;
+    width: 30vw;
+    height: 6vh;
+    border: 1px solid grey;
+}
+
+.accessPageHead{
+    background-color: #17879b;
+    color: white;
+    top:0px;
+    z-index: 1;
+    position: sticky;
+    height: 8vh;
+}
+
+.accessPageHead a{
+    color: white;
+    text-decoration: none;
+}
+
+.accessBodyMainDiv{
+    height: 100%;
+}
+
+.addressLogoMainDiv{
+    background-color: #3b517a;
+    height: 100%;
+    border-radius: 10px;
+}
+
+.addressLoginMainDiv{
+    background-color: #536a96;
+    height: 100%;
+    border-radius: 10px;
+}
+
+.addressLogoDiv{
+    display: flex;
+    justify-content: center;
+    width: 18vw;
+}
+
+.accessNames{
+    text-decoration: none;
+    color: white;
+}
+
+.accessMainDiv{
+    background-color: white;
+    border-radius:10px ;
+    border: 1px solid rgb(0, 0, 0);
+    box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
+}
+
+.modal-title{
+    color: white;
+}
+
+.accessButton{
+    border: transparent;
+    background-color: #17879b;
+    width: 15vw;
+    border: 1px slid #162e41;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    color: white;
+}
+
+.logoutModalButton{
+    border: transparent;
+    background-color: #9c0202;
+    width: 15vw;
+    border: 1px slid #9c0202;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    color: white;
+}
+
+.accessHeading{
+    font-size: 28px;
+    font-weight: 600;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-bottom: 2vh;
+    margin-top:2vh;
+}
+
+.registerWarning{
+    font-size: 12px;
+    color: crimson;
+    font-weight: 600;
+}
+
+
+.userNavBar{
+    display: flex;
+    justify-content: space-between;
+    background-color:rgb(238, 235, 235);
+    top: 0px;
+    position: sticky;
+    z-index: 5;
+}
+
+.userNavBar a{
+    text-decoration: none;
+    color: black;
+}
+
+.logoutButton{
+    background-color: transparent;
+    color: black;
+    font-weight: 600;
+    border: transparent;
+}
+
+.navHead{
+    font-size: 24px;
+    color: white;
+    font-weight: 800
+}
+
+.subcategoryBar{
+    background-color: #eec718;
+    display: flex;
+    justify-content: space-evenly;
+    top:8.8vh;
+    position: sticky;
+    z-index: 1;
+    border-bottom: 1px solid #c9a400;
+    border-top: 1px solid #c9a400;
+    font-weight: 500;
+}
+
+.subCategoryEach{
+    font-size: 14px;
+    text-decoration: none;
+    color: black;
+}
+
+.mainImage{
+    width: 100%;
+    height: 60vh;
+}
+
+.randomProductsHead{
+    font-size: 20px;
+    font-weight: 600;
+    margin-left: 10px;
+    margin-top: 3vh;
+}
+
+.randomProductsMainDiv{
+    margin: 10px;
+    margin-right: 0px;
+    display: flex;
+    flex-wrap:wrap;
+}
+
+.randomProductCard{
+    margin-right: 15.1px;
+    margin-bottom: 15.1px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.randProductbody{
+    text-align: center;
+    /* background-color: #81818154; */
+    background-color: #e2e9ec;
+    padding: 0px;
+}
+
+
+
+.randomAnchor{
+    text-decoration: none;
+    color: black;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.randProductImage{
+    width: 100%;
+    height:28vh;
+}
+
+.randProductPrice{
+    font-size: large;
+    color: rgb(24, 36, 54);
+    font-weight: bold;
+}
+
+.randProductName{
+    font-size: larger;
+    color:black;
+    font-weight: bolder;
+}
+
+.subCategoryEach{
+    position: relative;
+    cursor: pointer; 
+}
+
+.subCategoryEach a{
+    text-decoration: none;
+    color: black;
+}
+
+.subCategoryEach .toolTipData{
+    visibility: hidden;
+    width:11vw;
+    background-color: white;
+    color: black;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1;
+    top: 100%;
+    left: 50%;
+    margin-left: -60px;
+}
+  
+.subCategoryEach:hover .toolTipData{
+    visibility: visible;
+}
+
+.subcategories{
+    width:11vw;
+}
+
+.subcategories:hover{
+    background-color: rgba(7, 7, 7, 0.3);
+}
+
+
+.footerDiv{
+    border-top: rgb(214, 214, 214) 1px solid;
+}
+
+.LoginButton{
+    background-color: rgba(0, 0, 0, 0.7);
+    border: transparent;
+    border-radius: 10px;
+    color: white;
+}
+
+.createAccount{
+    font-size: 14px;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.sortText{
+    font-size: 14px;
+    font-weight: 600;
+    background: transparent;
+}
+
+.filterClass{
+    border: 1px solid rgb(212, 212, 212);
+    border-radius: 5px;
+}
+
+.sortArrow{
+    border: 1px solid rgb(214, 214, 214);
+    background-color: transparent;
+    border-radius: 6px;
+}
+.filterMainClass .filterInner{
+    border: 1px solid rgb(226, 226, 226);
+    box-shadow: 1px 1px 1px black;
+    padding: 10px;
+    width:20vw;
+    background-color: white;
+    color: black;
+    border-radius: 6px;
+    z-index: 1;
+    top: 100%;
+    right:10%;
+}
+
+
+.filterInput{
+    margin-right: 5px;
+}
+
+.screenDivision {
+    display: flex;
+    padding-left: 1rem;
+}
+.productImageDivision {
+    display: flex;
+    justify-content: center;
+}
+
+.productMainImage {
+    max-width: 100%;
+    height: auto;
+}
+
+.productBrand{
+    color: grey;
+    font-weight: bold;
+}
+
+.buttonClassDivion {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+}
+
+.screenDivisionButton1,
+.screenDivisionButton2 {
+    padding: 0.5rem 1rem;
+    border: none;
+    cursor: pointer;
+    margin-right: 1rem;
+    font-weight: bold;
+}
+
+.screenDivisionButton1 {
+    background-color: #3f8d56;
+    color: white;
+    border-radius: 5px;
+}
+
+.screenDivisionButton2 {
+    background-color: #2a6ba7;
+    color: white;
+    border-radius: 5px;
+}
+
+.screenSection2 {
+    padding-left: 1rem;
+}
+
+.pathAndShare {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.cartPath{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 3vw;
+}
+
+.pageFullPath {
+    font-size: 0.9rem;
+    color: rgb(102, 101, 101);
+}
+
+.pageFullPath a{
+    text-decoration: none;
+    color: rgb(102, 101, 101);
+}
+
+.productName {
+    font-size: 28px;
+    font-weight: bolder;
+    margin-top: 3vh;
+}
+.productNametag {
+    font-size: 15px;
+    color: #ff6f61;
+    margin-left: 0.5rem;
+}
+
+.specialPriceSpan {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #ff6f61;
+    margin-right: 0.5rem;
+}
+.productDiscountedPrice {
+    font-size: 18px;
+    margin-top: 1vh;
+    color: black;
+}
+
+.discountedPriceSpan{
+    color:black;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: bolder;
+}
+
+.badge{
+    font-family:cursive;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.carousel{
+    width: 38vw;
+    height:34vw;
+    border-radius: 20px;
+    border: #c5c6c7 1px solid;
+}
+
+.carousalcontrol{
+    color: grey;
+}
+
+.productAllImages1 {
+    width: 30vw;
+    height:33.7vw;
+    margin-left: 4vw;
+}
+
+.productImageMainDiv{
+    display: flex;
+}
+
+.productImageSubDiv{
+    border: 1px solid rgb(194, 194, 194);
+    border-radius: 5px;
+    height: 20vw;
+    width: 18vw;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.productImageSubDiv img {
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease;
+}
+
+.productImageSubDiv:hover img {
+  transform: scale(1.3);
+  cursor: zoom-in;
+}
+
+
+.productImagesSub{
+    height: 18vw;
+    width: 16vw;
+}
+
+.initialDivHeight{
+    max-height: 98vh;
+    overflow-y: hidden;
+}
+
+.viewMoreButton{
+    background-color: transparent;
+    border: 1px solid grey;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+/* cart */
+.cartPageMain{
+	display:flex;
+	margin:2vw 0vw 2vw 3vw;
+	width:90%;
+
+}
+
+.productDescription *{
+	background-color:white;
+}
+
+.productDescription{
+	background-color:white;
+	width:70%;
+	border:1px solid #d9d9d9;
+	border-radius:5px;
+}
+
+.mainSectionHeader{
+	display:flex;
+	justify-content:space-between;
+	font-size:13px;
+	align-items:center;
+	padding:0.7vw 1vw;
+	border-bottom:1px solid #d9d9d9;
+	border-radius:5px;
+}
+
+.productNameSize{
+	color:black;
+	text-decoration:none;
+}
+
+.emptyDiv{
+	height:10px;
+	background-color: #f2f2f2;
+}
+
+
+.orderDetailsDiv{
+	display:flex;
+}
+
+.orderDetailsSpan1{
+	font-size:15px;
+	margin-top:10px;
+	color:#a6a6a6;
+}
+
+.orderPack{
+	font-size:13px;
+	color:#a6a6a6;
+}
+
+.orderDetailsSpan2{
+	font-size:13px;
+	color:#a6a6a6;
+	text-decoration:line-through 1px solid #a6a6a6;
+}
+
+.orderDetailsSpan3{
+	font-size:14px;
+}
+
+
+.orderDetailsSpan4{
+	font-size:14px;
+	color:#008000;
+}
+
+.orderOffers{
+	display:flex;
+	align-items:center;
+}
+
+.orderDetailsSpan{
+    font-size: 16px;
+    font-weight: bold;
+    color: #008000;
+}
+
+.cartImage{
+    height: 40vh;
+    width:15vw;
+    margin-left: 10px;
+}
+
+
+.orderDetailsSpan5{
+	font-size:14px;
+	color:#008000;
+
+}
+
+
+.orderDetailsSpan6{
+	font-size:13px;
+	margin-left:15vw;
+}
+
+.addItemButton{
+	padding:0.8vw 2vw;
+	width:50%;
+	background-color:#ff9f00;
+	height:15%;
+	text-align:center;
+	cursor:pointer;
+	border-radius:2px;
+	font-size:14px;
+	color:white;
+}
+
+.placeOrderButton{
+	padding:1vw 3vw;
+	width:30%;
+	background-color:#307197;
+	height:8vh;
+	text-align:center;
+	cursor:pointer;
+	border-radius:2px;
+	font-size:14px;
+	color:white;
+	margin:1vw 1vw 1vw auto;
+	font-weight:600;
+    border: transparent;
+}
+
+#placeOrderButtonId{
+    padding:1vw 1vw;
+}
+
+.placeorderAnchor{
+    background-color:#307197;
+    text-decoration: none;
+    color: white;
+    height: 100%;
+    width: 100%;
+}
+
+.placeorderAnchor:hover{
+    color: white;
+}
+
+.placeOrderDiv{
+	height:6vw;
+	bottom:0px;
+	position:sticky;
+	box-shadow: 0 -2px 10px 0 rgba(0, 0, 0, .1);
+	padding-top:0.5vw;
+}
+
+.productPrice{
+	width:25vw;
+	margin-left:2vw;
+	background-color:white;
+	height:100%;
+	border:1px solid #d9d9d9;
+	position:sticky;
+	top:60px;
+	
+}
+
+.priceDetails{
+	margin-bottom:0.7vw;
+	font-size:16px;
+	font-weight:600;
+	color:grey;
+	border-bottom:1px solid #d9d9d9;
+	padding:1.5vh;
+	width:100%;
+}
+
+.borderDotted{
+	border-top:1px dashed #d9d9d9;
+	border-bottom:1px dashed #d9d9d9;
+}
+
+.prquanityReduce{
+	padding:7px 12px;
+	border:1px solid #d9d9d9;
+	border-radius:20px;
+	color:#d9d9d9;
+}
+.prquanityIncrease{
+	padding:7px 12px;
+	border:1px solid #d9d9d9;
+	border-radius:20px;
+	margin-left:8px;
+}
+.prquanity{
+	padding:3px 20px;
+	border:1px solid #d9d9d9;
+	margin-left:8px;
+}
+
+.cartFooter{
+	font-size:14px;
+	color:grey;
+	margin:1vh 0vw;
+	padding:3.2vh 3vw;
+	border-top:1px solid #d9d9d9;
+}
+
+.needHellpSpan{
+	margin-left:20vw;
+}
+
+.fontWeight{
+	font-weight:600;
+    color: crimson;
+    border: none;
+    background-color: transparent;
+}
+
+.mainSectionBody{
+    border-bottom: 1px solid rgb(221, 221, 221);
+}
+
+.userProfileLogo{
+    width:10vw;
+    height:10vw;
+}
+
+.userDataDiv *{
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size:18px;
+    margin-left: 4vw;
+}
+
+.userDetailsmainDiv{
+    width: 50vw;
+    display: flex;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    border-radius: 8px;
+    margin: 2vw;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.userDetails{
+    margin-left: 1vw;
+}
+
+.profileEditbuttton{
+    width: 15%;
+    height: 100%;
+    border: transparent;
+    background-color: #2a6ba7;
+    color: white;
+    border-radius:0px 8px 8px  0px;
+}
+
+.addAddressButton{
+    border: transparent;
+    background-color: #2a6ba7;
+    color: white;
+    padding: 0.7vw;
+    border-radius: 6px;
+}
+
+.addressesDiv{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.addressCard{
+    width: 15rem;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.ordersText{
+    color: #b9990b;
+    height: 10%;
+}
+
+.modal-header{
+    background-color:#6da7b1;
+}
+
+.addressCard *{
+    font-size: 15px;
+    background-color: white;
+    
+}
+
+.deliveryAddressDiv{
+    font-size: 18px;
+    padding-left: 20px;
+    padding: 15px;
+    border-bottom: 1px solid grey;
+    font-weight: bold;
+}
+
+.addressSubDiv{
+    border-bottom: 1px solid rgb(175, 175, 175);
+}
+
+.CardMainDiv{
+    width: 24vw;
+    height: 35vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.CardInnerDiv{
+    width: 22vw;
+    height: 30vh;
+    border: black;
+    border-radius: 10px;
+    border:1px solid rgb(133, 133, 133);
+}
+
+.cardNumberDiv{
+    width: 90%;
+    border: 1px solid rgb(133, 133, 133);
+    height: 7vh;
+    margin-left: 1vw;
+    margin-top: 3vh;
+    background-color: transparent;
+    color: black;
+    font-size: 24px;
+}
+
+.cardNumberDiv::placeholder{
+    color: black;
+    font-size: 14px;
+}
+
+.cardCvv::placeholder{
+    color: black;
+    font-size: 14px;
+}
+
+.cardValidDate::placeholder{
+    color: black;
+    font-size: 14px;
+}
+.cardBottomDiv{
+    margin-top: 10vh;
+    display: grid;
+    background-color: transparent;
+}
+
+.validUpto{
+    width: 6w;
+    border: 1px solid rgb(133, 133, 133);
+    display: flex;
+    background-color: transparent;
+}
+
+.validThorughText{
+    font-size: 14px;
+}
+
+.cardValidDate{
+    width: 3vw;
+    border: transparent;
+    background-color: transparent;
+    color: black;
+}
+
+.cardCvv{
+    border: 1px solid rgb(133, 133, 133);
+    width: 15%;
+    background-color: transparent;
+    color: black;
+}
+
+.cardMidSpan{
+    background-color: transparent;
+}
+
+.cardCvv:focus{
+    outline: none;
+}
+.cardNumberDiv:focus{
+    outline: none;
+}
+.cardValidDate:focus{
+    outline: none;
+}
+.cardWarning{
+    font-size:14px;
+    font-family:'Times New Roman', Times, serif;
+    font-weight: bold;
+}
+
+.enterCardDiv{
+    font-size: 15px;
+    margin-left: 1vw;
+    margin-top: 3vh;
+    color: rgb(148, 146, 146);
+    font-weight: bold;
+}
+
+#paymentsAmount{
+    background: transparent;
+}
+
+.orderHistory{
+    width: 10vw;
+    height: 10vw;
+}
+
+.orderHistoryHead{
+    color: white;
+    background-color: rgba(0, 0, 0, 0.9);
+    height:8vh;
+    position: sticky;
+    top: 8.5vh;
+    padding:10px;
+    font-size: 22px;
+    z-index: 1;
+}
+
+.orderIdMain{
+    background-color: #3f664c;
+    padding: 10px;
+    color: white;
+    font-weight: bold;
+    top: 16vh;
+    height: 7vh;
+    position: sticky;
+}
+
+
+.productOrderFooter{
+    background-color: rgb(247, 182, 108);
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+}
+
+.printButton{
+    color: rgb(255, 123, 123);
+    background-color: white;
+    border: transparent;
+    border-radius: 2px;
+    font-weight: bold;
+    font-size: 12px;
+    margin-left: 10px;
+}
+
+.orderInnerDiv{
+    padding-bottom: 4vh;
+    display: flex;
+    margin: 1vw;
+    background-color: white;
+    box-shadow: rgba(173, 173, 173, 0.726) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
+}
+
+.shippingAddressDiv *{
+    font-size: 15px;
+}
+
+.shippingAddressDiv {
+    margin: 1vw;
+    background-color: white;
+    box-shadow: rgba(173, 173, 173, 0.726) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
+}
+
+.shippingAddressInner{
+    padding: 1vw;
+}
+
+.orderConfirmModal{
+    width: 100vw;
+    height: 100vh;
+    position:absolute;
+    top:0;
+    z-index:5;
+    text-align: center;
+    background:fixed;
+    background-color: white;
+    overflow-y: hidden;
+}
+
+.confirmationImage{
+    width:50%;
+    height: 50%;
+    margin-top: 10vh;
+}
+
+.orderText{
+    font-size: 30px;
+    font-weight: bolder;
+    color: #008000;
+}
+
+.orderAcknowledge{
+    width: 10%;
+    height: 15%;
+    background-color: #3b517a;
+    color: white;
+    border: transparent;
+    border-radius: 5px;
+    margin-top:5vh;
+    font-size: 18px;
+}
+
+.orderTextEmail{
+    font-size: 20px;
+    color: #e28b00;
+}
+
+.continueShopping{
+    color: #e28b00;
+    font-size: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+
+}
