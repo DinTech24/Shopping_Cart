@@ -34,7 +34,6 @@
                                 <h5 class="modal-title" id="staticBackdropHead">Product Images</h5>
                             </div>
                             <div class="modal-body">
-                                <!--- Carousal --->
                                 <div id="carouselControls" class="carousel slide" data-bs-ride="carousel">
                                     <div class="carousel-inner" id="carousel-inner">
                                         <div id="carousel-button"></div>
@@ -48,7 +47,6 @@
                                         <span class="visually-hidden">Next</span>
                                     </button>
                                 </div>
-                                <!--- Carousal --->
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary w-100" onclick="closeAdminImageModal()" data-bs-dismiss="modal">Close</button>
@@ -167,8 +165,8 @@
                 </div>
             </div>
         </cfoutput>
-        <script src="./Script/adminPage.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="./Script/adminPage.js"></script>
     </body>
 </html>

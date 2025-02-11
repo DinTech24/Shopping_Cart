@@ -31,7 +31,12 @@
             <div id="loginException">
                 <cfif structKeyExists(form,"adminLoginButton")>
                     <cfset variables.adminLoginResult = variables.adminLoginObject.adminLogin(form.adminUser,form.adminPass)>
-                    <div class="text-danger text-center fw-bold">#variables.adminLoginResult["exception"]#</div>
+                    <cfif variables.adminLoginResult["exception"] EQ false>
+                        <cflocation  url="./adminHomePage.cfm">
+                        
+                        <cfelse>
+                            <div class="text-danger text-center fw-bold">#variables.adminLoginResult["exception"]#</div>
+                    </cfif>
                 </cfif>
             </div>
         </cfoutput>

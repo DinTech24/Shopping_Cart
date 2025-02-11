@@ -21,6 +21,10 @@ function adminLogin(){
     }
 }
 
+$(document).click(()=>{
+    $("#serverErrorSpan").hide()
+})
+
 function categoryValidation(){
     var newcategory = document.getElementById("categoryId").value;
     var modalType = document.getElementById("categorySubmitButton").name;

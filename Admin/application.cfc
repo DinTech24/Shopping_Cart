@@ -10,16 +10,16 @@
                                         "/Admin/adminLoginpage.cfm"
                                      ]>
         <cfif NOT arrayContains(local.excludedPages,arguments.requestedPage) AND NOT structKeyExists(session, "adminLogin") AND NOT structKeyExists(session, "username")>
-            <cflocation url="/Admin/adminLoginpage.cfm">
+            <cflocation url="/Admin/adminLoginpage.cfm" addToken="no">
         </cfif>
     </cffunction>
-<!--- 
+
     <cffunction  name="onError" returnType="void">
         <cfargument name="exception" type="string">
         <cfargument name="eventName" type="string">
         <cflocation  url="./errorPage.cfm?error=#arguments.exception#">
     </cffunction>
- --->
+
     <cffunction  name="onApplicationStart">
         <cfset application.encryptionString = generateSecretKey("AES")>
     </cffunction>

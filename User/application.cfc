@@ -6,7 +6,6 @@
 
     <cffunction  name="onRequestStart">
         <cfargument name="requestedPage" required="true">
-<!---         <cfset session.productQuantity = 0> --->
         <cfset local.includedPages = [
             "/User/userCartPage.cfm",
             "/User/userProfilePage.cfm",
@@ -27,13 +26,13 @@
         <cfset application.encryptionString = generateSecretKey("AES")>
     </cffunction>
 
-<!---     <cffunction  name="onError" returnType="void">
+    <cffunction  name="onError" returnType="void">
         <cfargument name="exception" type="string">
         <cfargument name="eventName" type="string">
         <cfmail from="dinilvallikunnil@gmail.com"  subject="eCart Error"  to="abhijithtechversant@gmail.com">
-            ERROR OCCURED - #arguments.eventName#(#arguments.eventName#)
+            ERROR OCCURED - #arguments.eventName#(#arguments.exception#)
         </cfmail>
         <cflocation  url="./errorPage.cfm?error=#arguments.exception#">
-    </cffunction> --->
+    </cffunction>
 
 </cfcomponent>

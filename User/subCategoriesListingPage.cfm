@@ -15,8 +15,7 @@
     <body>
         <cfoutput>
             <cfset variables.userCateObject = new Component.userComponent()>
-            <cfset variables.subCategoryResult = variables.userCateObject.listSubCategories()>
-            <cfif structKeyExists(form, "highSort")>
+            <cfif structKeyExists(form,"highSort")>
                 <cfset variables.randomProductsResult = variables.userCateObject.getRandomProducts(sort = form.highSort)>
                 <cfset variables.subCategoryId = decrypt(url.subCategoryId,application.encryptionString,"AES","Base64")>
                 <cfelseif structKeyExists(form, "lowSort")>
@@ -31,64 +30,67 @@
                     <cfset variables.randomProductsResult = variables.userCateObject.getRandomProducts(sort="negative")>
                     <cfset variables.subCategoryId = decrypt(url.subCategoryId,application.encryptionString,"AES","Base64")>
             </cfif>
+            <cfif structKeyExists(variables,"subCategoryId")>
+                <cfset variables.subCategoryResult = variables.userCateObject.listSubCategories(
+                    subCategoryId = variables.subCategoryId
+                )>
+            </cfif>
             <cfinclude  template="./userHeader.cfm">
             <cfif NOT structKeyExists(url, "searchKeyword")>
                 <cfloop query="subCategoryResult">
-                    <cfif variables.subCategoryResult.fldSubCategory_ID EQ variables.subCategoryId>
-                        <div class="p-3 d-flex justify-content-between px-2">
-                            <h2>#variables.subCategoryResult.fldSubcategoryName# - All Products</h2>
-                            <form method="POST">
-                                <div class="d-flex">
-                                    <div class="me-3">
-                                        <span class="sortText">Sort on price :</span>
-                                        <button class="sortArrow text-success"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="Sort in ascending Order" value="ASC" name="highSort">
-                                            <i class="fa-solid fa-arrow-up"></i>
-                                        </button>
-                                        <button class="sortArrow text-danger"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="Sort in descending Order" value="DESC" name="lowSort">
-                                            <i class="fa-solid fa-arrow-down"></i>
-                                        </button>
-                                    </div>
-                                    <div class="filterMainClass dropdown">
-                                        <button class="sortText filterClass dropdown-toggle type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" mt-1">
-                                            Filter
-                                            <i class="fa-solid fa-filter"></i>
-                                        </button>
-                                        <div class="filterInner dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                            <div>Select Price Range :</div>
-                                            <div class="d-flex">
-                                                <input type="radio" id="filterRadio1" onclick="disableInputs()" value='["0","1000"]' class="filterInput" name="filter">
-                                                <label>upto 1000</label>
+                    <div class="p-3 d-flex justify-content-between px-2">
+                        <h2>#variables.subCategoryResult.fldSubcategoryName# - All Products</h2>
+                        <form method="POST">
+                            <div class="d-flex">
+                                <div class="me-3">
+                                    <span class="sortText">Sort on price :</span>
+                                    <button class="sortArrow text-success"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="Sort in ascending Order" value="ASC" name="highSort">
+                                        <i class="fa-solid fa-arrow-up"></i>
+                                    </button>
+                                    <button class="sortArrow text-danger"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="Sort in descending Order" value="DESC" name="lowSort">
+                                        <i class="fa-solid fa-arrow-down"></i>
+                                    </button>
+                                </div>
+                                <div class="filterMainClass dropdown">
+                                    <button class="sortText filterClass dropdown-toggle type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" mt-1">
+                                        Filter
+                                        <i class="fa-solid fa-filter"></i>
+                                    </button>
+                                    <div class="filterInner dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                        <div>Select Price Range :</div>
+                                        <div class="d-flex">
+                                            <input type="radio" id="filterRadio1" onclick="disableInputs()" value='["0","1000"]' class="filterInput" name="filter">
+                                            <label>upto 1000</label>
+                                        </div>
+                                        <div class="d-flex">
+                                            <input type="radio" id="filterRadio2" onclick="disableInputs()" value='["1000","10000"]'class="filterInput" name="filter">
+                                            <label>1000 to 10000</label>
+                                        </div>
+                                        <div class="d-flex">
+                                            <input type="radio" id="filterRadio3" onclick="disableInputs()" value='["10000","25000"]' class="filterInput" name="filter">
+                                            <label>10000 to 25000</label>
+                                        </div>
+                                        <div class="d-flex">
+                                            <input type="radio" id="filterRadio4" onclick="disableInputs()" value='["25000","200000"]' class="filterInput" name="filter">
+                                            <label>25000 to 200000</label>
+                                        </div>
+                                        <div class="d-flex">
+                                            <input type="radio" id="filterRadio5" onclick="enableInputs()" value='range' class="filterInput" name="filter">
+                                            <label>Custom Range</label>
+                                        </div>
+                                        <div class="text-center">
+                                            <div class="mt-2">
+                                                <input type="text" disabled id="minVal" placeholder="MIN" class="selectRange form-control border-danger">
+                                                <div class="text-center fw-bold">Select Range</div>
+                                                <input type="text" disabled id="maxVal" placeholder="MAX" class="selectRange form-control border-success">
                                             </div>
-                                            <div class="d-flex">
-                                                <input type="radio" id="filterRadio2" onclick="disableInputs()" value='["1000","10000"]'class="filterInput" name="filter">
-                                                <label>1000 to 10000</label>
-                                            </div>
-                                            <div class="d-flex">
-                                                <input type="radio" id="filterRadio3" onclick="disableInputs()" value='["10000","25000"]' class="filterInput" name="filter">
-                                                <label>10000 to 25000</label>
-                                            </div>
-                                            <div class="d-flex">
-                                                <input type="radio" id="filterRadio4" onclick="disableInputs()" value='["25000","200000"]' class="filterInput" name="filter">
-                                                <label>25000 to 200000</label>
-                                            </div>
-                                            <div class="d-flex">
-                                                <input type="radio" id="filterRadio5" onclick="enableInputs()" value='range' class="filterInput" name="filter">
-                                                <label>Custom Range</label>
-                                            </div>
-                                            <div class="text-center">
-                                                <div class="mt-2">
-                                                    <input type="text" disabled id="minVal" placeholder="MIN" class="selectRange form-control border-danger">
-                                                    <div class="text-center fw-bold">Select Range</div>
-                                                    <input type="text" disabled id="maxVal" placeholder="MAX" class="selectRange form-control border-success">
-                                                </div>
-                                                <button type="button" class="btn btn-primary mt-2" onclick="getFilterResult(#variables.subCategoryId#)">Show result</button>
-                                            </div>
+                                            <button type="button" class="btn btn-primary mt-2" onclick="getFilterResult(#variables.subCategoryId#)">Show result</button>
                                         </div>
                                     </div>
                                 </div>
-                            <form>
-                        </div>
-                    </cfif>
+                            </div>
+                        <form>
+                    </div>
                 </cfloop>
                 <cfelse>
                     <cfif queryRecordCount(variables.randomProductsResult)>
@@ -102,7 +104,7 @@
                     <div class="randomProductsMainDiv" id="randomProductsMainDivId">
                         <cfset variables.productsCount = 0>
                         <cfset variables.productsArray = []>
-                        <cfloop query="randomProductsResult">
+                        <cfloop query="variables.randomProductsResult">
                             <cfif structKeyExists(url, "subCategoryId") AND variables.productsCount LT 12>
                                 <cfif variables.randomProductsResult.fldSubCategoryId EQ variables.subCategoryId>
                                     <cfset variables.productsCount = variables.productsCount + 1>
@@ -120,7 +122,7 @@
                                         </a>
                                     </div>
                                 </cfif>
-                                <cfelseif variables.productsCount LT 12>
+                                <cfelseif structKeyExists(url, "searchKeyword") AND variables.productsCount LT 12>
                                     <cfset variables.productsCount = variables.productsCount + 1>
                                     <div class="card randomProductCard" style="width: 13rem;">
                                         <a class="text-decoration-none" href="./productPage.cfm?productId=#variables.randomProductsResult.fldProduct_ID#">
@@ -135,18 +137,21 @@
                                             </div>
                                         </a>
                                     </div>
-                                <cfelse>
+                                <cfelseif structKeyExists(url, "searchKeyword") AND variables.productsCount GT 11>
                                     <cfset arrayAppend(variables.productsArray,randomProductsResult.fldProduct_ID)>
+                                <cfelseif structKeyExists(url, "subCategoryId")>
+                                    <cfif variables.randomProductsResult.fldSubCategoryId EQ variables.subCategoryId>
+                                        <cfset arrayAppend(variables.productsArray,randomProductsResult.fldProduct_ID)>
+                                    </cfif>
                             </cfif>
                         </cfloop>
-                        
                     </div>
                 </div>
             </div>
             <div class="text-center mb-3" id="viewMore">
                 <cfif variables.productsCount EQ 12>
                     <cfset variables.listData = arrayToList(variables.productsArray)>
-                    <button name="loadMoreProducts" onclick="loadAllProducts('#variables.listData#')" class="btn btn-secondary">
+                    <button type="button" name="loadMoreProducts" onclick="loadAllProducts('#variables.listData#')" class="btn btn-secondary">
                         Load More
                         <i class="fa-solid fa-circle-chevron-down"></i>
                     </button>

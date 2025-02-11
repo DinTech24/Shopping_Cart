@@ -17,27 +17,31 @@
                 <cfif queryRecordCount(local.isUserExists)>
                     <cfset local.exceptionStruct["message"] = "User Already Exists">
                     <cfelse>
-                        <cfquery name="local.registerUserQuery">
-                            INSERT INTO
-                                tblUser(
-                                    fldFirstName,
-                                    fldLastName,
-                                    fldEmail,
-                                    fldPhone,
-                                    fldRoleId,
-                                    fldHashedPassword,
-                                    fldUserSaltString
-                                )
-                            VALUES(
-                                <cfqueryparam value = '#arguments.registerStructure.firstName#' cfsqltype = "varchar">,
-                                <cfqueryparam value = '#arguments.registerStructure.lastName#' cfsqltype = "varchar">,
-                                <cfqueryparam value = '#arguments.registerStructure.emailId#' cfsqltype = "varchar">,
-                                <cfqueryparam value = '#arguments.registerStructure.phonenumber#' cfsqltype = "varchar">,
-                                <cfqueryparam value = '1' cfsqltype = "integer">,
-                                <cfqueryparam value = '#local.HashedPassword#' cfsqltype = "varchar">,
-                                <cfqueryparam value = '#local.saltString#' cfsqltype = "varchar">
-                            )
-                        </cfquery>
+                        <cftry>
+                            <cfquery name="local.registerUserQuery">
+                                INSERT INTO
+                                    tblUser(
+                                        fldFirstName,
+                                        fldLastName,
+                                        fldEmail,
+                                        fldPhone,
+                                        fldHashedPassword,
+                                        fldUserSaltString,
+                                        fldRoleId
+                                    )VALUES(
+                                        <cfqueryparam value = '#arguments.registerStructure.firstName#' cfsqltype = "varchar">,
+                                        <cfqueryparam value = '#arguments.registerStructure.lastName#' cfsqltype = "varchar">,
+                                        <cfqueryparam value = '#arguments.registerStructure.emailId#' cfsqltype = "varchar">,
+                                        <cfqueryparam value = '#arguments.registerStructure.phonenumber#' cfsqltype = "varchar">,
+                                        <cfqueryparam value = '#local.HashedPassword#' cfsqltype = "varchar">,
+                                        <cfqueryparam value = '#local.saltString#' cfsqltype = "varchar">,
+                                        1
+                                    )
+                            </cfquery>
+                            <cfcatch>
+                                <cfset sendErrorMail(errorMessage = cfcatch.message)>
+                            </cfcatch>
+                        </cftry>
                         <cfset local.exceptionStruct["message"] = "User Successfully Added">
                         <cfset local.exceptionStruct["messageType"] = "green">
                 </cfif>
@@ -76,7 +80,7 @@
                         (fldEmail = <cfqueryparam value = '#arguments.emailId#' cfsqltype = "varchar">
                         OR fldPhone = <cfqueryparam value = '#arguments.phonenumber#' cfsqltype = "varchar">)
                 </cfif>
-                AND fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
+                AND fldActive = 1
         </cfquery>
         <cfreturn local.getUserQuery>
     </cffunction>
@@ -97,19 +101,24 @@
                     phonenumber = arguments.userPhone
                 )>
                 <cfif queryRecordCount(local.isUser) EQ 0>
-                    <cfquery name="updateUser">
-                        UPDATE
-                            tblUser
-                        SET
-                            fldFirstName = <cfqueryparam value = '#arguments.userFirstName#' cfsqltype = "varchar">,
-                            fldLastName = <cfqueryparam value = '#arguments.userLastName#' cfsqltype = "varchar">,
-                            fldEmail = <cfqueryparam value = '#arguments.userEmail#' cfsqltype = "varchar">,
-                            fldPhone = <cfqueryparam value = '#arguments.userPhone#' cfsqltype = "varchar">,
-                            fldUpdatedBy = <cfqueryparam value = '#arguments.userId#' cfsqltype = "integer">,
-                            fldUpdatedDate = <cfqueryparam value = '#Now()#' cfsqltype = "timestamp">
-                        WHERE
-                            flduser_ID = <cfqueryparam value = '#arguments.userId#' cfsqltype = "integer">
-                    </cfquery>
+                    <cftry>
+                        <cfquery name="updateUser">
+                            UPDATE
+                                tblUser
+                            SET
+                                fldFirstName = <cfqueryparam value = '#arguments.userFirstName#' cfsqltype = "varchar">,
+                                fldLastName = <cfqueryparam value = '#arguments.userLastName#' cfsqltype = "varchar">,
+                                fldEmail = <cfqueryparam value = '#arguments.userEmail#' cfsqltype = "varchar">,
+                                fldPhone = <cfqueryparam value = '#arguments.userPhone#' cfsqltype = "varchar">,
+                                fldUpdatedBy = <cfqueryparam value = '#arguments.userId#' cfsqltype = "integer">,
+                                fldUpdatedDate = <cfqueryparam value = '#Now()#' cfsqltype = "timestamp">
+                            WHERE
+                                flduser_ID = <cfqueryparam value = '#arguments.userId#' cfsqltype = "integer">
+                        </cfquery>
+                        <cfcatch>
+                            <cfset sendErrorMail(errorMessage = cfcatch.message)>
+                        </cfcatch>
+                    </cftry>
                     <cfset session.username = arguments.userFirstName>
                     <cfset session.email = arguments.userEmail>
                     <cfreturn true>
@@ -174,7 +183,7 @@
             FROM 
                 tblCategory 
             WHERE 
-                fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
+                fldActive = 1
                 <cfif structKeyExists(arguments, "categoryId")>
                     AND fldCategory_ID = <cfqueryparam value = '#arguments.categoryId#' cfsqltype = "integer">
                 </cfif>
@@ -193,7 +202,7 @@
             FROM 
                 tblSubCategory 
             WHERE 
-                fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
+                fldActive = 1
                 <cfif structKeyExists(arguments, "subCategoryId")>
                     AND fldsubCategory_ID = <cfqueryparam value = '#arguments.subCategoryId#' cfsqltype = "integer">
                 </cfif>
@@ -210,53 +219,58 @@
         <cfargument  name="subCategoryId" required = "false" type="numeric">
         <cfargument  name="productId" required = "false" type="numeric">
         <cfargument  name="searchKeyword" required = "false" type="string">
-        <cfquery name="local.getproductsQuery">
-            SELECT 
-                <cfif arguments.sort EQ "false">
-                    TOP 12 
-                </cfif>
-                fldProduct_ID,
-                fldSubCategoryId,
-                fldProductName,
-                fldDescription,
-                fldBrandId,
-                fldBrandName,
-                fldPrice,
-                fldTax,
-                fldImageFileName
-            FROM 
-                tblProduct  
-            LEFT JOIN tblbrands ON tblbrands.fldBrand_ID = tblProduct.fldBrandId
-            LEFT JOIN tblProductImages ON tblProductImages.fldProductId = tblProduct.fldProduct_ID
-            LEFT JOIN tblSubcategory ON tblSubcategory.fldSubCategory_ID = tblProduct.fldSubCategoryId
-            LEFT JOIN tblCategory ON tblCategory.fldCategory_ID = tblSubcategory.fldCategoryId
-            WHERE
-                tblProductImages.fldDefaultImage = <cfqueryparam value = '1' cfsqltype = "integer">
-                AND tblProduct.fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
-                AND tblSubcategory.fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
-                AND tblCategory.fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
-                <cfif structKeyExists(arguments, "filterArray")>
-                    AND fldPrice + fldTax >=  <cfqueryparam value = '#val(arguments.filterArray[1])#' cfsqltype = "decimal">
-                    AND fldPrice + fldTax <=  <cfqueryparam value = '#val(arguments.filterArray[2])#' cfsqltype = "decimal">
-                    AND fldSubCategoryId = <cfqueryparam value = '#arguments.subCategoryId#' cfsqltype = "integer">;
-                    <cfelseif structKeyExists(arguments, "productId")>
-                        AND fldProduct_ID = <cfqueryparam value = '#arguments.productId#' cfsqltype = "integer">;
-                    <cfelseif structKeyExists(arguments, "searchKeyword")>
-                        AND (fldProductName LIKE <cfqueryparam value = '%#trim(arguments.searchKeyword)#%' cfsqltype = "varchar">
-                        OR fldBrandName LIKE <cfqueryparam value = '%#trim(arguments.searchKeyword)#%' cfsqltype = "varchar">
-                        OR fldDescription LIKE <cfqueryparam value = '%#trim(arguments.searchKeyword)#%' cfsqltype = "varchar">);
-                    <cfelse>
-                        <cfif arguments.sort EQ "false">
-                            ORDER BY NEWID();
-                            <cfelseif arguments.sort EQ "negative">
-                            ORDER BY NEWID();
-                            <cfelseif arguments.sort EQ "positive">
-                            ORDER BY fldProductId;
-                            <cfelse>
-                                ORDER BY fldPrice + fldTax #arguments.sort#;
-                        </cfif> 
-                </cfif> 
-        </cfquery>
+        <cftry>
+            <cfquery name="local.getproductsQuery">
+                SELECT 
+                    <cfif arguments.sort EQ "false">
+                        TOP 12 
+                    </cfif>
+                    fldProduct_ID,
+                    fldSubCategoryId,
+                    fldProductName,
+                    fldDescription,
+                    fldBrandId,
+                    fldBrandName,
+                    fldPrice,
+                    fldTax,
+                    fldImageFileName
+                FROM 
+                    tblProduct  
+                LEFT JOIN tblbrands ON tblbrands.fldBrand_ID = tblProduct.fldBrandId
+                LEFT JOIN tblProductImages ON tblProductImages.fldProductId = tblProduct.fldProduct_ID
+                LEFT JOIN tblSubcategory ON tblSubcategory.fldSubCategory_ID = tblProduct.fldSubCategoryId
+                LEFT JOIN tblCategory ON tblCategory.fldCategory_ID = tblSubcategory.fldCategoryId
+                WHERE
+                    tblProductImages.fldDefaultImage = 1
+                    AND tblProduct.fldActive = 1
+                    AND tblSubcategory.fldActive = 1
+                    AND tblCategory.fldActive = 1
+                    <cfif structKeyExists(arguments, "filterArray")>
+                        AND fldPrice + fldTax >=  <cfqueryparam value = '#val(arguments.filterArray[1])#' cfsqltype = "decimal">
+                        AND fldPrice + fldTax <=  <cfqueryparam value = '#val(arguments.filterArray[2])#' cfsqltype = "decimal">
+                        AND fldSubCategoryId = <cfqueryparam value = '#arguments.subCategoryId#' cfsqltype = "integer">;
+                        <cfelseif structKeyExists(arguments, "productId")>
+                            AND fldProduct_ID = <cfqueryparam value = '#arguments.productId#' cfsqltype = "integer">;
+                        <cfelseif structKeyExists(arguments, "searchKeyword")>
+                            AND (fldProductName LIKE <cfqueryparam value = '%#trim(arguments.searchKeyword)#%' cfsqltype = "varchar">
+                            OR fldBrandName LIKE <cfqueryparam value = '%#trim(arguments.searchKeyword)#%' cfsqltype = "varchar">
+                            OR fldDescription LIKE <cfqueryparam value = '%#trim(arguments.searchKeyword)#%' cfsqltype = "varchar">);
+                        <cfelse>
+                            <cfif arguments.sort EQ "false">
+                                ORDER BY NEWID();
+                                <cfelseif arguments.sort EQ "negative">
+                                ORDER BY NEWID();
+                                <cfelseif arguments.sort EQ "positive">
+                                ORDER BY fldProductId;
+                                <cfelse>
+                                    ORDER BY fldPrice + fldTax #arguments.sort#;
+                            </cfif> 
+                    </cfif> 
+            </cfquery>
+            <cfcatch>
+                <cfset sendErrorMail(errorMessage = cfcatch.message)>
+            </cfcatch>
+        </cftry>
         <cfreturn local.getproductsQuery>
     </cffunction>
 
@@ -306,45 +320,58 @@
             )>
             <cfelse>
                 <cfset session.productQuantity = session.productQuantity + 1>
-                <cfquery name="addToCartQuery">
-                    INSERT INTO
-                        tblCart(fldUserId,fldProductId,fldQuantity)
-                    VALUES(
-                        <cfqueryparam value = '#session.userId#' cfsqltype = "integer">,
-                        <cfqueryparam value = '#arguments.productId#' cfsqltype = "integer">,
-                        <cfqueryparam value = 1 cfsqltype = "integer">
-                    )
-                </cfquery>
+                <cftry>
+                    <cfquery name="addToCartQuery">
+                        INSERT INTO
+                            tblCart(
+                                fldUserId,
+                                fldProductId,
+                                fldQuantity
+                            )VALUES(
+                                <cfqueryparam value = '#session.userId#' cfsqltype = "integer">,
+                                <cfqueryparam value = '#arguments.productId#' cfsqltype = "integer">,
+                                1
+                            )
+                    </cfquery>
+                    <cfcatch>
+                        <cfset sendErrorMail(errorMessage = cfcatch.message)>
+                    </cfcatch>
+                </cftry>
         </cfif>
     </cffunction>
 
     <cffunction  name="displayCart"  returnType="query"  description="Get all cart details">
         <cfargument  name="productId" type="numeric" required = "false">
-        <cfquery name="getCartQuery">
-            SELECT
-                fldCart_ID,
-                fldQuantity,
-                fldProduct_ID,
-                fldSubCategoryId,
-                fldProductName,
-                fldBrandId,
-                fldBrandName,
-                fldPrice,
-                fldTax,
-                fldImageFileName
-            FROM 
-                tblProduct  
-            LEFT JOIN tblbrands ON tblbrands.fldBrand_ID = tblProduct.fldBrandId
-            LEFT JOIN tblProductImages ON tblProductImages.fldProductId = tblProduct.fldProduct_ID
-            LEFT JOIN tblCart ON tblCart.fldProductId = tblProduct.fldProduct_ID
-            WHERE
-                fldUserId = <cfqueryparam value = '#session.userId#' cfsqltype = "integer">
-                AND tblProductImages.fldDefaultImage = <cfqueryparam value = '1' cfsqltype = "integer">
-                AND tblProduct.fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
-                <cfif structKeyExists(arguments, "productId")>
-                    AND tblCart.fldProductId = <cfqueryparam value = '#arguments.productId#' cfsqltype = "integer">
-                </cfif>
-        </cfquery>
+        <cftry>
+            <cfquery name="getCartQuery">
+                SELECT
+                    fldCart_ID,
+                    fldQuantity,
+                    fldProduct_ID,
+                    fldSubCategoryId,
+                    fldProductName,
+                    fldBrandId,
+                    fldBrandName,
+                    fldPrice,
+                    fldTax,
+                    fldImageFileName
+                FROM 
+                    tblProduct  
+                LEFT JOIN tblbrands ON tblbrands.fldBrand_ID = tblProduct.fldBrandId
+                LEFT JOIN tblProductImages ON tblProductImages.fldProductId = tblProduct.fldProduct_ID
+                LEFT JOIN tblCart ON tblCart.fldProductId = tblProduct.fldProduct_ID
+                WHERE
+                    fldUserId = <cfqueryparam value = '#session.userId#' cfsqltype = "integer">
+                    AND tblProductImages.fldDefaultImage = 1
+                    AND tblProduct.fldActive = 1
+                    <cfif structKeyExists(arguments, "productId")>
+                        AND tblCart.fldProductId = <cfqueryparam value = '#arguments.productId#' cfsqltype = "integer">
+                    </cfif>
+            </cfquery>
+            <cfcatch>
+                <cfset sendErrorMail(errorMessage = cfcatch.message)>
+            </cfcatch>
+        </cftry>
         <cfreturn getCartQuery>
     </cffunction>
 
@@ -377,25 +404,35 @@
         <cfif arguments.prQuantity EQ 0>
             <cfset deleteCart(cartId = arguments.CartId)>
             <cfelse>
-                <cfquery name="cartQuantityQuery">
-                    UPDATE
-                        tblCart
-                    SET
-                        fldQuantity = <cfqueryparam value = '#arguments.prQuantity#' cfsqltype = "integer">
-                    WHERE
-                        fldCart_ID = <cfqueryparam value = '#arguments.CartId#' cfsqltype = "integer">
-                </cfquery>
+                <cftry>
+                    <cfquery name="cartQuantityQuery">
+                        UPDATE
+                            tblCart
+                        SET
+                            fldQuantity = <cfqueryparam value = '#arguments.prQuantity#' cfsqltype = "integer">
+                        WHERE
+                            fldCart_ID = <cfqueryparam value = '#arguments.CartId#' cfsqltype = "integer">
+                    </cfquery>
+                    <cfcatch>
+                        <cfset sendErrorMail(errorMessage = cfcatch.message)>
+                    </cfcatch>
+                </cftry>
         </cfif>
     </cffunction>
 
     <cffunction  name="deleteCart" access="remote" returnType="void" description="Delete products from cart">
         <cfargument  name="CartId" type="numeric" required = "true">
-        <cfquery name="deleteCartQuery">
-            DELETE FROM
-                tblCart
-            WHERE 
-                fldCart_ID = <cfqueryparam value = '#arguments.CartId#' cfsqltype = "integer">
-        </cfquery>
+        <cftry>
+            <cfquery name="deleteCartQuery">
+                DELETE FROM
+                    tblCart
+                WHERE 
+                    fldCart_ID = <cfqueryparam value = '#arguments.CartId#' cfsqltype = "integer">
+            </cfquery>
+            <cfcatch>
+                <cfset sendErrorMail(errorMessage = cfcatch.message)>
+            </cfcatch>
+        </cftry>
         <cfset session.productQuantity = session.productQuantity - 1>
     </cffunction>
 
@@ -423,31 +460,35 @@
         <cfargument  name="addressStructure" required="true" type="struct">
         <cfset isAddressValid = validateAddress(addressStructure = addressStructure)>
         <cfif isAddressValid>
-            <cfquery name="local.addAddressQuery">
-                INSERT INTO 
-                    tblAddress(
-                        fldUserId,
-                        fldFirstName,
-                        fldLastName,
-                        fldAddressLine1,
-                        fldAddressLine2,
-                        fldCity,
-                        fldState,
-                        fldPincode,
-                        fldPhoneNumber
-                    )
-                VALUES(
-                    <cfqueryparam value = '#session.userId#' cfsqltype = "integer">,
-                    <cfqueryparam value = '#arguments.addressStructure.firstName#' cfsqltype = "varchar">,
-                    <cfqueryparam value = '#arguments.addressStructure.lastName#' cfsqltype = "varchar">,
-                    <cfqueryparam value = '#arguments.addressStructure.address1#' cfsqltype = "varchar">,
-                    <cfqueryparam value = '#arguments.addressStructure.address2#' cfsqltype = "varchar">,
-                    <cfqueryparam value = '#arguments.addressStructure.city#' cfsqltype = "varchar">,
-                    <cfqueryparam value = '#arguments.addressStructure.state#' cfsqltype = "varchar">,
-                    <cfqueryparam value = '#arguments.addressStructure.pincode#' cfsqltype = "varchar">,
-                    <cfqueryparam value = '#arguments.addressStructure.phone#' cfsqltype = "varchar">
-                )
-            </cfquery>
+            <cftry>
+                <cfquery name="local.addAddressQuery">
+                    INSERT INTO 
+                        tblAddress(
+                            fldUserId,
+                            fldFirstName,
+                            fldLastName,
+                            fldAddressLine1,
+                            fldAddressLine2,
+                            fldCity,
+                            fldState,
+                            fldPincode,
+                            fldPhoneNumber
+                        )VALUES(
+                            <cfqueryparam value = '#session.userId#' cfsqltype = "integer">,
+                            <cfqueryparam value = '#arguments.addressStructure.firstName#' cfsqltype = "varchar">,
+                            <cfqueryparam value = '#arguments.addressStructure.lastName#' cfsqltype = "varchar">,
+                            <cfqueryparam value = '#arguments.addressStructure.address1#' cfsqltype = "varchar">,
+                            <cfqueryparam value = '#arguments.addressStructure.address2#' cfsqltype = "varchar">,
+                            <cfqueryparam value = '#arguments.addressStructure.city#' cfsqltype = "varchar">,
+                            <cfqueryparam value = '#arguments.addressStructure.state#' cfsqltype = "varchar">,
+                            <cfqueryparam value = '#arguments.addressStructure.pincode#' cfsqltype = "varchar">,
+                            <cfqueryparam value = '#arguments.addressStructure.phone#' cfsqltype = "varchar">
+                        )
+                </cfquery>
+                <cfcatch>
+                    <cfset sendErrorMail(errorMessage = cfcatch.message)>
+                </cfcatch>
+            </cftry>
         </cfif>
     </cffunction>
 
@@ -467,21 +508,26 @@
                 tblAddress
             WHERE 
                 fldUserId = <cfqueryparam value = '#session.userId#' cfsqltype = "integer">
-                AND fldActive = <cfqueryparam value = '1' cfsqltype = "integer">
+                AND fldActive = 1
         </cfquery>
         <cfreturn local.getAddressQuery>
     </cffunction>
 
     <cffunction  name="deleteAddress" access="remote"  description="Deactivate addresses from database">
         <cfargument name="addressId" type="numeric">
-        <cfquery name="deleteAddressQuery">
-            UPDATE
-                tblAddress
-            SET
-                fldActive = <cfqueryparam value = '0' cfsqltype = "integer">
-            WHERE
-                fldAddress_ID = <cfqueryparam value = '#arguments.addressId#' cfsqltype = "integer">
-        </cfquery>
+        <cftry>
+            <cfquery name="deleteAddressQuery">
+                UPDATE
+                    tblAddress
+                SET
+                    fldActive = 0
+                WHERE
+                    fldAddress_ID = <cfqueryparam value = '#arguments.addressId#' cfsqltype = "integer">
+            </cfquery>
+            <cfcatch>
+                <cfset sendErrorMail(errorMessage = cfcatch.message)>
+            </cfcatch>
+        </cftry>
     </cffunction>
 
     <cffunction  name="placeOrder" description="Function to place order" returnType="any">
@@ -523,15 +569,14 @@
                                     fldTotalPrice,
                                     fldTotalTax,
                                     fldCardPart
+                                )VALUES(
+                                    <cfqueryparam value = '#local.generatedUUID#' cfsqltype = "varchar">,
+                                    <cfqueryparam value = '#session.userId#' cfsqltype = "integer">,
+                                    <cfqueryparam value = '#arguments.orderStructure.addressSelect#' cfsqltype = "integer">,
+                                    <cfqueryparam value = '#local.TotalPrice#' cfsqltype = "decimal" scale="2">,
+                                    <cfqueryparam value = '#local.TotalTax#' cfsqltype = "decimal" scale="2">,
+                                    <cfqueryparam value = '#local.cardPart#' cfsqltype = "integer">
                                 )
-                            VALUES(
-                                <cfqueryparam value = '#local.generatedUUID#' cfsqltype = "varchar">,
-                                <cfqueryparam value = '#session.userId#' cfsqltype = "integer">,
-                                <cfqueryparam value = '#arguments.orderStructure.addressSelect#' cfsqltype = "integer">,
-                                <cfqueryparam value = '#local.TotalPrice#' cfsqltype = "decimal" scale="2">,
-                                <cfqueryparam value = '#local.TotalTax#' cfsqltype = "decimal" scale="2">,
-                                <cfqueryparam value = '#local.cardPart#' cfsqltype = "integer">
-                            )
                         </cfquery>
                         <cfquery name="local.insertOrderItemQuery">
                             INSERT INTO
@@ -541,14 +586,13 @@
                                     fldQuantity,
                                     fldUnitPrice,
                                     fldUnitTax
+                                )VALUES(
+                                    <cfqueryparam value = '#local.generatedUUID#' cfsqltype = "varchar">,
+                                    <cfqueryparam value = '#arguments.orderStructure.productIdHidden#' cfsqltype = "integer">,
+                                    <cfqueryparam value = '#arguments.orderStructure.productQuantity#' cfsqltype = "integer">,
+                                    <cfqueryparam value = '#local.productResult.fldPrice#' cfsqltype = "decimal" scale="2">,
+                                    <cfqueryparam value = '#local.productResult.fldTax#' cfsqltype = "decimal" scale="2">
                                 )
-                            VALUES(
-                                <cfqueryparam value = '#local.generatedUUID#' cfsqltype = "varchar">,
-                                <cfqueryparam value = '#arguments.orderStructure.productIdHidden#' cfsqltype = "integer">,
-                                <cfqueryparam value = '#arguments.orderStructure.productQuantity#' cfsqltype = "integer">,
-                                <cfqueryparam value = '#local.productResult.fldPrice#' cfsqltype = "decimal" scale="2">,
-                                <cfqueryparam value = '#local.productResult.fldTax#' cfsqltype = "decimal" scale="2">
-                            )
                         </cfquery>
                         <cfcatch>
                             <cftransaction action="rollback">
@@ -578,7 +622,7 @@
         </cfif>
     </cffunction>
 
-    <cffunction  name="orderConfirmationMail">
+    <cffunction  name="orderConfirmationMail" returnType="void" description = "To send confirmation mail">
         <cfargument  name="orderId">
         <cfmail from="dinilvallikunnil@gmail.com"  subject="eCart Order Confirmation"  to="#session.email#">
             Hi, #session.username#
@@ -589,46 +633,58 @@
     </cffunction>
 
     <cffunction  name="displayOrderHistory" returnType="query" description = "To disaply Order History">
-        <cfquery name="local.getOrderHistoryQuery">
-            SELECT
-                fldQuantity,
-                fldProduct_ID,
-                fldSubCategoryId,
-                fldProductName,
-                fldBrandId,
-                fldBrandName,
-                tblOrderedItems.fldUnitPrice,
-                tblOrderedItems.fldUnitTax,
-                tblOrderedItems.fldQuantity,
-                fldImageFileName,
-                fldFirstName,
-                fldLastName,
-                fldAddressLine1,
-                fldAddressLine2,
-                fldCity,
-                fldState,
-                fldPincode,
-                fldPhoneNumber,
-                fldOrder_ID,
-                fldOrderId,
-                fldTotalPrice,
-                fldTotalTax,
-                fldCardPart,
-                fldOrderDate
-            FROM 
-                tblProduct  
-            INNER JOIN tblbrands ON tblbrands.fldBrand_ID = tblProduct.fldBrandId
-            INNER JOIN tblProductImages ON tblProductImages.fldProductId = tblProduct.fldProduct_ID
-            INNER JOIN tblOrderedItems ON tblOrderedItems.fldProductId = tblProduct.fldProduct_ID
-            INNER JOIN tblOrder ON tblOrder.fldOrder_ID = tblOrderedItems.fldOrderId
-            INNER JOIN tblAddress ON tblAddress.fldAddress_ID = tblOrder.fldAddressId
-            WHERE
-                tblOrder.fldUserId = <cfqueryparam value = '#session.userId#' cfsqltype = "integer">
-                AND tblProductImages.fldDefaultImage = <cfqueryparam value = '1' cfsqltype = "integer">
-            ORDER BY
-                fldOrderDate DESC
-        </cfquery>
+        <cftry>
+            <cfquery name="local.getOrderHistoryQuery">
+                SELECT
+                    fldQuantity,
+                    fldProduct_ID,
+                    fldSubCategoryId,
+                    fldProductName,
+                    fldBrandId,
+                    fldBrandName,
+                    tblOrderedItems.fldUnitPrice,
+                    tblOrderedItems.fldUnitTax,
+                    tblOrderedItems.fldQuantity,
+                    fldImageFileName,
+                    fldFirstName,
+                    fldLastName,
+                    fldAddressLine1,
+                    fldAddressLine2,
+                    fldCity,
+                    fldState,
+                    fldPincode,
+                    fldPhoneNumber,
+                    fldOrder_ID,
+                    fldOrderId,
+                    fldTotalPrice,
+                    fldTotalTax,
+                    fldCardPart,
+                    fldOrderDate
+                FROM 
+                    tblProduct  
+                INNER JOIN tblbrands ON tblbrands.fldBrand_ID = tblProduct.fldBrandId
+                INNER JOIN tblProductImages ON tblProductImages.fldProductId = tblProduct.fldProduct_ID
+                INNER JOIN tblOrderedItems ON tblOrderedItems.fldProductId = tblProduct.fldProduct_ID
+                INNER JOIN tblOrder ON tblOrder.fldOrder_ID = tblOrderedItems.fldOrderId
+                INNER JOIN tblAddress ON tblAddress.fldAddress_ID = tblOrder.fldAddressId
+                WHERE
+                    tblOrder.fldUserId = <cfqueryparam value = '#session.userId#' cfsqltype = "integer">
+                    AND tblProductImages.fldDefaultImage = 1
+                ORDER BY
+                    fldOrderDate DESC
+            </cfquery>
+            <cfcatch>
+                <cfset sendErrorMail(errorMessage = cfcatch.message)>
+            </cfcatch>
+        </cftry>
         <cfreturn local.getOrderHistoryQuery>
+    </cffunction>
+
+    <cffunction  name="sendErrorMail">
+        <cfargument  name="errorMessage">
+        <cfmail  from="dinilvallikunnil@gmail.com"  subject="Function Error"  to="diniladmin@gmail.com">
+            Database error: #arguments.errorMessage#
+        </cfmail>
     </cffunction>
 
     <cffunction  name="logoutUser" access="remote" returnType="void"  description="Logout user">

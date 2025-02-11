@@ -165,10 +165,13 @@ function getFilterResult(subCategoryId){
             success:function(result){
                 var result = JSON.parse(result)
                 document.getElementById("randomProductsMainDivId").innerHTML = ""
+                var viewMoreDiv = document.getElementById("viewMore")
+                if(viewMoreDiv != null){
+                    viewMoreDiv.style.display = "none"
+                }
                 if(result.length == 0){
                     var emptyStatement = "No products to display in the price range"
                     $("#randomProductsMainDivId").append(emptyStatement);
-                    document.getElementById("viewMore").style.display = "none"
                 }else{
                     for(j=0;j<result.length;j++){
                         var eachProducts = 
@@ -186,7 +189,6 @@ function getFilterResult(subCategoryId){
                             </div>
                         </div>`
                         $("#randomProductsMainDivId").append(eachProducts);
-                        document.getElementById("viewMore").style.display = "initial"
                     }
                 }
             }
@@ -312,7 +314,6 @@ function removeCart(cartId){
     });
 }
 
-
 function searchValidate(){
     var searchKey = document.getElementById("searchInput").value;
     if(searchKey.trim().length == 0){
@@ -432,7 +433,7 @@ function removeAddress(addressId){
       }).then((result) => {
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
-          Swal.fire("Saved!", "", "success");
+          Swal.fire("Removed!", "", "success");
           $.ajax({
             type:"POST",
             url:"Component/userComponent.cfc?method=deleteAddress",
@@ -442,7 +443,7 @@ function removeAddress(addressId){
                 }
         })
         } else if (result.isDenied) {
-          Swal.fire("Changes are not saved", "", "info");
+          Swal.fire("Address is not removed", "", "info");
         }
       });
 }
@@ -633,8 +634,7 @@ function clearEditModal(){
     document.getElementById("userEmailWarning").innerHTML = "";
     document.getElementById("userPhoneWarning").innerHTML = "";
 
-}
-
+} 
 
 function searchOrder(){
     $('#searchOrderId').keyup(function() { 
@@ -667,8 +667,7 @@ function downloadConfirmation(){
         return false;
     }
 }
+
 if ( window.history.replaceState ) {
     window.history.replaceState( null, null, window.location.href );
 }
-
-
