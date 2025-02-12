@@ -102,7 +102,7 @@
                 )>
                 <cfif queryRecordCount(local.isUser) EQ 0>
                     <cftry>
-                        <cfquery name="updateUser">
+                        <cfquery name="local.updateUser">
                             UPDATE
                                 tblUser
                             SET
@@ -321,7 +321,7 @@
             <cfelse>
                 <cfset session.productQuantity = session.productQuantity + 1>
                 <cftry>
-                    <cfquery name="addToCartQuery">
+                    <cfquery name="local.addToCartQuery">
                         INSERT INTO
                             tblCart(
                                 fldUserId,
@@ -343,7 +343,7 @@
     <cffunction  name="displayCart"  returnType="query"  description="Get all cart details">
         <cfargument  name="productId" type="numeric" required = "false">
         <cftry>
-            <cfquery name="getCartQuery">
+            <cfquery name="local.getCartQuery">
                 SELECT
                     fldCart_ID,
                     fldQuantity,
@@ -356,10 +356,10 @@
                     fldTax,
                     fldImageFileName
                 FROM 
-                    tblProduct  
-                LEFT JOIN tblbrands ON tblbrands.fldBrand_ID = tblProduct.fldBrandId
-                LEFT JOIN tblProductImages ON tblProductImages.fldProductId = tblProduct.fldProduct_ID
-                LEFT JOIN tblCart ON tblCart.fldProductId = tblProduct.fldProduct_ID
+                    tblProduct 
+                INNER JOIN tblbrands ON tblbrands.fldBrand_ID = tblProduct.fldBrandId
+                INNER JOIN tblProductImages ON tblProductImages.fldProductId = tblProduct.fldProduct_ID
+                INNER JOIN tblCart ON tblCart.fldProductId = tblProduct.fldProduct_ID
                 WHERE
                     fldUserId = <cfqueryparam value = '#session.userId#' cfsqltype = "integer">
                     AND tblProductImages.fldDefaultImage = 1
@@ -372,7 +372,7 @@
                 <cfset sendErrorMail(errorMessage = cfcatch.message)>
             </cfcatch>
         </cftry>
-        <cfreturn getCartQuery>
+        <cfreturn local.getCartQuery>
     </cffunction>
 
     <cffunction  name="loadMoreData" returnType="array" returnFormat="JSON" access="remote">
@@ -405,7 +405,7 @@
             <cfset deleteCart(cartId = arguments.CartId)>
             <cfelse>
                 <cftry>
-                    <cfquery name="cartQuantityQuery">
+                    <cfquery name="local.cartQuantityQuery">
                         UPDATE
                             tblCart
                         SET
@@ -423,7 +423,7 @@
     <cffunction  name="deleteCart" access="remote" returnType="void" description="Delete products from cart">
         <cfargument  name="CartId" type="numeric" required = "true">
         <cftry>
-            <cfquery name="deleteCartQuery">
+            <cfquery name="local.deleteCartQuery">
                 DELETE FROM
                     tblCart
                 WHERE 
@@ -516,7 +516,7 @@
     <cffunction  name="deleteAddress" access="remote"  description="Deactivate addresses from database">
         <cfargument name="addressId" type="numeric">
         <cftry>
-            <cfquery name="deleteAddressQuery">
+            <cfquery name="local.deleteAddressQuery">
                 UPDATE
                     tblAddress
                 SET
@@ -604,8 +604,8 @@
                 </cftransaction>
                 <cfelse>
                     <cfif session.productQuantity NEQ 0>
-                        <cfquery name="executeSPQuery">
-                            EXEC 
+                        <cfquery name="local.executeSPQuery">
+                            EXEC
                             orderProduct_SP 
                                 @userId = <cfqueryparam value = '#session.userId#' cfsqltype = "integer">,
                                 @addressId = <cfqueryparam value = '#arguments.orderStructure.addressSelect#' cfsqltype = "integer">,
@@ -680,14 +680,14 @@
         <cfreturn local.getOrderHistoryQuery>
     </cffunction>
 
-    <cffunction  name="sendErrorMail">
-        <cfargument  name="errorMessage">
+    <cffunction name="sendErrorMail">
+        <cfargument name="errorMessage">
         <cfmail  from="dinilvallikunnil@gmail.com"  subject="Function Error"  to="diniladmin@gmail.com">
             Database error: #arguments.errorMessage#
         </cfmail>
     </cffunction>
 
-    <cffunction  name="logoutUser" access="remote" returnType="void"  description="Logout user">
+    <cffunction name="logoutUser" access="remote" returnType="void"  description="Logout user">
         <cfset structClear(session)>
     </cffunction>
 

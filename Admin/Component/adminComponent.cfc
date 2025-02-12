@@ -4,44 +4,48 @@
         <cfargument  name="adminUsername" type="string" required="true">
         <cfargument  name="adminPassword" type="string" required="true">
         <cfset local.exceptionStruct = structNew()>
+        <cfset local.flag = true>
         <cfif trim(arguments.adminUsername) EQ "" OR trim(arguments.adminPassword)  EQ "">
             <cfset local.exceptionStruct["exception"] = "Enter all values to Proceed">
+            <cfset local.flag = false>
         </cfif>
-        <cftry>
-            <cfquery name="local.loginAdminQuery">
-                SELECT 
-                    fldFirstName,
-                    fldUser_ID,
-                    fldEmail,
-                    fldHashedPassword,
-                    fldUserSaltString
-                FROM 
-                    tblUser
-                LEFT JOIN tblRole ON tblRole.fldRole_ID = tblUser.fldRoleId
-                WHERE
-                    (fldEmail = <cfqueryparam value = '#arguments.adminUsername#' cfsqltype = "varchar">
-                    OR fldPhone = <cfqueryparam value = '#arguments.adminUsername#' cfsqltype = "varchar">)
-                    AND tblRole.fldRoleName = <cfqueryparam value = 'admin' cfsqltype = "varchar">
-                    AND fldActive = 1
-            </cfquery>
-            <cfcatch>
-                <cfset sendErrorMail(errorMessage = cfcatch.message)>
-            </cfcatch>
-        </cftry>
-        <cfif queryRecordCount(local.loginAdminQuery)>
-            <cfset local.enteredPassword ="#arguments.adminPassword#"&"#local.loginAdminQuery.fldUserSaltString#">
-            <cfset local.hashedPassword = hash(local.enteredPassword,"sha-256","UTF-8")>
-            <cfif local.loginAdminQuery.fldHashedPassword EQ local.hashedPassword>
-                <cfset session.adminLogin = true>
-                <cfset session.adminUserId = local.loginAdminQuery.fldUser_ID>
-                <cfset session.username = local.loginAdminQuery.fldFirstName>
-                <cfset session.email = local.loginAdminQuery.fldEmail>
-                <cfset local.exceptionStruct["exception"] = false>
+        <cfif local.flag>
+            <cftry>
+                <cfquery name="local.loginAdminQuery">
+                    SELECT 
+                        fldFirstName,
+                        fldUser_ID,
+                        fldEmail,
+                        fldHashedPassword,
+                        fldUserSaltString
+                    FROM 
+                        tblUser
+                    LEFT JOIN tblRole ON tblRole.fldRole_ID = tblUser.fldRoleId
+                    WHERE
+                        (fldEmail = <cfqueryparam value = '#arguments.adminUsername#' cfsqltype = "varchar">
+                        OR fldPhone = <cfqueryparam value = '#arguments.adminUsername#' cfsqltype = "varchar">)
+                        AND tblRole.fldRoleName = <cfqueryparam value = 'admin' cfsqltype = "varchar">
+                        AND fldActive = 1
+                </cfquery>
+                <cfcatch>
+                    <cfset sendErrorMail(errorMessage = cfcatch.message)>
+                </cfcatch>
+            </cftry>
+            <cfif queryRecordCount(local.loginAdminQuery)>
+                <cfset local.enteredPassword ="#arguments.adminPassword#"&"#local.loginAdminQuery.fldUserSaltString#">
+                <cfset local.hashedPassword = hash(local.enteredPassword,"sha-256","UTF-8")>
+                <cfif local.loginAdminQuery.fldHashedPassword EQ local.hashedPassword>
+                    <cfset session.adminLogin = true>
+                    <cfset session.adminUserId = local.loginAdminQuery.fldUser_ID>
+                    <cfset session.username = local.loginAdminQuery.fldFirstName>
+                    <cfset session.email = local.loginAdminQuery.fldEmail>
+                    <cfset local.exceptionStruct["exception"] = false>
+                    <cfelse>
+                        <cfset local.exceptionStruct["exception"] = "Entered Password is wrong">
+                </cfif>
                 <cfelse>
-                    <cfset local.exceptionStruct["exception"] = "Entered Password is wrong">
+                    <cfset local.exceptionStruct["exception"] = "Entered EmailId or PhoneNumber is wrong">
             </cfif>
-            <cfelse>
-                <cfset local.exceptionStruct["exception"] = "Entered EmailId or PhoneNumber is wrong">
         </cfif>
         <cfreturn local.exceptionStruct>
     </cffunction>
@@ -77,9 +81,11 @@
             <cfelse>
                 <cftry>
                     <cfquery name="local.categoryInsertQuery">
-                        INSERT INTO tblCategory(fldcategoryName,fldCreatedBy)
-                        VALUES 
-                            (
+                        INSERT INTO 
+                            tblCategory(
+                                fldcategoryName,
+                                fldCreatedBy
+                            )VALUES(
                                 <cfqueryparam value = '#arguments.newCategory#' cfsqltype = "varchar">,
                                 <cfqueryparam value = '#session.adminUserId#' cfsqltype = "integer">
                             )
@@ -181,73 +187,104 @@
         <cfreturn local.getBrandQuery>
     </cffunction>
 
-    <cffunction  name="insertProduct" returnType="boolean" description="Function to insert product">
+    <cffunction name="insertProduct" returnType="struct" description="Function to insert product">
         <cfargument name="dataStructure" type="struct" required="true">
+        <cfset local.exceptionStruct = structNew()>
+        <cfset local.exceptionStruct["flag"] = true>
         <cffile action="uploadall"
         destination="#expandPath('../Assets/ProductImages')#"
         result="local.productImages"
         nameconflict="makeunique">
         <cfset productResult = getProducts(
-            productName="#arguments.dataStructure.productname#",
-            subCategoryId="#arguments.dataStructure.subcategoryname#"
+            productName = "#arguments.dataStructure.productname#",
+            subCategoryId = "#arguments.dataStructure.subcategoryname#"
         )>
-        <cfif queryRecordCount(productResult)>
-            <cfreturn false>
-            <cfelse>
-            <cftry>
-                <cfquery name="local.insertProductQuery" result="generatedVal">
-                    INSERT INTO 
-                        tblProduct(
-                            fldSubCategoryId,
-                            fldProductName,
-                            fldBrandId,
-                            fldDescription,
-                            fldPrice,
-                            fldTax,
-                            fldCreatedBy
-                        )VALUES(
-                            <cfqueryparam value = '#arguments.dataStructure.subcategoryname#' cfsqltype = "integer">,
-                            <cfqueryparam value = '#arguments.dataStructure.productname#' cfsqltype = "varchar">,
-                            <cfqueryparam value = '#arguments.dataStructure.brandname#' cfsqltype = "integer">,
-                            <cfqueryparam value = '#arguments.dataStructure.descriptionname#' cfsqltype = "varchar">,
-                            <cfqueryparam value = '#arguments.dataStructure.pricename#' scale="2" cfsqltype = "decimal">,
-                            <cfqueryparam value = '#arguments.dataStructure.taxname#' scale="2" cfsqltype = "decimal">,
-                            <cfqueryparam value = '#session.adminUserId#' cfsqltype = "integer">
-                        )
-                </cfquery>
-                <cfcatch>
-                    <cfset sendErrorMail(errorMessage = cfcatch.message)>
-                </cfcatch>
-            </cftry>
-            <cfset local.imagedefaultval = 1>
-            <cfloop array="#local.productImages#" item="item">
-                <cftry>
-                    <cfquery name="local.insertImages">
-                        INSERT INTO 
-                            tblProductImages(
-                                fldProductId,
-                                fldImageFileName,
-                                fldDefaultImage,
-                                fldCreatedBy
-                            )VALUES(
-                                <cfqueryparam value = '#generatedVal.generatedKey#' cfsqltype = "integer">,
-                                <cfqueryparam value = '#item.serverfile#' cfsqltype = "varchar">,
-                                <cfqueryparam value = '#local.imagedefaultval#' cfsqltype = "integer">,
-                                <cfqueryparam value = '#session.adminUserId#' cfsqltype = "integer">
-                            )
-                    </cfquery>
-                    <cfcatch>
-                        <cfset sendErrorMail(errorMessage = cfcatch.message)>
-                    </cfcatch>
-                </cftry>
-                <cfset local.imagedefaultval = 0>
-            </cfloop>
-            <cfreturn true>
+        <cfif trim(arguments.dataStructure.productname) EQ ""
+        OR trim(arguments.dataStructure.brandname) EQ ""
+        OR trim(arguments.dataStructure.descriptionname) EQ ""
+        OR trim(arguments.dataStructure.pricename) EQ ""
+        OR trim(arguments.dataStructure.taxname) EQ "">
+            <cfset local.exceptionStruct["exception"] ="Empty fileds are not allowed">
+            <cfset local.exceptionStruct["flag"] = false>
+            <cfelseif isNumeric(arguments.dataStructure.pricename) EQ false OR isNumeric(arguments.dataStructure.taxname) EQ false>
+                <cfset local.exceptionStruct["exception"] ="Price and Tax should be numeric">
+                <cfset local.exceptionStruct["flag"] = false>
         </cfif>
+        <cfif local.exceptionStruct["flag"]>
+            <cfif queryRecordCount(productResult)>
+                <cfset local.exceptionStruct["exception"] ="Cannot insert product with same name">
+                <cfset local.exceptionStruct["flag"] = false>
+                <cfelse>
+                    <cfset local.exceptionStruct["flag"] = true>
+                    <cftry>
+                        <cfquery name="local.insertProductQuery" result="generatedVal">
+                            INSERT INTO 
+                                tblProduct(
+                                    fldSubCategoryId,
+                                    fldProductName,
+                                    fldBrandId,
+                                    fldDescription,
+                                    fldPrice,
+                                    fldTax,
+                                    fldCreatedBy
+                                )VALUES(
+                                    <cfqueryparam value = '#arguments.dataStructure.subcategoryname#' cfsqltype = "integer">,
+                                    <cfqueryparam value = '#arguments.dataStructure.productname#' cfsqltype = "varchar">,
+                                    <cfqueryparam value = '#arguments.dataStructure.brandname#' cfsqltype = "integer">,
+                                    <cfqueryparam value = '#arguments.dataStructure.descriptionname#' cfsqltype = "varchar">,
+                                    <cfqueryparam value = '#arguments.dataStructure.pricename#' scale="2" cfsqltype = "decimal">,
+                                    <cfqueryparam value = '#arguments.dataStructure.taxname#' scale="2" cfsqltype = "decimal">,
+                                    <cfqueryparam value = '#session.adminUserId#' cfsqltype = "integer">
+                                )
+                        </cfquery>
+                        <cfcatch>
+                            <cfset sendErrorMail(errorMessage = cfcatch.message)>
+                        </cfcatch>
+                    </cftry>
+                    <cfset local.imagedefaultval = 1>
+                    <cfloop array="#local.productImages#" item="item">
+                        <cftry>
+                            <cfquery name="local.insertImages">
+                                INSERT INTO 
+                                    tblProductImages(
+                                        fldProductId,
+                                        fldImageFileName,
+                                        fldDefaultImage,
+                                        fldCreatedBy
+                                    )VALUES(
+                                        <cfqueryparam value = '#generatedVal.generatedKey#' cfsqltype = "integer">,
+                                        <cfqueryparam value = '#item.serverfile#' cfsqltype = "varchar">,
+                                        <cfqueryparam value = '#local.imagedefaultval#' cfsqltype = "integer">,
+                                        <cfqueryparam value = '#session.adminUserId#' cfsqltype = "integer">
+                                    )
+                            </cfquery>
+                            <cfcatch>
+                                <cfset sendErrorMail(errorMessage = cfcatch.message)>
+                            </cfcatch>
+                        </cftry>
+                        <cfset local.imagedefaultval = 0>
+                    </cfloop>
+            </cfif>
+        </cfif>
+        <cfreturn local.exceptionStruct>
     </cffunction>
 
-    <cffunction  name="updateProduct" returnType="void"  description="Function to update products">
-        <cfargument  name="editDataStructure"  type="struct" required="true">
+    <cffunction name="updateProduct" returnType="struct" description="Function to update products">
+        <cfargument name="editDataStructure" type="struct" required="true">
+        <cfset local.exceptionStruct = structNew()>
+        <cfset local.exceptionStruct["flag"] = true>
+        <cfif trim(arguments.editDataStructure.productname) EQ ""
+        OR trim(arguments.editDataStructure.brandname) EQ ""
+        OR trim(arguments.editDataStructure.descriptionname) EQ ""
+        OR trim(arguments.editDataStructure.pricename) EQ ""
+        OR trim(arguments.editDataStructure.taxname) EQ "">
+            <cfset local.exceptionStruct["exception"] ="Empty fileds are not allowed">
+            <cfset local.exceptionStruct["flag"] = false>
+            <cfelseif isNumeric(arguments.editDataStructure.pricename) EQ false OR isNumeric(arguments.editDataStructure.taxname) EQ false>
+                <cfset local.exceptionStruct["exception"] ="Price and Tax should be numeric">
+                <cfset local.exceptionStruct["flag"] = false>
+        </cfif>
+        <cfif local.exceptionStruct["flag"] EQ true>
             <cftry>
                 <cfquery name="local.insertProductQuery" result="generatedVal">
                     UPDATE 
@@ -268,6 +305,7 @@
                     <cfset sendErrorMail(errorMessage = cfcatch.message)>
                 </cfcatch>
             </cftry>
+        </cfif>
         <cffile action="uploadall"
         destination="#expandPath('../Assets/ProductImages')#"
         result="local.productImages"
@@ -291,14 +329,15 @@
                 </cfcatch>
             </cftry>
         </cfloop>
+        <cfreturn local.exceptionStruct>
     </cffunction>
 
     <cffunction  name="getProducts" access="remote" returnFormat="JSON" returnType="any" description="Function to get product details">
-        <cfargument name="subCategoryId" type="integer" required="false">
+        <cfargument name="subCategoryId" type="integer" required="true">
         <cfargument name="jscall"  required="false" type="boolean">
-        <cfargument name="productId" type="integer">
-        <cfargument name="productName" type="string">
-        <cfset newStructure = structNew()>
+        <cfargument name="productId" type="integer" required="false">
+        <cfargument name="productName" type="string" required="false">
+        <cfset local.newStructure = structNew()>
         <cftry>
             <cfquery name="local.getproductsQuery">
                 SELECT 
@@ -331,14 +370,14 @@
             </cfcatch>
         </cftry>
         <cfif structKeyExists(arguments, "jscall")>
-            <cfset newStructure["productid"] =local.getproductsQuery.fldProduct_ID>
-            <cfset newStructure["productname"] =local.getproductsQuery.fldProductName>
-            <cfset newStructure["productdesc"] =local.getproductsQuery.fldDescription>
-            <cfset newStructure["brandid"] =local.getproductsQuery.fldBrandId>
-            <cfset newStructure["productprice"] =local.getproductsQuery.fldPrice>
-            <cfset newStructure["fldtax"] =local.getproductsQuery.fldTax>
-            <cfset newStructure["fldimage"] =local.getproductsQuery.fldImageFileName>
-            <cfreturn newStructure>
+            <cfset local.newStructure["productid"] =local.getproductsQuery.fldProduct_ID>
+            <cfset local.newStructure["productname"] =local.getproductsQuery.fldProductName>
+            <cfset local.newStructure["productdesc"] =local.getproductsQuery.fldDescription>
+            <cfset local.newStructure["brandid"] =local.getproductsQuery.fldBrandId>
+            <cfset local.newStructure["productprice"] =local.getproductsQuery.fldPrice>
+            <cfset local.newStructure["fldtax"] =local.getproductsQuery.fldTax>
+            <cfset local.newStructure["fldimage"] =local.getproductsQuery.fldImageFileName>
+            <cfreturn local.newStructure>
             <cfelse>
                 <cfreturn local.getproductsQuery>
         </cfif>

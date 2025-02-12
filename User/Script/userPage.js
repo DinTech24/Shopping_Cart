@@ -139,8 +139,8 @@ function disableInputs(){
 
 function getFilterResult(subCategoryId){
     var flag = false;
-    minVal = document.getElementById("minVal").value;
-    maxVal = document.getElementById("maxVal").value;
+    var minVal = document.getElementById("minVal").value;
+    var maxVal = document.getElementById("maxVal").value;
     for(i=1;i<=4;i++){
         if(document.getElementById("filterRadio"+i).checked){
             flag = true
@@ -194,6 +194,8 @@ function getFilterResult(subCategoryId){
             }
         })
     }
+    document.getElementById("minVal").value = ""
+    document.getElementById("maxVal").value = ""
 }
 
 function addProductQuantity(cartId){

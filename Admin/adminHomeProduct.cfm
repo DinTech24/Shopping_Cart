@@ -17,13 +17,12 @@
                 jscall = true
             )>
             <cfset variables.getBrandsData = variables.adminProductObject.getBrands()>
-            <cfset variables.createErrorVar = true>
+            <cfset variables.createErrorVar["flag"] = true>
             <cfif structKeyExists(form, "productSubmit")>
-                <cfset variables.insertResult = variables.adminProductObject.insertProduct(dataStructure = form)>
-                <cfset variables.createErrorVar = variables.insertResult>
+                <cfset variables.createErrorVar = variables.adminProductObject.insertProduct(dataStructure = form)>
             </cfif>
             <cfif structKeyExists(form, "productEdit")>
-                <cfset variables.adminProductObject.updateProduct(editDataStructure = form)>
+                <cfset variables.createErrorVar = variables.adminProductObject.updateProduct(editDataStructure = form)>
             </cfif>
             <cfset variables.getProductData = variables.adminProductObject.getProducts(subCategoryId = url.subCategoryId)>
             <div class="modal fade" id="staticProductImageModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -135,9 +134,8 @@
                     <div class="my-2">
                         <span>Products Page</span>
                         <button class="categoriesAdd" onclick="openProductModal(#url.categoryId#,#url.subCategoryId#)" data-bs-toggle="modal" data-bs-target="##staticBackdropModal">Add +</button>
-                        <cfif variables.createErrorVar EQ false>
-                            <span class="text-danger ms-2 fw-bold">Cannot insert product with same name</span>
-                            <cfelse>
+                        <cfif variables.createErrorVar["flag"] EQ false>
+                            <span class="text-danger ms-2 fw-bold" id="serverErrorSpan">#variables.createErrorVar["exception"]#</span>
                         </cfif>
                     </div>
                     <div class="productsDivision">

@@ -20,7 +20,7 @@ a > img{
   
 .inputStyle{
     margin-top: 2.5vh;
-    border: 1px solid rgb(240, 237, 237);
+    border: 1px solid #f0eded;
     border-radius: 6px;
     width: 30vw;
     height: 6vh;
@@ -33,7 +33,7 @@ a > img{
 }
 
 .inputStyleNew{
-    border: 1px solid rgb(240, 237, 237);
+    border: 1px solid #f0eded;
     border-radius: 6px;
     width: 30vw;
     height: 6vh;
@@ -84,7 +84,7 @@ a > img{
 .accessMainDiv{
     background-color: white;
     border-radius:10px ;
-    border: 1px solid rgb(0, 0, 0);
+    border: 1px solid black;
     box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
 }
 
@@ -269,7 +269,7 @@ a > img{
 
 
 .footerDiv{
-    border-top: rgb(214, 214, 214) 1px solid;
+    border-top: #d6d6d6 1px solid;
 }
 
 .LoginButton{
@@ -292,17 +292,17 @@ a > img{
 }
 
 .filterClass{
-    border: 1px solid rgb(212, 212, 212);
+    border: 1px solid #d4d4d4;
     border-radius: 5px;
 }
 
 .sortArrow{
-    border: 1px solid rgb(214, 214, 214);
+    border: 1px solid #d6d6d6;
     background-color: transparent;
     border-radius: 6px;
 }
 .filterMainClass .filterInner{
-    border: 1px solid rgb(226, 226, 226);
+    border: 1px solid #e2e2e2;
     box-shadow: 1px 1px 1px black;
     padding: 10px;
     width:20vw;
@@ -354,15 +354,17 @@ a > img{
 }
 
 .screenDivisionButton1 {
-    background-color: #3f8d56;
+    background-color: #274931;
     color: white;
-    border-radius: 5px;
+    border-radius: 2px;
+    width: 45%;
 }
 
 .screenDivisionButton2 {
-    background-color: #2a6ba7;
+    background-color: #2a4561;
     color: white;
-    border-radius: 5px;
+    border-radius: 2px;
+    width: 45%;
 }
 
 .screenSection2 {
@@ -385,12 +387,12 @@ a > img{
 
 .pageFullPath {
     font-size: 0.9rem;
-    color: rgb(102, 101, 101);
+    color: #666565;
 }
 
 .pageFullPath a{
     text-decoration: none;
-    color: rgb(102, 101, 101);
+    color: #666565;
 }
 
 .productName {
@@ -451,7 +453,7 @@ a > img{
 }
 
 .productImageSubDiv{
-    border: 1px solid rgb(194, 194, 194);
+    border: 1px solid #c2c2c2;
     border-radius: 5px;
     height: 20vw;
     width: 18vw;
@@ -707,7 +709,7 @@ a > img{
 }
 
 .mainSectionBody{
-    border-bottom: 1px solid rgb(221, 221, 221);
+    border-bottom: 1px solid #dddddd;
 }
 
 .userProfileLogo{
@@ -786,7 +788,7 @@ a > img{
 }
 
 .addressSubDiv{
-    border-bottom: 1px solid rgb(175, 175, 175);
+    border-bottom: 1px solid #afafaf;
 }
 
 .CardMainDiv{
@@ -803,12 +805,13 @@ a > img{
     height: 30vh;
     border: black;
     border-radius: 10px;
-    border:1px solid rgb(133, 133, 133);
+    background: linear-gradient(90deg, rgba(71,137,193,1) 0%, rgba(77,117,159,0.9108018207282913) 98%);
+    box-shadow: rgba(173, 173, 173, 0.726) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
 }
 
 .cardNumberDiv{
     width: 90%;
-    border: 1px solid rgb(133, 133, 133);
+    border: transparent;
     height: 7vh;
     margin-left: 1vw;
     margin-top: 3vh;
@@ -839,13 +842,14 @@ a > img{
 
 .validUpto{
     width: 6w;
-    border: 1px solid rgb(133, 133, 133);
+    border: transparent;
     display: flex;
     background-color: transparent;
 }
 
 .validThorughText{
     font-size: 14px;
+    background-color: transparent;
 }
 
 .cardValidDate{
@@ -855,8 +859,12 @@ a > img{
     color: black;
 }
 
+.validDateDiv{
+    background-color: transparent;
+}
+
 .cardCvv{
-    border: 1px solid rgb(133, 133, 133);
+    border: transparent;
     width: 15%;
     background-color: transparent;
     color: black;
@@ -885,7 +893,7 @@ a > img{
     font-size: 15px;
     margin-left: 1vw;
     margin-top: 3vh;
-    color: rgb(148, 146, 146);
+    color: #949292;
     font-weight: bold;
 }
 
@@ -921,7 +929,7 @@ a > img{
 
 
 .productOrderFooter{
-    background-color: rgb(247, 182, 108);
+    background-color: #f7b66c;
     padding: 10px;
     display: flex;
     justify-content: space-between;

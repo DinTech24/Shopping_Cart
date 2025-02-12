@@ -26,6 +26,11 @@
                         <span id="idSearchResult" class="text-light fw-bold"></span>
                         <input type="text" id="searchOrderId" onInput="searchOrder()" class="form-control w-25" placeholder="Search using orderId">
                     </div>
+                    <cfif queryRecordCount(variables.orderHistoryResult) EQ 0>
+                        <div class="m-3">
+                            Order History is empty! <a href="./userhomePage.cfm">Continue to shop</a>
+                        </div>
+                    </cfif>
                     <div id="orderHistorymainDivId">
                         <cfloop query="variables.orderHistoryResult" group="fldOrder_ID">
                             <cfset variables.orderId = variables.orderHistoryResult.fldOrder_ID>

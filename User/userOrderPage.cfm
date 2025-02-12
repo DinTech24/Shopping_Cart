@@ -207,46 +207,46 @@
                                             </div>
                                             <cfelse>
                                                 <cfloop query="cartDisplayResult">
-                                                            <div class="mainSectionBody " id="#cartDisplayResult.fldCart_ID#CartProduct">
-                                                                <div class="orderDetailsDiv pt-4">
-                                                                    <a href="./productPage.cfm?productId=#cartDisplayResult.fldProduct_ID#">
-                                                                        <img class="cartImage" src="../Assets/ProductImages/#cartDisplayResult.fldImageFileName#" alt="">
-                                                                    </a>
-                                                                    <div class="mt-2 ms-5">
-                                                                        <div class="productNameSize">#cartDisplayResult.fldProductName#</div>
-                                                                        <span class="orderDetailsSpan1">#cartDisplayResult.fldBrandName#</span>
-                                                                        <div class="mt-3">	
-                                                                            <div class="orderDetailsSpan3 mt-1">
-                                                                                Product Price : 
-                                                                                <span id="#cartDisplayResult.fldCart_ID#unitprice">
-                                                                                    <i class="fa-solid fa-indian-rupee-sign"></i>
-                                                                                    #cartDisplayResult.fldPrice#
-                                                                                </span>
+                                                    <div class="mainSectionBody " id="#cartDisplayResult.fldCart_ID#CartProduct">
+                                                        <div class="orderDetailsDiv pt-4">
+                                                            <a href="./productPage.cfm?productId=#cartDisplayResult.fldProduct_ID#">
+                                                                <img class="cartImage" src="../Assets/ProductImages/#cartDisplayResult.fldImageFileName#" alt="">
+                                                            </a>
+                                                            <div class="mt-2 ms-5">
+                                                                <div class="productNameSize">#cartDisplayResult.fldProductName#</div>
+                                                                <span class="orderDetailsSpan1">#cartDisplayResult.fldBrandName#</span>
+                                                                <div class="mt-3">	
+                                                                    <div class="orderDetailsSpan3 mt-1">
+                                                                        Product Price : 
+                                                                        <span id="#cartDisplayResult.fldCart_ID#unitprice">
+                                                                            <i class="fa-solid fa-indian-rupee-sign"></i>
+                                                                            #cartDisplayResult.fldPrice#
+                                                                        </span>
 
-                                                                            </div>
-                                                                            <div class="orderDetailsSpan3 mt-1">
-                                                                                Product Tax : 
-                                                                                <span id="#cartDisplayResult.fldCart_ID#unittax">
-                                                                                <i class="fa-solid fa-indian-rupee-sign"></i>
-                                                                                    #cartDisplayResult.fldTax#
-                                                                                </span>
-                                                                            </div>
-                                                                            <div class="orderDetailsSpan3 mt-1">
-                                                                                Product Quantity : 
-                                                                                <span>
-                                                                                    #cartDisplayResult.fldQuantity#
-                                                                                </span>
-                                                                            </div>
-                                                                            <div class="orderDetailsSpan mt-4">
-                                                                                Product Total Amount : <i class="fa-solid fa-indian-rupee-sign"></i>
-                                                                                #cartDisplayResult.fldPrice + cartDisplayResult.fldTax#
-                                                                            </div>
-                                                                        </div>	
                                                                     </div>
-                                                                </div>
+                                                                    <div class="orderDetailsSpan3 mt-1">
+                                                                        Product Tax : 
+                                                                        <span id="#cartDisplayResult.fldCart_ID#unittax">
+                                                                        <i class="fa-solid fa-indian-rupee-sign"></i>
+                                                                            #cartDisplayResult.fldTax#
+                                                                        </span>
+                                                                    </div>
+                                                                    <div class="orderDetailsSpan3 mt-1">
+                                                                        Product Quantity : 
+                                                                        <span>
+                                                                            #cartDisplayResult.fldQuantity#
+                                                                        </span>
+                                                                    </div>
+                                                                    <div class="orderDetailsSpan mt-4">
+                                                                        Product Total Amount : <i class="fa-solid fa-indian-rupee-sign"></i>
+                                                                        #cartDisplayResult.fldPrice + cartDisplayResult.fldTax#
+                                                                    </div>
+                                                                </div>	
                                                             </div>
-                                                            <cfset quantityPrice = quantityPrice +  (cartDisplayResult.fldPrice* cartDisplayResult.fldQuantity)>
-                                                            <cfset quantityTax = quantityTax + (cartDisplayResult.fldTax * cartDisplayResult.fldQuantity)>
+                                                        </div>
+                                                    </div>
+                                                    <cfset quantityPrice = quantityPrice +  (cartDisplayResult.fldPrice* cartDisplayResult.fldQuantity)>
+                                                    <cfset quantityTax = quantityTax + (cartDisplayResult.fldTax * cartDisplayResult.fldQuantity)>
                                                 </cfloop>
                                         </cfif>
                                     </div>
@@ -266,7 +266,7 @@
                                                         <input class="cardNumberDiv" name="cardNumberName" id="cardNumberId" type="text" maxlength="16" placeholder="ENTER CARD NUMBER">
                                                         <div class="cardBottomDiv mx-4">
                                                             <div class="validThorughText">Valid through</div>
-                                                            <div class="d-flex justify-content-between">
+                                                            <div class="d-flex justify-content-between validDateDiv">
                                                                 <div class="validUpto d-flex justify-content-between">
                                                                     <input class="cardValidDate" name="cardMonthName" id="cardMonthId" maxlength="2" type="text" placeholder="MM">
                                                                     <span class="cardMidSpan">|</span>

@@ -37,6 +37,12 @@
             </cfif>
             <cfinclude  template="./userHeader.cfm">
             <cfif NOT structKeyExists(url, "searchKeyword")>
+                <div class="pageFullPath ms-2 mt-2">
+                    <a href="./categoriesListingPage.cfm?categoryId=#encodeForURL(encrypt(variables.subCategoryResult.fldCategoryId,application.encryptionString,'AES','Base64'))#">
+                        Return to Category Page
+                    </a>
+                    <i class="fa-solid fa-chevron-right fa-xs"></i> 
+                </div>
                 <cfloop query="subCategoryResult">
                     <div class="p-3 d-flex justify-content-between px-2">
                         <h2>#variables.subCategoryResult.fldSubcategoryName# - All Products</h2>

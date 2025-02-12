@@ -19,6 +19,10 @@
             <cfset variables.randomProductsResult = variables.userCateObject.getRandomProducts(sort="negative")>
             <cfset variables.subCategoryResult = variables.userCateObject.listSubCategories(categoryId = decrypt(url.categoryId,application.encryptionString,"AES","Base64"))>
             <cfinclude  template="./userHeader.cfm">
+            <div class="pageFullPath ms-3 mt-2">
+                <a href="./userhomePage.cfm">Return to Home Page</a>
+                <i class="fa-solid fa-chevron-right fa-xs"></i> 
+            </div>
             <div class="p-3">
                 <h2>#variables.categoryResult.fldCategoryName# - All Products</h2>
             </div>
