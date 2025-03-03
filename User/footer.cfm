@@ -52,7 +52,7 @@
                         <a href="" class="text-reset">Seller Login</a>
                     </p>
                     <p>
-                        <a href="./orderHistoryPage.cfm" class="text-reset">Orders</a>
+                        <a href="./orderHistoryPage.cfm?pageValue=1" class="text-reset">Orders</a>
                     </p>
                     <p>
                         <a href="" class="text-reset">Help</a>

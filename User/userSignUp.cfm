@@ -63,12 +63,13 @@
             </div>
             <div class="text-center" id="signupError">
                 <cfif structKeyExists(form,"signUpButton")>
-                    <cfset userRegisterObject = new Component.userComponent()>
-                    <cfset result = userRegisterObject.addUser(registerStructure = form)>
+                    <cfset variables.userRegisterObject = new Component.userComponent()>
+                    <cfset variables.result = variables.userRegisterObject.addUser(registerStructure = form)>
                     <div class=" fw-bold" style="color:#result['messagetype']#;">#result['message']#<div>
                 </cfif>
             <div>
         </cfoutput>
         <script src="./Script/userPage.js"></script>
+        <script src="../CommonScripts/validations.js"></script>
     </body>
 </html>

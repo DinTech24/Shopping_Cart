@@ -12,23 +12,29 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
     </head>
-    <body class="hideScroll">
+    <body>
         <cfinclude  template="./userHeader.cfm">
         <cfoutput>
             <cfset variables.orderHistoryObject = new Component.userComponent()>
-            <cfset  variables.orderHistoryResult =  variables.orderHistoryObject.displayOrderHistory()>
+            <cfif structKeyExists(form,"searchOrderButton")>
+                <cfset variables.orderHistoryResult = variables.orderHistoryObject.displayOrderHistory(orderSearch = form.searchOrderName)>
+                <cfelse>
+                    <cfset variables.orderHistoryResult =  variables.orderHistoryObject.displayOrderHistory(pageNumber = url.pageValue)>
+            </cfif>
             <div>
                 <form method="POST">
                     <div class="orderHistoryHead d-flex justify-content-between">
-                        <div>
+                        <div class="fs-4 fw-bold">
                             Order History
                         </div>
-                        <span id="idSearchResult" class="text-light fw-bold"></span>
-                        <input type="text" id="searchOrderId" onInput="searchOrder()" class="form-control w-25" placeholder="Search using orderId">
+                        <div class="d-flex align-items-center">
+                            <input type="text" id="searchOrderId" name="searchOrderName" class="searchOrderfield" onInput="searchOrder()" class="form-control" placeholder="Search using orderId,Product Name">
+                            <button name="searchOrderButton" class="btn btn-outline-light ms-2 w-25">Search</button>
+                        </div>
                     </div>
                     <cfif queryRecordCount(variables.orderHistoryResult) EQ 0>
                         <div class="m-3">
-                            Order History is empty! <a href="./userhomePage.cfm">Continue to shop</a>
+                            No Orders to show! <a href="./userhomePage.cfm">Continue to shop</a>
                         </div>
                     </cfif>
                     <div id="orderHistorymainDivId">
@@ -51,7 +57,7 @@
                                                 <div class="mt-3">	
                                                     <div class="orderDetailsSpa3 mt-2">
                                                         Product Total Amount : <i class="fa-solid fa-indian-rupee-sign"></i>
-                                                        #variables.orderHistoryResult.fldUnitPrice + variables.orderHistoryResult.fldUnitTax#
+                                                        #(variables.orderHistoryResult.fldUnitPrice + (variables.orderHistoryResult.fldUnitPrice * variables.orderHistoryResult.fldUnitTax)/100)#
                                                     </div>
                                                     <div class="orderDetailsSpa3 mt-2">
                                                         Product Quantity : #variables.orderHistoryResult.fldQuantity#
@@ -120,14 +126,14 @@
                                         <td>#variables.orderHistoryResult.fldProductName#</td>
                                         <td>#variables.orderHistoryResult.fldBrandName#</td>
                                         <td>#variables.orderHistoryResult.fldUnitPrice#</td>
-                                        <td>#variables.orderHistoryResult.fldUnitTax#</td>
+                                        <td>#variables.orderHistoryResult.fldUnitTax# %</td>
                                         <td>#variables.orderHistoryResult.fldQuantity#</td>
-                                    </tr> 
+                                    </tr>
                                 </cfif>
-                            </cfloop> 
+                            </cfloop>
                         </table>
                         <div>
-                                Order Date : #dateFormat(variables.orderHistoryResult.fldorderDate,"dd mmmm yyyy")#
+                            Order Date : #dateFormat(variables.orderHistoryResult.fldorderDate,"dd mmmm yyyy")#
                         </div>
                         <div style="margin-left:40%;margin-right:40%;">
                             <div>
@@ -143,12 +149,39 @@
                         </div>
                     </cfdocument>
                     <cfheader name="content-disposition" value="attachment;filename=#variables.fileName#">
-                    <cfcontent  file="#expandpath('../Assets/OrderInvoices/'&variables.fileName)#"  type="application/pdf">
+                    <cfcontent file="#expandpath('../Assets/OrderInvoices/'&variables.fileName)#"  type="application/pdf">
                 </cfif> 
            </cfloop>
-            <cfinclude  template="./footer.cfm">
+           <div class="d-flex justify-content-center mt-3">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        <li class="page-item"><a class="page-link">Pages</a></li>
+                        <cfif url.pageValue GT 1>
+                            <li class="page-item">
+                                <a class="page-link" href="./orderHistoryPage.cfm?pageValue=#(url.pageValue)-1#">
+                                    #(url.pageValue)-1#
+                                </a>
+                            </li>
+                        </cfif>
+                        <li class="page-item">
+                            <a class="page-link bg-primary text-white" href="./orderHistoryPage.cfm?pageValue=#url.pageValue#">
+                                #url.pageValue#
+                            </a>
+                        </li>
+                        <cfif queryRecordCount(variables.orderHistoryResult) EQ 10>
+                            <li class="page-item">
+                                <a class="page-link"  href="./orderHistoryPage.cfm?pageValue=#(url.pageValue)+1#">
+                                    #(url.pageValue)+1#
+                                </a>
+                            </li>
+                        </cfif>
+                    </ul>
+                </nav>
+           </div>
+            <cfinclude template="./footer.cfm">
         </cfoutput>
         <script src="./Script/userPage.js"></script>
+        <script src="../CommonScripts/validations.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>

@@ -18,9 +18,9 @@ body{
 }
 
 .categoriesDivision{
-    width: 30vw;
-    border: 1px solid rgb(180, 180, 180);
-    box-shadow: 1px 1px 1px;
+    width: 60vw;
+    box-shadow: rgba(173, 173, 173, 0.726) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
+    background-color: rgb(243, 241, 241);
     padding: 10px;
 }
 .categoriesAdd{
@@ -86,10 +86,9 @@ body{
 }
 
 .productDivision{
-    width: 40vw;
-    border: 1px solid rgb(180, 180, 180);
-    background-color: rgb(230, 242, 252);
-    box-shadow: 1px 1px 1px;
+    width: 60vw;
+    box-shadow: rgba(173, 173, 173, 0.726) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
+    background-color: rgb(243, 241, 241);
     padding: 10px;
 }
 

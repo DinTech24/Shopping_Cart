@@ -13,7 +13,8 @@
             <cfset variables.adminLoginObject = new Component.adminComponent()>
             <div class="adminNavBar align-items-center px-3 py-2">
                 <div>
-                    <span class="navHead">ShoppingCart</span>
+                    <img src="../Assets/SiteImages/LogoImage.png" height="50">
+                    <span class="navHead fs-3 fw-bold">eCart</span>
                 </div>
             </div>
             <div class="loginMainDiv mx-auto">
@@ -30,16 +31,21 @@
             </div>
             <div id="loginException">
                 <cfif structKeyExists(form,"adminLoginButton")>
-                    <cfset variables.adminLoginResult = variables.adminLoginObject.adminLogin(form.adminUser,form.adminPass)>
+                    <cfset variables.adminLoginResult = variables.adminLoginObject.adminLogin(
+                        form.adminUser,
+                        form.adminPass
+                    )>
                     <cfif variables.adminLoginResult["exception"] EQ false>
-                        <cflocation  url="./adminHomePage.cfm">
-                        
-                        <cfelse>
-                            <div class="text-danger text-center fw-bold">#variables.adminLoginResult["exception"]#</div>
+                        <cflocation url="./adminHomePage.cfm" addToken="no">
+                    <cfelse>
+                        <div class="text-danger text-center fw-bold">#variables.adminLoginResult["exception"]#</div>
                     </cfif>
                 </cfif>
             </div>
         </cfoutput>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script src="./Script/adminPage.js"></script>
+        <script src="../CommonScripts/validations.js"></script>
     </body>
 </html>

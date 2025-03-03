@@ -13,14 +13,18 @@
         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
    </head>
    <cfoutput>
-        <body class="hideScroll">
+        <body>
             <cfinclude  template="./userHeader.cfm">
             <cfset variables.productObject = new Component.userComponent()>
-            <cfset variables.resultProductDetails = variables.productObject.getRandomProducts(productId = url.productId)>
-            <cfset variables.randomProductsResult = variables.productObject.getRandomProducts(sort="negative")>
-            <cfset variables.resultProductImages = variables.productObject.getProductImages(productId = url.productId)>
-            <cfset variables.subCategoryResult = variables.productObject.listSubCategories(subCategoryId = variables.resultProductDetails.fldSubCategoryId)>
-            <cfset variables.categoryResult = variables.productObject.listCategories(categoryId = variables.subCategoryResult.fldCategoryId)>
+            <cfset variables.resultProductDetails = variables.productObject.getRandomProducts(
+                productId = url.productId,
+                imageType = "all"
+            )>
+            <cfset variables.productsResult = variables.productObject.getRandomProducts(
+                sort = "negative",
+                subCategoryId = variables.resultProductDetails.fldSubCategoryId
+            )>
+            <cfset variables.encryptionString = variables.productObject.getSecretKey()>
             <cfset variables.randomLabels = [
                 "Best Seller",
                 "Special Price",
@@ -35,13 +39,13 @@
                     <div>
                         <div id="carouselControls" class="carousel slide" data-bs-ride="carousel">
                             <div class="carousel-inner" id="carousel-inner">
-                                <cfloop query="variables.resultProductImages">
-                                    <cfif variables.resultProductImages.fldDefaultImage EQ 1>
+                                <cfloop query="variables.resultProductDetails">
+                                    <cfif variables.resultProductDetails.fldDefaultImage EQ 1>
                                         <div class="carousel-item active">
-                                        <cfelse>
-                                            <div class="carousel-item">
+                                    <cfelse>
+                                        <div class="carousel-item">
                                     </cfif>
-                                        <img class="productAllImages1" src="../Assets/ProductImages/#variables.resultProductImages.fldImageFileName#" alt="">
+                                        <img class="productAllImages1" src="../Assets/ProductImages/#variables.resultProductDetails.fldImageFileName#" alt="">
                                     </div>
                                 </cfloop>
                             </div>
@@ -73,11 +77,11 @@
                         <div class="pageFullPath">
                             <a href="./userhomePage.cfm">Home</a>
                             <i class="fa-solid fa-chevron-right fa-xs"></i> 
-                            <a href="./categoriesListingPage.cfm?categoryId=#encodeForURL(encrypt(variables.categoryResult.fldcategory_ID,application.encryptionString,'AES','Base64'))#">#categoryResult.fldcategoryName#</a> 
+                            <a href="./categoriesListingPage.cfm?categoryId=#encodeForURL(encrypt(variables.resultProductDetails.fldcategoryId,variables.encryptionString,'AES','Base64'))#">#resultProductDetails.fldcategoryName#</a> 
                             <i class="fa-solid fa-chevron-right fa-xs"></i> 
-                            <a href="./subCategoriesListingPage.cfm?subCategoryId=#encodeForURL(encrypt(variables.subCategoryResult.fldsubCategory_ID,application.encryptionString,'AES','Base64'))#">#subCategoryResult.fldsubCategoryName# </a>
+                            <a href="./subCategoriesListingPage.cfm?subCategoryId=#encodeForURL(encrypt(variables.resultProductDetails.fldsubCategoryId,variables.encryptionString,'AES','Base64'))#">#resultProductDetails.fldsubCategoryName# </a>
                             <i class="fa-solid fa-chevron-right fa-xs"></i> 
-                            <a>#variables.resultProductDetails.fldProductName#</a>
+                            <a class="text-primary">#variables.resultProductDetails.fldProductName#</a>
                         </div>
                     </div>
                     <div class="productName">#variables.resultProductDetails.fldProductName#</div>
@@ -92,14 +96,15 @@
                             PRODUCT PRICE :
                             <span class="discountedPriceSpan">
                                 <i class="fa-solid fa-indian-rupee-sign"></i>
-                                #variables.resultProductDetails.fldPrice+variables.resultProductDetails.fldTax#
+                                #variables.resultProductDetails.fldPrice+(variables.resultProductDetails.fldTax * variables.resultProductDetails.fldPrice)/100#
                             </span>
                         </div>
+                        <div class="mx-2 text-secondary fw-bold">#variables.resultProductDetails.fldTax#% Tax</div>
                     </div>
                     <div class="productImageMainDiv">
-                        <cfloop query="resultProductImages" endRow="3">
+                        <cfloop query="variables.resultProductDetails" endRow="3">
                             <div class="me-3 productImageSubDiv">
-                                <img class="productImagesSub" src="../Assets/ProductImages/#variables.resultProductImages.fldImageFileName#" alt="Productimages">
+                                <img class="productImagesSub" src="../Assets/ProductImages/#variables.resultProductDetails.fldImageFileName#" alt="Productimages">
                             </div>
                         </cfloop>
                     </div>
@@ -108,19 +113,18 @@
             <h3 class="m-3 mt-5">Related Products</h3>
             <div class="randomProductsMainDiv">
                 <cfset variables.productsCount = 0>
-                <cfloop query="variables.randomProductsResult">
-                    <cfif variables.resultProductDetails.fldSubCategoryId EQ variables.randomProductsResult.fldSubCategoryId 
-                    AND variables.randomProductsResult.fldProduct_ID NEQ url.productId>
+                <cfloop query="variables.productsResult">
+                    <cfif variables.productsResult.fldProduct_ID NEQ url.productId>
                         <cfset variables.productsCount = variables.productsCount + 1>
                         <div class="card randomProductCard" style="width: 13rem;">
-                            <a class='text-decoration-none' href="./productPage.cfm?productId=#variables.randomProductsResult.fldProduct_ID#">
-                                <img src="../Assets/ProductImages/#variables.randomProductsResult.fldImageFileName#" class="card-img-top randProductImage" alt="Product Image">
+                            <a class='text-decoration-none' href="./productPage.cfm?productId=#variables.productsResult.fldProduct_ID#">
+                                <img src="../Assets/ProductImages/#variables.productsResult.fldImageFileName#" class="card-img-top randProductImage" alt="Product Image">
                                 <div class="card-body randProductbody">
-                                    <div class="card-text randProductName">#randomProductsResult.fldProductName#</div>
-                                    <div class="text-dark">#variables.randomProductsResult.fldBrandName#</div>
+                                    <div class="card-text randProductName">#productsResult.fldProductName#</div>
+                                    <div class="text-dark">#variables.productsResult.fldBrandName#</div>
                                     <div class="card-text randProductPrice">
                                         <i class="fa-solid fa-indian-rupee-sign"></i>
-                                        #variables.randomProductsResult.fldPrice + randomProductsResult.fldTax#
+                                        #variables.productsResult.fldPrice + (variables.productsResult.fldTax * variables.productsResult.fldPrice)/100#
                                     </div>
                                 </div>
                             </a>
@@ -135,20 +139,22 @@
             </cfif>
             <cfif structKeyExists(form, "addToCartButton")>
                 <cfif structKeyExists(session, "userLogin") AND structKeyExists(session, "username")>
-                    <cflocation  url="./userCartPage.cfm?productId=#url.productId#">
-                    <cfelse>
-                        <cflocation  url="./userLogin.cfm?productId=#url.productId#">
+                    <cfset variables.cartResult = productObject.addToCart(productId = url.productId)>
+                    <cflocation  url="./userCartPage.cfm?productId=#url.productId#" addToken="no">
+                <cfelse>
+                    <cflocation  url="./userLogin.cfm?productId=#url.productId#" addToken="no">
                 </cfif>
             </cfif>
             <cfif structKeyExists(form, "buyNowButton")>
                 <cfif structKeyExists(session, "userLogin") AND structKeyExists(session, "username")>
-                    <cflocation url="./userOrderPage.cfm?productId=#url.productId#">
-                    <cfelse>
-                        <cflocation url="./userLogin.cfm?productId=#url.productId#&buyNow=#true#">
+                    <cflocation url="./userOrderPage.cfm?productId=#url.productId#" addToken="no">
+                <cfelse>
+                    <cflocation url="./userLogin.cfm?productId=#url.productId#&buyNow=#true#" addToken="no">
                 </cfif>
             </cfif>
             <cfinclude template="./footer.cfm">
             <script src="./Script/userPage.js"></script>
+            <script src="../CommonScripts/validations.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
         </body>

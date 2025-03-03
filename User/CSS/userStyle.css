@@ -14,10 +14,6 @@ a > img{
     object-fit: contain;
 }
 
-.hideScroll::-webkit-scrollbar {
-    display: none;
-}
-  
 .inputStyle{
     margin-top: 2.5vh;
     border: 1px solid #f0eded;
@@ -166,6 +162,10 @@ a > img{
     font-weight: 500;
 }
 
+.subcategoriesAnchor{
+    width:11vw;
+}
+
 .subCategoryEach{
     font-size: 14px;
     text-decoration: none;
@@ -264,9 +264,9 @@ a > img{
 }
 
 .subcategories:hover{
-    background-color: rgba(7, 7, 7, 0.3);
+    background-color: rgb(230, 224, 224);
+    font-weight: bold;
 }
-
 
 .footerDiv{
     border-top: #d6d6d6 1px solid;
@@ -435,7 +435,6 @@ a > img{
     width: 38vw;
     height:34vw;
     border-radius: 20px;
-    border: #c5c6c7 1px solid;
 }
 
 .carousalcontrol{
@@ -453,7 +452,6 @@ a > img{
 }
 
 .productImageSubDiv{
-    border: 1px solid #c2c2c2;
     border-radius: 5px;
     height: 20vw;
     width: 18vw;
@@ -462,6 +460,7 @@ a > img{
     justify-content: center;
     position: relative;
     overflow: hidden;
+    box-shadow: rgba(173, 173, 173, 0.726) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
 }
 
 .productImageSubDiv img {
@@ -479,6 +478,7 @@ a > img{
 .productImagesSub{
     height: 18vw;
     width: 16vw;
+
 }
 
 .initialDivHeight{
@@ -911,7 +911,7 @@ a > img{
     background-color: rgba(0, 0, 0, 0.9);
     height:8vh;
     position: sticky;
-    top: 8.5vh;
+    top: 9.5vh;
     padding:10px;
     font-size: 22px;
     z-index: 1;
@@ -922,7 +922,7 @@ a > img{
     padding: 10px;
     color: white;
     font-weight: bold;
-    top: 16vh;
+    top: 17.5vh;
     height: 7vh;
     position: sticky;
 }
@@ -1015,4 +1015,8 @@ a > img{
     font-weight: bold;
     cursor: pointer;
 
+}
+
+.searchOrderfield{
+    width: 30vw;
 }

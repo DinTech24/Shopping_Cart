@@ -1,124 +1,15 @@
-function registerUser(){
-    var firstName = document.getElementById("firstNameId").value;
-    var emailId = document.getElementById("emailIds").value;
-    var password = document.getElementById("passwordId").value;
-    var rePassword = document.getElementById("rePasswordId").value;
-    var phone = document.getElementById("phoneId").value;
-    var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    var phonePattern = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
-    var flag = true;
-
-    if(firstName.trim() === ""){
-        document.getElementById("nameWarning").innerHTML = "Firstname is required"
-        flag = false;
-    }else{
-        document.getElementById("nameWarning").innerHTML = ""
-    }
-
-    if(phone.trim() === ""){
-        document.getElementById("phoneWarning").innerHTML = "add phone number";
-        flag = false;
-    }else{
-        if(phonePattern.test(phone) === false){
-            document.getElementById("phoneWarning").innerHTML = "phone should follow the pattern";
-            flag = false;
-        }else{
-            document.getElementById("phoneWarning").innerHTML = ""
-        }
-    }
-
-    if(emailId.trim() === ""){
-        document.getElementById("emailWarning").innerHTML = "email-id is required"
-        flag = false;
-    }else{
-        if(emailPattern.test(emailId) === false){
-            document.getElementById("emailWarning").innerHTML = "should follow email Pattern"
-            flag = false;
-        }else{
-            document.getElementById("emailWarning").innerHTML = ""
-        }
-    }
-
-
-    if(password.trim() === ""){
-        document.getElementById("passWarning").innerHTML = "password is required"
-        flag = false;
-    }else{
-        if(password.includes(" ")){
-            document.getElementById("passWarning").innerHTML = "password shouldn't contain spaces"
-            flag = false;
-        }else if(password.length < 6){
-            document.getElementById("passWarning").innerHTML = "password should atleast have 6 characters"
-            flag = false;
-        }else if(password !== rePassword){
-            document.getElementById("passWarning").innerHTML = ""
-            document.getElementById("repassWarning").innerHTML = "passwords doesn't match"
-            flag = false;
-        }else{
-            document.getElementById("repassWarning").innerHTML = ""
-            document.getElementById("passWarning").innerHTML = ""
-        }
-    }
-    
-    if(flag == false){
-        document.getElementById("signupError").innerHTML = "";
-        event.preventDefault();
-    }
-    return flag;
-}
-
 function logoutFunction(){
     $.ajax({
         type:"POST",
         url:"Component/userComponent.cfc?method=logoutUser",
         success:function(){
-                window.location.href = "./userhomePage.cfm"
-            }
+            window.location.href = "./userhomePage.cfm"
+        }
     })
 }
 
 function closeUserModal(){
     document.getElementById("userLoginForm").reset();
-}
-
-function loginModal(){
-    document.getElementById("passWarning").innerHTML = ""
-    document.getElementById("emailWarning").innerHTML = ""
-    var emailId = document.getElementById("emailIds").value;
-    var password = document.getElementById("passwordId").value;
-    var flag = true;
-    if(emailId.trim() === ""){
-        document.getElementById("emailWarning").innerHTML = "EmailId is required"
-        flag = false;
-    }else{
-        document.getElementById("emailWarning").innerHTML = ""
-    }
-    if(password.trim() === ""){
-        document.getElementById("passWarning").innerHTML = "Password is required"
-        flag = false;
-    }else{
-        document.getElementById("passWarning").innerHTML = ""
-    }
-    if(flag)
-        var jsCall = true;
-        $.ajax({
-            type:"POST",
-            url:"Component/userComponent.cfc?method=loginUser",
-            data:{enteredId:emailId,enteredPassword:password,jsCall:jsCall},
-            success:function(result){
-                if(result){
-                    result = JSON.parse(result);
-                    event.preventDefault();
-                    if(result["Message"] == true){
-                        location.reload();
-                    }else{
-                        document.getElementById("passWarning").innerHTML = result["Message"]
-                    }
-                    
-                }
-            }
-        })
-    
 }
 
 function modalClear(){
@@ -176,17 +67,17 @@ function getFilterResult(subCategoryId){
                     for(j=0;j<result.length;j++){
                         var eachProducts = 
                         `<div class="card randomProductCard" style="width: 13rem;">
-                            <a href="./productPage.cfm?productId=${result[j].fldProduct_ID}">
+                            <a class="text-decoration-none" href="./productPage.cfm?productId=${result[j].fldProduct_ID}">
                                 <img src="../Assets/ProductImages/${result[j].fldImageFileName}" class="card-img-top randProductImage" alt="Product Image">
-                            </a>
-                            <div class="card-body randProductbody">
-                                <div class="card-text randProductName">${result[j].fldProductName}</div>
-                                <div>${result[j].fldBrandName}</div>
-                                <div class="card-text randProductPrice">
-                                    <i class="fa-solid fa-indian-rupee-sign"></i>
-                                    ${result[j].fldPrice + result[j].fldTax}
+                                <div class="card-body randProductbody">
+                                    <div class="card-text randProductName">${result[j].fldProductName}</div>
+                                    <div class="text-dark">${result[j].fldBrandName}</div>
+                                    <div class="card-text randProductPrice">
+                                        <i class="fa-solid fa-indian-rupee-sign"></i>
+                                        ${result[j].fldPrice + (result[j].fldTax * result[j].fldPrice)/100}
+                                    </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>`
                         $("#randomProductsMainDivId").append(eachProducts);
                     }
@@ -200,62 +91,76 @@ function getFilterResult(subCategoryId){
 
 function addProductQuantity(cartId){
     var prQuantity = document.getElementById(cartId.value+"quantity").innerHTML;
-    document.getElementById(cartId.value+"quantity").innerHTML = Number(prQuantity) + 1
-    var prQuantity = document.getElementById(cartId.value+"quantity").innerHTML;
-    var price = document.getElementById(cartId.value+"unitprice").innerHTML;
-    var tax = document.getElementById(cartId.value+"unittax").innerHTML;
-    var totalprice = document.getElementById("totalprice").innerHTML;
-    var totaltax = document.getElementById("totaltax").innerHTML;
-    var totalamount = document.getElementById("totalamount").innerHTML;
-    document.getElementById("totalprice").innerHTML = (Number(totalprice) + Number(price)).toFixed(1);
-    document.getElementById("totaltax").innerHTML = (Number(totaltax) +Number(tax)).toFixed(1);
-    document.getElementById("totalamount").innerHTML = (Number(totalamount) + Number(tax) + Number(price)).toFixed(1);
     $.ajax({
         type:"POST",
         url:"Component/userComponent.cfc?method=updateCartQuantity",
-        data:{cartId:cartId.value,prQuantity:prQuantity}
+        data:{cartId:cartId.value,prQuantity:Number(prQuantity)+1},
+        success:function(){
+            var prQuantity = document.getElementById(cartId.value+"quantity").innerHTML;
+            document.getElementById(cartId.value+"quantity").innerHTML = Number(prQuantity) + 1
+            var prQuantity = document.getElementById(cartId.value+"quantity").innerHTML;
+            var price = document.getElementById(cartId.value+"unitprice").innerHTML;
+            var tax = document.getElementById(cartId.value+"unittax").innerHTML;
+            var totalprice = document.getElementById("totalprice").innerHTML;
+            var totaltax = document.getElementById("totaltax").innerHTML;
+            var totalamount = document.getElementById("totalamount").innerHTML;
+            document.getElementById("totalprice").innerHTML = (Number(totalprice) + Number(price)).toFixed(1);
+            document.getElementById("totaltax").innerHTML = (Number(totaltax) +Number(tax)).toFixed(1);
+            document.getElementById("totalamount").innerHTML = (Number(totalamount) + Number(tax) + Number(price)).toFixed(1);
+        }
     })
 }
 
 function reduceProductQuantity(cartId){
     var prQuantity = document.getElementById(cartId.value+"quantity").innerHTML;
-    document.getElementById(cartId.value+"quantity").innerHTML = Number(prQuantity) - 1
-    var prQuantity = document.getElementById(cartId.value+"quantity").innerHTML;
-    var price = document.getElementById(cartId.value+"unitprice").innerHTML;
-    var tax = document.getElementById(cartId.value+"unittax").innerHTML;
-    var totalprice = document.getElementById("totalprice").innerHTML;
-    var totaltax = document.getElementById("totaltax").innerHTML;
-    var totalamount = document.getElementById("totalamount").innerHTML;
-    document.getElementById("totalprice").innerHTML = (Number(totalprice) - Number(price)).toFixed(1);
-    document.getElementById("totaltax").innerHTML = (Number(totaltax) - Number(tax)).toFixed(1);
-    document.getElementById("totalamount").innerHTML = ((Number(totalamount) - Number(tax)) - Number(price)).toFixed(1);
-    if(prQuantity == 0){
-        document.getElementById(cartId.value+"CartProduct").remove()
-        var producttotalQuantity = document.getElementById("productQuantityId").innerHTML;
-        document.getElementById("productQuantityId").innerHTML = Number(producttotalQuantity)-1;
-        var producttotalQuantity = document.getElementById("productQuantityId").innerHTML;
-        if(producttotalQuantity == 0){
-            document.getElementById("cartPageMainId").innerHTML = 
-                `
-                <div>
-                    <div class="d-flex justify-content-center">
-                        <img src="../Assets/SiteImages/Empty_Shopping.jpg">
-                    </div>
-                    <div class="text-center mt-3">
-                        <a class="continueShopping" href="./userhomePage.cfm">
-                            Continue Shopping
-                            <i class="fa-solid fa-right-long"></i>
-                        </a>
-                    </div>
-                </div>
-                `
-                
-        }
-    }
     $.ajax({
         type:"POST",
         url:"Component/userComponent.cfc?method=updateCartQuantity",
-        data:{cartId:cartId.value,prQuantity:Number(prQuantity)}
+        data:{cartId:cartId.value,prQuantity:Number(prQuantity)-1},
+        success:function(){
+            var prQuantity = document.getElementById(cartId.value+"quantity").innerHTML;
+            document.getElementById(cartId.value+"quantity").innerHTML = Number(prQuantity) - 1
+            var prQuantity = document.getElementById(cartId.value+"quantity").innerHTML;
+            var price = document.getElementById(cartId.value+"unitprice").innerHTML;
+            var tax = document.getElementById(cartId.value+"unittax").innerHTML;
+            var totalprice = document.getElementById("totalprice").innerHTML;
+            var totaltax = document.getElementById("totaltax").innerHTML;
+            var totalamount = document.getElementById("totalamount").innerHTML;
+            document.getElementById("totalprice").innerHTML = (Number(totalprice) - Number(price)).toFixed(1);
+            document.getElementById("totaltax").innerHTML = (Number(totaltax) - Number(tax)).toFixed(1);
+            document.getElementById("totalamount").innerHTML = ((Number(totalamount) - Number(tax)) - Number(price)).toFixed(1);
+            if(prQuantity <= 0){
+                document.getElementById(cartId.value+"CartProduct").remove()
+                var producttotalQuantity = document.getElementById("productQuantityId").innerHTML;
+                document.getElementById("productQuantityId").innerHTML = Number(producttotalQuantity)-1;
+                var producttotalQuantity = document.getElementById("productQuantityId").innerHTML;
+                if(producttotalQuantity <= 0){
+                    document.getElementById("cartPageMainId").innerHTML = 
+                        `
+                        <div>
+                            <div class="d-flex justify-content-center">
+                                <img src="../Assets/SiteImages/Empty_Shopping.jpg">
+                            </div>
+                            <div class="text-center mt-3">
+                                <a class="continueShopping" href="./userhomePage.cfm">
+                                    Continue Shopping
+                                    <i class="fa-solid fa-right-long"></i>
+                                </a>
+                            </div>
+                        </div>
+                        `   
+                }
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Product removed from Cart",
+                    showConfirmButton: false,
+                    toast:true,
+                    timer: 1500,
+                    theme:"dark"
+                });
+            }
+        }
     })
 }
 
@@ -271,7 +176,7 @@ function removeCart(cartId){
       }).then((result) => {
         if (result.isConfirmed) {
           Swal.fire({
-            title: "Deleted!",
+            title: "Removed!",
             text: "Product has been removed from cart.",
             icon: "success"
         });
@@ -319,7 +224,7 @@ function removeCart(cartId){
 function searchValidate(){
     var searchKey = document.getElementById("searchInput").value;
     if(searchKey.trim().length == 0){
-        alert("Enter keyword to search");
+        Swal.fire("Enter keyword to search");
         return false
     }else{
         document.getElementById("searchInput").value = searchKey.trim();
@@ -327,92 +232,6 @@ function searchValidate(){
     }
 }
 
-function addressModalValidation(){
-    var firstName = document.getElementById("firstNameId").value;
-    var address1 = document.getElementById("address1Id").value;
-    var city = document.getElementById("cityId").value;
-    var state = document.getElementById("stateId").value;
-    var pincode = document.getElementById("pincodeId").value;
-    var phone = document.getElementById("phoneId").value;
-    var phonePattern = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
-    var flag = true;
-    if(firstName.trim().length == 0){
-        document.getElementById("firstWarning").innerHTML = "firstName is empty"
-        document.getElementById("firstNameId").focus();
-        document.getElementById("firstNameId").style.border = "2px solid red";
-        flag = false;
-    }else{
-        document.getElementById("firstWarning").innerHTML = ""
-        document.getElementById("firstNameId").style.border = "1px solid black";
-    }
-
-    if(address1 === ""){
-        document.getElementById("address1Warning").innerHTML = "address line 1 is empty"
-        document.getElementById("address1Id").focus();
-        document.getElementById("address1Id").style.border = "2px solid red";
-        flag = false;
-    }else{
-        document.getElementById("address1Warning").innerHTML = ""
-        document.getElementById("address1Id").style.border = "1px solid black";
-    }
-
-    if(city === ""){
-        document.getElementById("cityWarning").innerHTML = "city is empty"
-        document.getElementById("cityId").focus();
-        document.getElementById("cityId").style.border = "2px solid red";
-        flag = false;
-    }else{
-        document.getElementById("cityWarning").innerHTML = ""
-        document.getElementById("cityId").style.border = "1px solid black";
-    }
-
-    if(state === ""){
-        document.getElementById("stateWarning").innerHTML = "state is empty"
-        document.getElementById("stateId").focus();
-        document.getElementById("stateId").style.border = "2px solid red";
-        flag = false;
-    }else{
-        document.getElementById("stateWarning").innerHTML = ""
-        document.getElementById("stateId").style.border = "1px solid black";
-    }
-    
-    if(pincode.trim() === ""){
-        document.getElementById("pincodeWarning").innerHTML = "pincode is empty";
-        document.getElementById("pincodeId").focus();
-        document.getElementById("pincodeId").style.border = "2px solid red";
-        flag = false;
-    }else{
-        if(pincode.length !== 6){
-            document.getElementById("pincodeWarning").innerHTML = "enter 6 digit pincode";
-            flag = false;
-        }else if(/^[0-9]{6}$/.test(pincode) === false){
-            document.getElementById("pincodeWarning").innerHTML = "pincode should only contain digits";
-            flag = false;
-        }else{
-            document.getElementById("pincodeWarning").innerHTML = "";
-            document.getElementById("pincodeId").style.border = "1px solid black";
-        }
-    }
-
-    if(phone === ""){
-        document.getElementById("phoneWarning").innerHTML = "Phone Number is empty"
-        document.getElementById("phoneId").focus();
-        document.getElementById("phoneId").style.border = "2px solid red";
-        flag = false;
-    }else{
-        if(!phonePattern.test(phone)){
-            document.getElementById("phoneWarning").innerHTML = "Phone Number should follow pattern"
-            flag = false;
-        }else{
-            document.getElementById("phoneWarning").innerHTML = ""
-            document.getElementById("phoneId").style.border = "1px solid black";
-        }
-    }
-    if(flag == false){
-        event.preventDefault()
-    }
-    return flag;
-}
 
 function clearModal(){
     const nodeList = document.querySelectorAll(".registerWarning");
@@ -428,12 +247,11 @@ function clearModal(){
 
 function removeAddress(addressId){
     Swal.fire({
-        title: "Do you want to remove item from cart?",
+        title: "Do you want to remove address?",
         showDenyButton: true,
         confirmButtonText: "Yes",
         denyButtonText: `No`
       }).then((result) => {
-        /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
           Swal.fire("Removed!", "", "success");
           $.ajax({
@@ -494,92 +312,59 @@ function editUserProfile(userId){
                 userPhone:userPhone
             },
             success:function(result){
-                    result = JSON.parse(result);
-                    if(result == true){
-                        document.getElementById("userDataName").innerHTML = userFirstName + " " + userLastName;
-                        document.getElementById("userDataEmail").innerHTML = userEmail;
-                        document.getElementById("userDataPhone").innerHTML = userPhone;
-                        document.getElementById("profileModalClose").click();
-                    }else{
-                        Swal.fire("User already exists");
-                    }
+                result = JSON.parse(result);
+                if(result == true){
+                    document.getElementById("userDataName").innerHTML = userFirstName + " " + userLastName;
+                    document.getElementById("userDataEmail").innerHTML = userEmail;
+                    document.getElementById("userDataPhone").innerHTML = userPhone;
+                    document.getElementById("profileModalClose").click();
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "Your Profile has been updated",
+                        showConfirmButton: false,
+                        toast:true,
+                        timer: 1500,
+                        theme:"dark"
+                    });
+                }else{
+                    Swal.fire("User already exists");
                 }
+            }
         })
     }
 }
 
-function loadAllProducts(productsIdArray){
+function loadAllProducts(productsIdArray,offsetValue){
     $.ajax({
         type:"POST",
         url:"Component/userComponent.cfc?method=loadMoreData",
-        data:{productIdList:productsIdArray},
+        data:{productIdList:productsIdArray,offsetValue:offsetValue.value},
         success:function(result){
             var result = JSON.parse(result)
             for(j=0;j<result.length;j++){
                 var eachProducts = 
                 `<div class="card randomProductCard" style="width: 13rem;">
-                    <a href="./productPage.cfm?productId=${result[j].fldProduct_ID}">
+                    <a class="text-decoration-none" href="./productPage.cfm?productId=${result[j].fldProduct_ID}">
                         <img src="../Assets/ProductImages/${result[j].fldImageFileName}" class="card-img-top randProductImage" alt="Product Image">
-                    </a>
-                    <div class="card-body randProductbody">
-                        <div class="card-text randProductName">${result[j].fldProductName}</div>
-                        <div>${result[j].fldBrandName}</div>
-                        <div class="card-text randProductPrice">
-                            <i class="fa-solid fa-indian-rupee-sign"></i>
-                            ${result[j].fldPrice + result[j].fldTax}
+                        <div class="card-body randProductbody">
+                            <div class="card-text randProductName">${result[j].fldProductName}</div>
+                            <div class="text-dark">${result[j].fldBrandName}</div>
+                            <div class="card-text randProductPrice">
+                                <i class="fa-solid fa-indian-rupee-sign"></i>
+                                ${result[j].fldPrice + (result[j].fldTax * result[j].fldPrice)/100}
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>`
                 $("#randomProductsMainDivId").append(eachProducts);
             }
-            document.getElementById("viewMore").remove();
+            document.getElementById("loadMoreData").value = Number(offsetValue.value) + 12;
+            if(result.length < 12){
+                document.getElementById("viewMore").remove();
+            }
         }
     })
-}
-
-function verifyCard(cardData){
-    const cardDataArray = cardData.value.split(",")
-    var cardNumber = document.getElementById("cardNumberId").value;
-    var cardMonth = document.getElementById("cardMonthId").value;
-    var cardYear = document.getElementById("cardYearId").value;
-    var cardCvv = document.getElementById("cardCvvId").value;
-    var totalAmount = document.getElementById("totalAmount").innerHTML
-    var flag = true;
-    var error = ""
-    if(cardNumber !== cardDataArray[0]){
-        flag = false;
-        error = "Card Number is wrong"
-    }
-    if((cardMonth !== cardDataArray[1])&&(flag == true)){
-        flag = false;
-        error = "Validity month is wrong"
-    }
-    if((cardYear !== cardDataArray[2]&&(flag == true))){
-        flag = false;
-        error = "Validity year is wrong"
-    }
-    if((cardCvv !== cardDataArray[3]&&(flag == true))){
-        flag = false;
-        error = "Card CVV is wrong"
-    }
-    if(flag == true){
-        document.getElementById("cardWarningId").innerHTML = '<i class="fa-solid fa-check"></i> Verified'
-        document.getElementById("cardWarningId").classList.add("text-success");
-        document.getElementById("cardWarningId").classList.remove("text-danger");
-        document.getElementById("placeOrderButtonId").disabled = false;
-        document.getElementById("cardNumberId").readOnly  = true;
-        document.getElementById("cardMonthId").readOnly = true;
-        document.getElementById("cardYearId").readOnly = true;
-        document.getElementById("cardCvvId").readOnly = true;
-        document.getElementById("verifyButtonId").remove();
-        document.getElementById("paymentsAmount").innerHTML = "Rs."+ totalAmount;
-    }else{
-        document.getElementById("cardWarningId").innerHTML = '<i class="fa-solid fa-xmark"></i> Unverified'
-        document.getElementById("cardWarningId").classList.add("text-danger");
-        document.getElementById("cardWarningId").classList.remove("text-success");
-        document.getElementById("placeOrderButtonId").disabled = true;
-        Swal.fire(error);
-    }
 }
 
 function addBuyQuantity(){
@@ -632,6 +417,14 @@ window.addEventListener('pageshow', (event) => {
 });
 
 function clearEditModal(){
+    var fullName = document.getElementById("userDataName").innerHTML;
+    var nameArray = fullName.split(" ");
+    var firstName = nameArray[0];
+    var secondName = nameArray[1];
+    document.getElementById("userFirstNameId").value = firstName
+    document.getElementById("userLastNameId").value = secondName
+    document.getElementById("userEmailId").value = document.getElementById("userDataEmail").innerHTML
+    document.getElementById("userPhoneId").value = document.getElementById("userDataPhone").innerHTML
     document.getElementById("userFirstNameWarning").innerHTML = "";
     document.getElementById("userEmailWarning").innerHTML = "";
     document.getElementById("userPhoneWarning").innerHTML = "";
@@ -642,28 +435,11 @@ function searchOrder(){
     $('#searchOrderId').keyup(function() { 
         this.value = this.value.toLocaleUpperCase(); 
     });
-    searchKeyWord = document.getElementById("searchOrderId").value.toUpperCase();
-    const container = document.getElementById("orderHistorymainDivId")
-    const allElements = container.querySelectorAll("[id]");
-    var dataDiv = Array.from(allElements).filter(item => item.id.includes(searchKeyWord));
-    var falseDiv = Array.from(allElements).filter(item => !item.id.includes(searchKeyWord));
-    if(dataDiv.length>0){
-        document.getElementById("idSearchResult").innerHTML = ""
-        for(i=0;i<=dataDiv.length;i++){
-            console.log(dataDiv)
-            $(dataDiv[i]).show();
-        }
-        for(i=0;i<=falseDiv.length;i++){
-            $(falseDiv[i]).hide();
-        }
-    }else{
-        document.getElementById("idSearchResult").innerHTML = "No Orders with the ID"
-    }
 }
 
 function downloadConfirmation(){
     if(confirm("Confirm to download")){
-        alert("Invoice Downloaded successfully")
+        Swal.fire("Invoice Downloaded successfully");
         return true;
     }else{
         return false;

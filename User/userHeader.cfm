@@ -5,7 +5,7 @@
             <a href="./userhomePage.cfm" class="navHead">eCart</a>
         </div>
         <cfif structKeyExists(form,"searchButton")>
-            <cflocation  url="./subCategoriesListingPage.cfm?searchKeyword=#form.searchKeyword#">
+            <cflocation  url="./subCategoriesListingPage.cfm?searchKeyword=#form.searchKeyword#" addToken="no">
         </cfif>
         <form method="POST">
             <div class="d-flex">

@@ -59,6 +59,7 @@
                     </cfif>
                     <cfelseif structKeyExists(url, "productId")>
                         <cfif variables.result["Message"] EQ true>
+                            <cfset variables.cartResult = userLoginObject.addToCart(productId = url.productId)>
                             <cflocation url="../User/userCartPage.cfm?productId=#url.productId#" addToken="no">
                         </cfif>
                     <cfelse>
@@ -72,5 +73,6 @@
             </cfif>
         </cfoutput>
         <script src="./Script/userPage.js"></script>
+        <script src="../CommonScripts/validations.js"></script>
     </body>
 </html>

@@ -12,10 +12,11 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
     </head>
-    <body class="hideScroll">
+    <body>
         <cfoutput>
-            <cfset variables.userCateObject = new Component.userComponent()>
-            <cfset variables.categoryResult = variables.userCateObject.listCategories(allData = "1")>
+            <cfset variables.userCategoryObject = new Component.userComponent()>
+            <cfset variables.categoryResult = variables.userCategoryObject.listCategories(allData = "true")>
+            <cfset variables.encryptionString = variables.userCategoryObject.getSecretKey()>
             <cfinclude  template="./userHeader.cfm">
             <div class="p-3">
                 <h2>All Categories</h2>
@@ -23,16 +24,17 @@
             <div>
                 <div class="d-grid ms-3">
                     <cfloop query="categoryResult">
-                        <a href="./categoriesListingPage.cfm?categoryId=#encodeForURL(encrypt(categoryResult.fldcategory_ID,application.encryptionString,'AES','Base64'))#" class=" text-dark fw-bold mb-2">
+                        <a href="./categoriesListingPage.cfm?categoryId=#encodeForURL(encrypt(variables.categoryResult.fldCategory_ID,variables.encryptionString,'AES','Base64'))#" class=" text-dark fw-bold mb-2">
                             #variables.categoryResult.fldcategoryName#
                         </a>
                     </cfloop>
-                    
                 </div>
             </div>
-            <cfinclude  template="./footer.cfm">
+            <cfinclude template="./footer.cfm">
         </cfoutput>
         <script src="./Script/userPage.js"></script>
+        <script src="../CommonScripts/validations.js"></script>
+        <script src="./Script/userValidations.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     </body>

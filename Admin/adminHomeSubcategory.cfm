@@ -10,21 +10,21 @@
     </head>
     <body>
         <cfoutput>
-            <cfset variables.adminSubCateObject = new Component.adminComponent()>
+            <cfset variables.adminSubCategoryObject = new Component.adminComponent()>
             <cfif structKeyExists(form,"subcatgoryEdit")>
-                <cfset variables.subcategoryEditResult = variables.adminSubCateObject.editSubCategoryFunction(
+                <cfset variables.subCategoryResult = variables.adminSubCategoryObject.editSubCategoryFunction(
                     newSubCategory = form.editSubCategory,
                     selectedCategory = form.categorySelect,
                     subCategoryId = form.subcatgoryEdit
                 )>
             </cfif>
             <cfif structKeyExists(form,"subcategoryAddButton")>
-                <cfset variables.subcategoryEditResult = variables.adminSubCateObject.addSubCategory(
+                <cfset variables.subCategoryResult = variables.adminSubCategoryObject.addSubCategory(
                     newsubCategory = form.category,
                     categoryId = url.categoryId
                 )>
             </cfif>
-            <cfset variables.subcategoriesResult = variables.adminSubCateObject.listSubcategories("#url.categoryId#")>
+            <cfset variables.subcategoriesResult = variables.adminSubCategoryObject.listSubcategories("#url.categoryId#")>
             <!---Add Modal --->
             <div class="modal fade" id="staticBackdropAdd" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -45,9 +45,8 @@
                     </form>
                 </div>
             </div>
-
             <!---Edit Modal --->
-            <cfset variables.editSubcategoriesResult = variables.adminSubCateObject.getCategories()>
+            <cfset variables.categoryResult = variables.adminSubCategoryObject.getCategories()>
             <div class="modal fade" id="staticBackdropEdit" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <form method="POST" id="adminProductForm">
                     <div class="modal-dialog">
@@ -61,14 +60,14 @@
                                 <div class="warning" id="addDiffcategoryWarning"></div>
                                 <div class=" mt-3">Select Category Name</div>
                                 <select class="form-control" name="categorySelect">
-                                    <cfloop query="variables.editSubcategoriesResult">
-                                        <option id='#variables.editSubcategoriesResult.fldCategory_ID#Category' value="#variables.editSubcategoriesResult.fldCategory_ID#">#variables.editSubcategoriesResult.fldCategoryName#</option>
+                                    <cfloop query="variables.categoryResult">
+                                        <option id='#variables.categoryResult.fldCategory_ID#Category' value="#variables.categoryResult.fldCategory_ID#">#variables.categoryResult.fldCategoryName#</option>
                                     </cfloop>
                                 </select>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" onclick="closeAdminModal()" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" id="subcategorySubmitButton" onclick="return validateSubcate()" name="subcatgoryEdit" class="btn btn-primary">Submit</button>
+                                <button type="submit" id="subcategorySubmitButton" onclick="return validateEditSub()" name="subcatgoryEdit" class="btn btn-primary">Submit</button>
                             </div>
                         </div>
                     </div>
@@ -76,7 +75,8 @@
             </div>
             <div class="adminNavBar d-flex justify-content-between align-items-center p-3 mb-3">
                 <div>
-                    <span>ShoppingCart</span>
+                    <img src="../Assets/SiteImages/LogoImage.png" height="50">
+                    <span class="fs-3 fw-bold">eCart</span>
                     <span>ADMIN</span>
                 </div>
                 <div>
@@ -89,10 +89,14 @@
                 </div>
                 <div class="categoriesDivision mx-auto">
                     <div class="my-2">
-                        <span>Sub-Categories</span>
-                        <button class="categoriesAdd" data-bs-toggle="modal" data-bs-target="##staticBackdropAdd">Add +</button>
-                        <cfif structKeyExists(variables,"subcategoryEditResult") AND  variables.subcategoryEditResult EQ false>
-                            <span class="text-danger" id="serverErrorSpan">Same name exists</span>
+                        <span class="fs-3 fw-bold">#variables.subcategoriesResult.fldCategoryName#</span>
+                        <button class="categoriesAdd" onclick="warningClear()" data-bs-toggle="modal" data-bs-target="##staticBackdropAdd">Add +</button>
+                        <cfif structKeyExists(variables,"subCategoryResult")>
+                            <cfif variables.subCategoryResult EQ false>
+                                <span class="text-danger" id="serverErrorSpan">Same name exists</span>
+                            <cfelse>
+                                <span class="text-success" id="serverErrorSpan">Added Successfuly</span>
+                            </cfif>
                         </cfif>
                         <span id="warningText" class="text-danger"></span>
                     </div>
@@ -118,8 +122,10 @@
                 </div>
             </div>
         </cfoutput>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script src="./Script/adminPage.js"></script>
+        <script src="../CommonScripts/validations.js"></script>
     </body>
 </html>

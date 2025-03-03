@@ -14,7 +14,7 @@
             <cfset variables.getCategory = variables.adminProductObject.getCategories()>
             <cfset variables.getSubCategory = variables.adminProductObject.listSubcategories(
                 categoryId = url.categoryId,
-                jscall = true
+                returnStruct = true
             )>
             <cfset variables.getBrandsData = variables.adminProductObject.getBrands()>
             <cfset variables.createErrorVar["flag"] = true>
@@ -101,17 +101,18 @@
                                     <input name="pricename" step="0.01" id="productPriceId" type="number" placeholder="Product Price">
                                 </div>
                                 <div class="productData">
-                                    <label>Product Tax</label>
+                                    <label>Product Tax in %</label>
                                     <input name="taxname" step="0.01" required id="producttaxId" type="number" placeholder="Product Tax">
                                 </div>
                                 <div id="productImageDivId">
                                     <label>Product Image</label>
                                     <input name="imagesname" required id="productImageId" type="file" class="form-control" multiple>
+                                    <div id="imageWarning" class='text-danger'></div>
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" onclick="closeAdminModal()" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" id="productSubmitButton" name="productSubmit" class="btn btn-primary">Submit</button>
+                                <button type="submit" onclick="return validateProductImage()" id="productSubmitButton" name="productSubmit" class="btn btn-primary">Submit</button>
                             </div>
                         </div>
                     </div>
@@ -119,7 +120,8 @@
             </div>
             <div class="adminNavBar d-flex justify-content-between align-items-center p-3 mb-3">
                 <div>
-                    <span>ShoppingCart</span>
+                    <img src="../Assets/SiteImages/LogoImage.png" height="50">
+                    <span class="fs-3 fw-bold">eCart</span>
                     <span>ADMIN</span>
                 </div>
                 <div>
@@ -163,8 +165,10 @@
                 </div>
             </div>
         </cfoutput>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script src="./Script/adminPage.js"></script>
+        <script src="../CommonScripts/validations.js"></script>
     </body>
 </html>

@@ -1,26 +1,3 @@
-function adminLogin(){
-    var adminuser = document.getElementById("adminUsername").value;
-    var adminpassword = document.getElementById("adminPassword").value;
-    var flag = true;
-    if(adminuser.trim().length == 0){
-        document.getElementById("userWarning").innerHTML = "enter username to login"
-        document.getElementById("loginException").innerHTML = ""
-        flag = false;
-    }else{
-        document.getElementById("userWarning").innerHTML = ""
-    }
-    if(adminpassword.trim().length == 0){
-        document.getElementById("passwordWarning").innerHTML = "enter password to login"
-        document.getElementById("loginException").innerHTML = ""
-        flag = false;
-    }else{
-        document.getElementById("passwordWarning").innerHTML = ""
-    }
-    if(!flag){
-        event.preventDefault();
-    }
-}
-
 $(document).click(()=>{
     $("#serverErrorSpan").hide()
 })
@@ -38,9 +15,16 @@ function categoryValidation(){
             success:function(result){
                 result = JSON.parse(result)
                 if(result == true){
-                    alert("Same Category Exists")
+                    Swal.fire("Same Category Exists!");
                 }else{
-                    location.reload()
+                    Swal.fire({
+                        title: "Category Added",
+                        confirmButtonText: "Okay",
+                      }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload()
+                        }
+                      });
                 }
             }
         })
@@ -53,7 +37,7 @@ function categoryValidation(){
             success:function(result){
                 result = JSON.parse(result)
                 if(result == true){
-                    alert("Same Category Exists")
+                    Swal.fire("Same Category Exists!");
                 }else{
                     location.reload()
                 }
@@ -62,24 +46,8 @@ function categoryValidation(){
     }
 }
 
-function subCategoryValidation(){
-    var newsubCategory = document.getElementById("subCategoryId").value;
-    if(newsubCategory.trim().length == 0){
-        document.getElementById("addcategoryWarning").innerHTML = "enter Sub-Category name"
-        return false;
-    }else{
-        return true;
-    }
-}
-
-function validateSubcate(){
-    var newsubcategory = document.getElementById("editSubCategoryId").value
-    if(newsubcategory.trim().length == 0){
-        document.getElementById("addDiffcategoryWarning").innerHTML = "enter Sub-Category name"
-        return false;
-    }else{
-        return true;
-    }
+function warningClear(){
+    document.getElementById("addcategoryWarning").innerHTML = ""
 }
 
 function closeAdminModal(){
@@ -100,21 +68,37 @@ function deleteCategory(categoryId){
 }
 
 
+
 function logout(){
-    if(confirm("Confirm to logout")){
-        $.ajax({
-            type:"POST",
-            url:"Component/adminComponent.cfc?method=adminLogout",
-            success:function(){
-                    location.reload()
-            }
-        })
-    }
+    Swal.fire({
+        title: "Confirm to logout",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Confirm!"
+      }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                type:"POST",
+                url:"Component/adminComponent.cfc?method=adminLogout",
+                success:function(){
+                        location.reload()
+                }
+            })
+            Swal.fire({
+                title: "Deleted!",
+                text: "Your file has been deleted.",
+                icon: "success"
+            });
+        }
+      });
 }
 
 function createCategory(){
     document.getElementById("staticBackdropLabel").innerHTML = "Add new Category";
     document.getElementById("categorySubmitButton").name = "categoryCreateSubmit"
+    document.getElementById("addcategoryWarning").innerHTML = ""
     document.getElementById("categoryId").value = "";
 }
 
@@ -163,12 +147,12 @@ function getSubCategoriesFunction(){
     $.ajax({
         type:"POST",
         url:"Component/adminComponent.cfc?method=listSubcategories",
-        data:{categoryId:categoryId,jscall:"true"},
+        data:{categoryId:categoryId,returnStruct:"true"},
         success:function(result){
             if(result)
             {
                 subcategoryDetails=JSON.parse(result)
-                while (subcategoriesSelect.options.length) {
+                while (subcategoriesSelect.options.length){
                     subcategoriesSelect.remove(0);
                 }
                 for (var key in subcategoryDetails) {
@@ -200,7 +184,7 @@ function updateProductFunction(productId,categoryId,subcategoryId){
     $.ajax({
         type:"POST",
         url:"Component/adminComponent.cfc?method=getProducts",
-        data:{subcategoryId:subcategoryId,jscall:true,productId:productId.value},
+        data:{subcategoryId:subcategoryId,returnStruct:true,productId:productId.value},
         success:function(result){
             var editData = JSON.parse(result)
             document.getElementById("productNameId").value = editData.productname
@@ -279,7 +263,7 @@ function deleteProductImage(imageId){
             url:"Component/adminComponent.cfc?method=deleteProductImage",
             data:{imageId:imageId.value},
             success:function(){
-                alert("Image Succesfully deleted");
+                Swal.fire("Image Succesfully deleted!");
                 location.reload()
             }
         })

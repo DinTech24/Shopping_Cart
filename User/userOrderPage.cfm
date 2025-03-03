@@ -15,7 +15,7 @@
         <cfoutput>
             <cfset userOrderObject = new Component.userComponent()>
             <cfif structKeyExists(form, "orderAcknowledgeButton")>
-                <cflocation  url="./orderHistoryPage.cfm">
+                <cflocation  url="./orderHistoryPage.cfm?pageValue=1" addToken="no">
             </cfif>
             <cfif structKeyExists(form,"orderProduct") AND structKeyExists(url,"productId")>
                 <cfset variables.orderResult = userOrderObject.placeOrder(
@@ -28,7 +28,7 @@
                     )>
                 <cfelse>
                     <cfif session.productQuantity EQ 0 AND NOT structKeyExists(url, "productId")>
-                        <cflocation  url="./userCartPage.cfm">
+                        <cflocation  url="./userCartPage.cfm" addToken="no">
                     </cfif>
             </cfif>
             <div class="modal fade" id="staticBackdropAddress" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -96,8 +96,6 @@
             </cfif>
             <cfset variables.addressDeatils = variables.userOrderObject.getSavedAddress()>
             <cfset variables.cartDisplayResult = variables.userOrderObject.displayCart()>
-            <cfset variables.totalPrice = 0>
-            <cfset variables.totalTax = 0>
             <cfset variables.quantityPrice = 0>
             <cfset variables.quantityTax = 0>
             <cfset variables.savedCard = '1111222233334444,12,26,000'>
@@ -116,9 +114,9 @@
                         </div>
                         <cfelse>
                             <div class="fs-3 fw-bold m-3 text-danger">
-                                Oops! Something happened with your Order
+                                Oops! Your order is cancelled due to some unusual act
                                 <a href="./userhomePage.cfm">
-                                    Back to Order
+                                    Back to HomePage
                                 </a>
                             </div>
                     </cfif>
@@ -185,13 +183,13 @@
                                                                 <span>
                                                                     <i class="fa-solid fa-indian-rupee-sign"></i>
                                                                     <span id="buyNowTax">
-                                                                        #productResult.fldTax#
+                                                                        #(productResult.fldPrice*productResult.fldTax)/100#
                                                                     </span>
                                                                 </span>
                                                             </div>
                                                             <div class="orderDetailsSpan mt-4">
                                                                 Product Total Amount : <i class="fa-solid fa-indian-rupee-sign"></i>
-                                                                #productResult.fldPrice + productResult.fldTax#
+                                                                #productResult.fldPrice + (productResult.fldPrice*productResult.fldTax)/100#
                                                             </div>
                                                         </div>	
                                                     </div>
@@ -228,7 +226,7 @@
                                                                         Product Tax : 
                                                                         <span id="#cartDisplayResult.fldCart_ID#unittax">
                                                                         <i class="fa-solid fa-indian-rupee-sign"></i>
-                                                                            #cartDisplayResult.fldTax#
+                                                                            #(cartDisplayResult.fldPrice*cartDisplayResult.fldTax)/100#
                                                                         </span>
                                                                     </div>
                                                                     <div class="orderDetailsSpan3 mt-1">
@@ -239,14 +237,14 @@
                                                                     </div>
                                                                     <div class="orderDetailsSpan mt-4">
                                                                         Product Total Amount : <i class="fa-solid fa-indian-rupee-sign"></i>
-                                                                        #cartDisplayResult.fldPrice + cartDisplayResult.fldTax#
+                                                                        #cartDisplayResult.fldPrice + (cartDisplayResult.fldPrice*cartDisplayResult.fldTax)/100#
                                                                     </div>
                                                                 </div>	
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <cfset quantityPrice = quantityPrice +  (cartDisplayResult.fldPrice* cartDisplayResult.fldQuantity)>
-                                                    <cfset quantityTax = quantityTax + (cartDisplayResult.fldTax * cartDisplayResult.fldQuantity)>
+                                                    <cfset quantityTax = quantityTax + (((cartDisplayResult.fldPrice*cartDisplayResult.fldTax)/100) * cartDisplayResult.fldQuantity)>
                                                 </cfloop>
                                         </cfif>
                                     </div>
@@ -280,7 +278,7 @@
                                             <div class="d-flex justify-content-center align-items-center">
                                                 <button type="button" onclick="verifyCard(this)" id="verifyButtonId" class="btn btn-sm btn-outline-danger" value='#variables.savedCard#'>
                                                     Verify Card
-                                                </button>
+                                                </button> 
                                                 <div id="cardWarningId" class="text-center cardWarning ms-2"></div>
                                             </div>
                                         </div>
@@ -315,7 +313,7 @@
                                             <i class="fa-solid fa-indian-rupee-sign"></i>
                                             <span id="totaltax">
                                                 <cfif structKeyExists(url, "productId")>
-                                                    #productResult.fldTax#
+                                                    #(productResult.fldPrice*productResult.fldTax)/100#
                                                     <cfelse>
                                                         #quantityTax#
                                                 </cfif>
@@ -332,7 +330,7 @@
                                         <i class="fa-solid fa-indian-rupee-sign"></i>
                                         <span id="totalAmount">
                                             <cfif structKeyExists(url, "productId")>
-                                                #productResult.fldPrice + productResult.fldTax + 40#
+                                                #productResult.fldPrice + (productResult.fldPrice*productResult.fldTax)/100 + 40#
                                                 <cfelse>
                                                     #quantityPrice + quantityTax + 40#
                                             </cfif>
@@ -347,6 +345,7 @@
         </cfoutput>
         <cfinclude  template="./footer.cfm">
         <script src="./Script/userPage.js"></script>
+        <script src="../CommonScripts/validations.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
