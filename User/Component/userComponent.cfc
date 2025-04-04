@@ -10,11 +10,15 @@
             trim(arguments.registerStructure.emailId) EQ "" OR
             trim(arguments.registerStructure.phonenumber) EQ "" OR
             trim(arguments.registerStructure.password) EQ "" >
-                <cfset local.exceptionStruct["message"] = "FEilds cannot be empty">
+                <cfset local.exceptionStruct["message"] = "Feilds cannot be empty">
                 <cfreturn local.exceptionStruct>
             <cfelse>
                 <cfset local.saltString = generateSecretKey("AES",128)>
-                <cfset local.HashedPassword = hash("#arguments.registerStructure.password#"&"#local.saltString#","SHA-256","UTF-8")>
+                <cfset local.HashedPassword = hash(
+                    "#arguments.registerStructure.password#"&"#local.saltString#",
+                    "SHA-256",
+                    "UTF-8"
+                )>
                 <cfif queryRecordCount(local.isUserExists)>
                     <cfset local.exceptionStruct["message"] = "User Already Exists">
                 <cfelse>
@@ -157,7 +161,11 @@
                 OR fldPhone = <cfqueryparam value = '#arguments.enteredId#' cfsqltype = "varchar">)
         </cfquery>
         <cfif queryRecordCount(local.checkPassword)>
-            <cfset local.givenPassword = hash("#arguments.enteredPassword#"&"#local.checkPassword.fldUserSaltString#","SHA-256","UTF-8")>
+            <cfset local.givenPassword = hash(
+                "#arguments.enteredPassword#"&"#local.checkPassword.fldUserSaltString#",
+                "SHA-256",
+                "UTF-8"
+            )>
             <cfset local.checkUser = isUserExist(
                 givenPassword = local.givenPassword,
                 enteredId = arguments.enteredId
@@ -181,8 +189,8 @@
     </cffunction>
 
     <cffunction  name="listCategories" returnType="query" description="Get all category details">
-        <cfargument  name="categoryId" type="numeric" required = "false">
-        <cfargument  name="allData" type="string" required = "false">
+        <cfargument name="categoryId" type="numeric" required = "false">
+        <cfargument name="allData" type="string" required = "false">
         <cfquery name="local.getCategoryQuery">
             SELECT 
                 <cfif NOT structKeyExists(arguments, "allData")>
@@ -201,9 +209,9 @@
         <cfreturn local.getCategoryQuery>
     </cffunction>
 
-    <cffunction  name="listSubCategories" returnType="query" description="Get all sub-category details">
-        <cfargument  name="categoryId" type="numeric" required = "false">
-        <cfargument  name="subCategoryId" type="numeric" required="false">
+    <cffunction name="listSubCategories" returnType="query" description="Get all sub-category details">
+        <cfargument name="categoryId" type="numeric" required = "false">
+        <cfargument name="subCategoryId" type="numeric" required="false">
         <cfquery name="local.getSubCategoryQuery">
             SELECT 
                 fldsubCategory_ID,
@@ -226,7 +234,7 @@
         <cfreturn local.getSubCategoryQuery>
     </cffunction>
 
-    <cffunction  name="getRandomProducts" returnType="query" description="Get all products details">
+    <cffunction name="getProducts" returnType="query" description="Get all products details">
         <cfargument name="sort" default="false" required = "false" type="string">
         <cfargument name="filterArray" required = "false">
         <cfargument name="subCategoryId" required = "false" type="numeric">
@@ -235,7 +243,15 @@
         <cfargument name="searchKeyword" required = "false" type="string">
         <cfargument name="offset" required = "false" type="integer">
         <cfargument name="productIdList" required = "false" type="string">
-        <cfargument  name="imageType" required = "false" type="string">
+        <cfargument name="imageType" required = "false" type="string">
+        <cfargument name="filterRange" required = "false" type="string">
+        <cfif structKeyExists(arguments,"filterRange")>
+            <cfif NOT arguments.filterRange EQ "invalid">
+                <cfset local.filterArray = DeserializeJSON(arguments.filterRange)>
+            </cfif>
+        <cfelseif structKeyExists(arguments,"filterArray")>
+            <cfset local.filterArray = arguments.filterArray>
+        </cfif>
         <cftry>
             <cfquery name="local.getproductsQuery">
                 SELECT 
@@ -271,10 +287,9 @@
                     <cfif structKeyExists(arguments, "subCategoryId")>
                         AND fldSubCategoryId = <cfqueryparam value = '#arguments.subCategoryId#' cfsqltype = "integer">
                     </cfif>
-                    <cfif structKeyExists(arguments, "filterArray")>
-                        AND fldPrice + (fldPrice*fldTax)/100 >=  <cfqueryparam value = '#val(arguments.filterArray[1])#' cfsqltype = "decimal">
-                        AND fldPrice + (fldPrice*fldTax)/100 <=  <cfqueryparam value = '#val(arguments.filterArray[2])#' cfsqltype = "decimal">
-                        AND fldSubCategoryId = <cfqueryparam value = '#arguments.subCategoryId#' cfsqltype = "integer">;
+                    <cfif structKeyExists(local,"filterArray")>
+                        AND fldPrice + (fldPrice*fldTax)/100 >=  <cfqueryparam value = '#val(local.filterArray[1])#' cfsqltype = "decimal">
+                        AND fldPrice + (fldPrice*fldTax)/100 <=  <cfqueryparam value = '#val(local.filterArray[2])#' cfsqltype = "decimal">
                     <cfelseif structKeyExists(arguments, "productId")>
                         AND fldProduct_ID = <cfqueryparam value = '#arguments.productId#' cfsqltype = "integer">;
                     <cfelseif structKeyExists(arguments, "searchKeyword")>
@@ -299,6 +314,9 @@
                             OFFSET (#arguments.offset#-1) ROWS
                             FETCH NEXT 12 ROWS ONLY
                         </cfif>
+                    </cfif>
+                    <cfif structKeyExists(local,"filterArray")  AND arguments.sort NEQ "negative">
+                        ORDER BY fldPrice + fldTax #arguments.sort#;
                     </cfif> 
             </cfquery>
             <cfcatch>
@@ -308,12 +326,12 @@
         <cfreturn local.getproductsQuery>
     </cffunction>
 
-    <cffunction  name="selectPriceRange" returnType="array" access="remote" returnFormat="JSON" description="Set price range for filtering products">
+    <cffunction name="selectPriceRange" returnType="array" access="remote" returnFormat="JSON" description="Set price range for filtering products">
         <cfargument name="filterRange" required = "true">
         <cfargument  name="subCategoryId"  type="integer" required = "true">
         <cfset local.filterArray = DeserializeJSON(arguments.filterRange)>
-        <cfset local.randomProductsRange = getRandomProducts(
-            sort=true,
+        <cfset local.randomProductsRange = getProducts(
+            sort="negative",
             filterArray= local.filterArray,
             subCategoryId=arguments.subCategoryId
         )>
@@ -334,7 +352,7 @@
         <cfreturn local.rangeProductArray>
     </cffunction>
 
-    <cffunction  name="addToCart"  returnType="void"  description="Add products to cart">
+    <cffunction name="addToCart"  returnType="void"  description="Add products to cart">
         <cfargument  name="productId" type="numeric" required = "true">
         <cftry>
             <cfset isProductInCart = displayCart(arguments.productId)>
@@ -364,7 +382,7 @@
         </cftry>
     </cffunction>
 
-    <cffunction  name="displayCart"  returnType="query"  description="Get all cart details">
+    <cffunction name="displayCart"  returnType="query"  description="Get all cart details">
         <cfargument  name="productId" type="numeric" required = "false">
         <cftry>
             <cfquery name="local.getCartQuery">
@@ -399,10 +417,10 @@
         <cfreturn local.getCartQuery>
     </cffunction>
 
-    <cffunction  name="loadMoreData" returnType="array" returnFormat="JSON" access="remote">
+    <cffunction name="loadMoreData" returnType="array" returnFormat="JSON" access="remote">
         <cfargument name="productIdList" type="string" required="true">
         <cfargument  name="offsetValue" type="integer" required="true">
-        <cfset local.resultProductQuery = getRandomProducts(
+        <cfset local.resultProductQuery = getProducts(
             sort = "productSort",
             offset = arguments.offsetValue,
             productIdList = arguments.productIdList
@@ -424,7 +442,7 @@
         <cfreturn local.remainingProducts>
     </cffunction>
 
-    <cffunction  name="updateCartQuantity" access="remote" returnType="void"  description="Update product quantity in cart">
+    <cffunction name="updateCartQuantity" access="remote" returnType="void"  description="Update product quantity in cart">
         <cfargument  name="CartId" type="numeric" required = "true">
         <cfargument  name="prQuantity" required = "true">
         <cftry>
@@ -446,7 +464,7 @@
         </cftry>
     </cffunction>
 
-    <cffunction  name="deleteCart" access="remote" returnType="void" description="Delete products from cart">
+    <cffunction name="deleteCart" access="remote" returnType="void" description="Delete products from cart">
         <cfargument  name="CartId" type="numeric" required = "true">
         <cftry>
             <cfquery name="local.deleteCartQuery">
@@ -462,7 +480,7 @@
         <cfset session.productQuantity = session.productQuantity - 1>
     </cffunction>
 
-    <cffunction  name="validateAddress" returnType="boolean" description="Validate all fields in address modal">
+    <cffunction name="validateAddress" returnType="boolean" description="Validate all fields in address modal">
         <cfargument  name="addressStructure" type="struct" required="true">
         <cfset local.flag = true>
         <cfif 
@@ -566,11 +584,11 @@
         <cfset local.cardDetails["cardCvv"] = "000">
         <cfset local.cardPart = right(local.cardDetails["cardNumber"],4)>
         <cfset local.flag = true>
-        <cfif 
-        arguments.orderStructure.cardNumberName NEQ local.cardDetails["cardNumber"]
-        OR arguments.orderStructure.cardMonthName NEQ local.cardDetails["cardMonth"]
-        OR arguments.orderStructure.cardYearName NEQ local.cardDetails["cardYear"]
-        OR arguments.orderStructure.cardcvvName NEQ local.cardDetails["cardCvv"]>
+        <cfif arguments.orderStructure.cardNumberName NEQ local.cardDetails["cardNumber"]
+            OR arguments.orderStructure.cardMonthName NEQ local.cardDetails["cardMonth"]
+            OR arguments.orderStructure.cardYearName NEQ local.cardDetails["cardYear"]
+            OR arguments.orderStructure.cardcvvName NEQ local.cardDetails["cardCvv"]
+        >
             <cfset local.flag = false>
         </cfif>
         <cfif NOT structKeyExists(orderStructure, "addressSelect")>
@@ -579,62 +597,29 @@
         <cfif structKeyExists(arguments,"orderType")>
             <cfif NOT isNumeric(arguments.orderStructure.productQuantity)>
                 <cfset local.flag = false>
-                <cfelseif arguments.orderStructure.productQuantity LT 1>
+            <cfelseif arguments.orderStructure.productQuantity LT 1>
                 <cfset local.flag = false>
             </cfif>
         </cfif>
         <cfif local.flag EQ true>
             <cfset local.generatedUUID = createUUID()>
             <cfif structKeyExists(arguments, "orderType")>
-                <cfset local.productResult = getRandomProducts(
+                <cfset local.productResult = getProducts(
                     productId = arguments.orderStructure.productIdHidden
                 )>
-                <cfset local.TotalPrice = local.productResult.fldPrice * arguments.orderStructure.productQuantity>
-                <cfset local.TotalTax = ((local.productResult.fldPrice*local.productResult.fldTax)/100) * arguments.orderStructure.productQuantity>
-                <cftransaction>
-                    <cftry>
-                        <cfquery name="local.insertOrderQuery">
-                            INSERT INTO
-                                tblOrder(
-                                    fldOrder_ID,
-                                    fldUserId,
-                                    fldAddressId,
-                                    fldTotalPrice,
-                                    fldTotalTax,
-                                    fldCardPart
-                                )VALUES(
-                                    <cfqueryparam value = '#local.generatedUUID#' cfsqltype = "varchar">,
-                                    <cfqueryparam value = '#session.userId#' cfsqltype = "integer">,
-                                    <cfqueryparam value = '#arguments.orderStructure.addressSelect#' cfsqltype = "integer">,
-                                    <cfqueryparam value = '#local.TotalPrice#' cfsqltype = "decimal" scale="2">,
-                                    <cfqueryparam value = '#local.TotalTax#' cfsqltype = "decimal" scale="2">,
-                                    <cfqueryparam value = '#local.cardPart#' cfsqltype = "integer">
-                                )
-                        </cfquery>
-                        <cfquery name="local.insertOrderItemQuery">
-                            INSERT INTO
-                                tblOrderedItems(
-                                    fldOrderId,
-                                    fldProductId,
-                                    fldQuantity,
-                                    fldUnitPrice,
-                                    fldUnitTax
-                                )VALUES(
-                                    <cfqueryparam value = '#local.generatedUUID#' cfsqltype = "varchar">,
-                                    <cfqueryparam value = '#arguments.orderStructure.productIdHidden#' cfsqltype = "integer">,
-                                    <cfqueryparam value = '#arguments.orderStructure.productQuantity#' cfsqltype = "integer">,
-                                    <cfqueryparam value = '#local.productResult.fldPrice#' cfsqltype = "decimal" scale="2">,
-                                    <cfqueryparam value = '#local.productResult.fldTax#' cfsqltype = "decimal" scale="2">
-                                )
-                        </cfquery>
-                        <cfcatch>
-                            <cftransaction action="rollback">
-                            <cfset local.errorStruct = cfcatch>
-                            <cfset local.errorDetail = cfcatch.detail>
-                            <cfset local.flag = false>
-                        </cfcatch>
-                    </cftry>
-                </cftransaction>
+                <cfquery name="local.executeSPQuery">
+                    EXEC
+                    orderProduct_SP 
+                        @userId = <cfqueryparam value = '#session.userId#' cfsqltype = "integer">,
+                        @addressId = <cfqueryparam value = '#arguments.orderStructure.addressSelect#' cfsqltype = "integer">,
+                        @generatedUuid = <cfqueryparam value = '#local.generatedUUID#' cfsqltype = "varchar">,
+                        @cardPart = <cfqueryparam value = '#local.cardPart#' cfsqltype = "varchar">,
+                        @orderType = <cfqueryparam value = 'BUY_NOW' cfsqltype = "varchar">,
+                        @fldProductId = <cfqueryparam value = '#arguments.orderStructure.productIdHidden#' cfsqltype = "varchar">,
+                        @fldQuantity = <cfqueryparam value = '#arguments.orderStructure.productQuantity#' cfsqltype = "varchar">,           
+                        @fldPrice = <cfqueryparam value = '#local.productResult.fldPrice#' cfsqltype = "varchar">,    
+                        @fldTax= <cfqueryparam value = '#local.productResult.fldTax#' cfsqltype = "varchar">       
+                </cfquery>
             <cfelse>
                 <cfif session.productQuantity NEQ 0>
                     <cfquery name="local.executeSPQuery">
@@ -643,7 +628,8 @@
                             @userId = <cfqueryparam value = '#session.userId#' cfsqltype = "integer">,
                             @addressId = <cfqueryparam value = '#arguments.orderStructure.addressSelect#' cfsqltype = "integer">,
                             @generatedUuid = <cfqueryparam value = '#local.generatedUUID#' cfsqltype = "varchar">,
-                            @cardPart = <cfqueryparam value = '#local.cardPart#' cfsqltype = "varchar">
+                            @cardPart = <cfqueryparam value = '#local.cardPart#' cfsqltype = "varchar">,
+                            @orderType= <cfqueryparam value = 'FROM_CART' cfsqltype = "varchar">
                     </cfquery>
                     <cfset session.productQuantity = 0>
                 <cfelse>
@@ -691,6 +677,10 @@
                             <tr>
                                 <td colspan="3">Total Tax</td>
                                 <td colspan="2">#local.orderResult.fldTotalTax#</td>
+                            </tr>
+                            <tr style="background-color:grey;color:white;">
+                                <td colspan="3">Total Amount</td>
+                                <td colspan="2">#local.orderResult.fldTotalPrice + local.orderResult.fldTotalTax#</td>
                             </tr>
                         </tbody>
                     </table>
@@ -764,12 +754,12 @@
     <cffunction name="sendErrorMail">
         <cfargument name="errorStruct">
         <cfdump  var="#arguments.errorStruct#">
-<!---         <cfmail  from="dinilvallikunnil@gmail.com"  subject="Function Error"  to="diniladmin@gmail.com">
+        <cfmail  from="dinilvallikunnil@gmail.com"  subject="Function Error"  to="diniladmin@gmail.com">
             <cfmailpart type="text/html">
                 #arguments.errorStruct.Cause.Message#
                 #arguments.errorStruct.Cause.NextException.TagContext[1].Raw_trace#
             </cfmailpart>
-        </cfmail> --->
+        </cfmail>
     </cffunction>
 
     <cffunction name="logoutUser" access="remote" returnType="void"  description="Logout user">

@@ -142,9 +142,9 @@
                 <div class="fs-3">Saved Adresses</div>
                 <button class="addAddressButton" onclick="clearModal()" data-bs-toggle="modal" data-bs-target="##staticBackdropAddress">Add new address +</button>
             </div>
-            <div class="addressesDiv">
+            <div class="addressesDiv mt-2">
                 <cfloop query="userAddressResult">
-                    <div class="addressCard m-3" id="#userAddressResult.fldAddress_ID#address">
+                    <div class="addressCard m-1" id="#userAddressResult.fldAddress_ID#address">
                         <div class="list-group list-group-flush">
                             <div class="list-group-item d-grid">
                                 <div>#userAddressResult.fldFirstName &" "&userAddressResult.fldLastName#</div>

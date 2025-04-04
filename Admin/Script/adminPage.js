@@ -55,16 +55,25 @@ function closeAdminModal(){
 }
 
 function deleteCategory(categoryId){
-    if(confirm("Confirm to delete")){
-        $.ajax({
-            type:"POST",
-            url:"Component/adminComponent.cfc?method=deleteCategory",
-            data:{categoryId:categoryId.value},
-            success:function(){
-                    location.reload()
-                }
-        })
-    }
+    Swal.fire({
+        title: "Confirm to delete Category",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Confirm!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                type:"POST",
+                url:"Component/adminComponent.cfc?method=deleteCategory",
+                data:{categoryId:categoryId.value},
+                success:function(){
+                        location.reload()
+                    }
+            })
+        }
+    });
 }
 
 
@@ -77,7 +86,7 @@ function logout(){
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
         confirmButtonText: "Confirm!"
-      }).then((result) => {
+    }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
                 type:"POST",
@@ -86,13 +95,8 @@ function logout(){
                         location.reload()
                 }
             })
-            Swal.fire({
-                title: "Deleted!",
-                text: "Your file has been deleted.",
-                icon: "success"
-            });
         }
-      });
+    });
 }
 
 function createCategory(){
@@ -119,26 +123,44 @@ function editSubcategoryModal(subCategoryId,categoryId){
 
 
 function deleteSubCategory(subcategoryId){
-    if(confirm("Confirm to delete")){
-        document.getElementById("eachSub"+subcategoryId.value).remove();
-        $.ajax({
-            type:"POST",
-            url:"Component/adminComponent.cfc?method=deleteSubcategory",
-            data:{subcategoryId:subcategoryId.value}
+    Swal.fire({
+        title: "Confirm to delete subCategory",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Confirm!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById("eachSub"+subcategoryId.value).remove();
+            $.ajax({
+                type:"POST",
+                url:"Component/adminComponent.cfc?method=deleteSubcategory",
+                data:{subcategoryId:subcategoryId.value}
 
-        })
-    }
+            })
+        }
+    });
 }
 
 function deleteProduct(productId){
-    if(confirm("Confirm to delete")){
-        document.getElementById(productId.value+"product").remove();
-        $.ajax({
-            type:"POST",
-            url:"Component/adminComponent.cfc?method=deleteproduct",
-            data:{productId:productId.value}
-        })
-    }
+    Swal.fire({
+        title: "Confirm to delete product",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Confirm!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById(productId.value+"product").remove();
+            $.ajax({
+                type:"POST",
+                url:"Component/adminComponent.cfc?method=deleteproduct",
+                data:{productId:productId.value}
+            })
+        }
+    });
 }
 
 function getSubCategoriesFunction(){
@@ -211,24 +233,34 @@ function addcarousalImage(productId){
             var sliderImage = document.createElement('img');
             sliderBody.classList.add("carousel-item");
             sliderImage.src="../Assets/ProductImages/"+productImages.imageDefaultStruct[defaultKey];
-            sliderImage.width=350;
-            sliderImage.height=350;
+            sliderImage.width=400;
+            sliderImage.height=400;
+            sliderImage.classList.add("sliderImage")
             sliderBody.appendChild(sliderImage)
             sliderBody.classList.add("active");
+            var activeImage = document.createElement('button')
+            activeImage.classList.add("btn")
+            activeImage.classList.add("btn-success")
+            activeImage.classList.add("mt-2")
+            activeImage.classList.add("w-100")
+            activeImage.type = "button"
+            activeImage.innerHTML = "THUMBNAIL";
+            sliderBody.appendChild(activeImage)
             document.getElementById("carousel-inner").appendChild(sliderBody)
             for (var key in productImages.imageinnerStruct) {
                 var sliderImage = document.createElement('img');
                 var sliderBody = document.createElement('div');
                 sliderBody.classList.add("carousel-item");
                 sliderImage.src="../Assets/ProductImages/"+productImages.imageinnerStruct[key];
-                sliderImage.width=350;
-                sliderImage.height=350;
+                sliderImage.width=400;
+                sliderImage.height=400;
+                sliderImage.classList.add("sliderImage")
                 sliderBody.appendChild(sliderImage);
                 var deleteButton = document.createElement('button')
                 deleteButton.classList.add("btn")
                 deleteButton.classList.add("btn-danger")
                 deleteButton.classList.add("mt-2")
-                deleteButton.classList.add("w-25")
+                deleteButton.classList.add("w-50")
                 deleteButton.type = "button"
                 deleteButton.value = key;
                 deleteButton.innerHTML = "Delete";
@@ -245,7 +277,6 @@ function addcarousalImage(productId){
                 setDefaultButton.type = "button"
                 setDefaultButton.innerHTML = "Set as Default";
                 setDefaultButton.classList.add("mt-2")
-                setDefaultButton.classList.add("ms-1")
                 setDefaultButton.onclick = function() {
                     setDefaultImage(this,productId.value);
                 };

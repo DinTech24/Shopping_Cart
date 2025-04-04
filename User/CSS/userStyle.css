@@ -228,6 +228,9 @@ a > img{
     font-size: larger;
     color:black;
     font-weight: bolder;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .subCategoryEach{
@@ -608,13 +611,13 @@ a > img{
 
 .placeOrderButton{
 	padding:1vw 3vw;
-	width:30%;
+	width:40%;
 	background-color:#307197;
 	height:8vh;
 	text-align:center;
 	cursor:pointer;
 	border-radius:2px;
-	font-size:14px;
+	font-size:13px;
 	color:white;
 	margin:1vw 1vw 1vw auto;
 	font-weight:600;
@@ -760,7 +763,7 @@ a > img{
 }
 
 .addressCard{
-    width: 15rem;
+    width: 16rem;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
@@ -776,7 +779,6 @@ a > img{
 .addressCard *{
     font-size: 15px;
     background-color: white;
-    
 }
 
 .deliveryAddressDiv{

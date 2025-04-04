@@ -16,11 +16,8 @@
         <cfoutput>
             <cfset variables.userCartObject = new Component.userComponent()>
             <cfset variables.cartProductDisplayResult = variables.userCartObject.displayCart()>
-            <cfset variables.totalPrice = 0>
-            <cfset variables.totalTax = 0>
             <cfset variables.quantityPrice = 0>
             <cfset variables.quantityTax = 0>
-            
             <cfset variables.productQuantity = 0>
             <cfinclude  template="./userHeader.cfm">
             <div class="cartPath">
@@ -54,7 +51,7 @@
                                         <div class="orderDetailsSpan3 mt-1">
                                             Product Tax : 
                                             <span>
-                                            <i class="fa-solid fa-indian-rupee-sign"></i>
+                                                <i class="fa-solid fa-indian-rupee-sign"></i>
                                                 <span id="#variables.cartProductDisplayResult.fldCart_ID#unittax">
                                                     #(variables.cartProductDisplayResult.fldPrice * variables.cartProductDisplayResult.fldTax)/100#
                                                 </span>

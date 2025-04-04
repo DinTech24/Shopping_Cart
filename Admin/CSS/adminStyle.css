@@ -102,6 +102,10 @@ body{
 .productName{
     font-size: 30px;
     font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    width:30vw;
 }
 
 .productBrand{
@@ -130,9 +134,14 @@ body{
 }
 
 .carousel-inner{
-    margin-left: 5vw;
+    margin-left: 0px;
 }
 
+.sliderImage{
+    width: 80%;
+    margin-left:10%;
+    height: 60vh;
+}
 
 .logoutButton{
     border:transparent;
@@ -140,7 +149,6 @@ body{
     background-color: rgb(18, 95, 196);
     border-radius: 5px;
     padding: 5px;
-
 }
 
 .toolti {

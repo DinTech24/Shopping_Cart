@@ -19,26 +19,38 @@
             <cfif structKeyExists(url,"subCategoryId")>
                 <cfset variables.subCategoryId = decrypt(url.subCategoryId,variables.encryptionString,"AES","Base64")>
             </cfif>
+            <cfif structKeyExists(url,"filterRange")>
+                <cfset variables.filterRange = url.filterRange>
+            <cfelse>
+                <cfset variables.filterRange = "invalid">
+            </cfif>
             <cfif structKeyExists(form,"highSort")>
-                <cfset variables.productsResult = variables.usersubCategoryObject.getRandomProducts(
-                    sort = form.highSort,
-                    subCategoryId = variables.subCategoryId
+                <cfset variables.productsResult = variables.usersubCategoryObject.getProducts(
+                    sort = "ASC",
+                    subCategoryId = variables.subCategoryId,
+                    filterRange = variables.filterRange
                 )>
             <cfelseif structKeyExists(form, "lowSort")>
-                <cfset variables.productsResult = variables.usersubCategoryObject.getRandomProducts(
-                    sort = form.lowSort,
-                    subCategoryId = variables.subCategoryId
+                <cfset variables.productsResult = variables.usersubCategoryObject.getProducts(
+                    sort = "DESC",
+                    subCategoryId = variables.subCategoryId,
+                    filterRange = variables.filterRange
                 )>
             <cfelseif structKeyExists(url, "searchKeyword")>
-                <cfset variables.productsResult = variables.usersubCategoryObject.getRandomProducts(
+                <cfset variables.productsResult = variables.usersubCategoryObject.getProducts(
                     searchKeyword = url.searchKeyword,
-                    sort = "true"
+                    sort = "negative"
                 )>
             <cfelseif structKeyExists(url,"subCategoryId")>
-                <cfset variables.productsResult = variables.usersubCategoryObject.getRandomProducts(
+                <cfset variables.productsResult = variables.usersubCategoryObject.getProducts(
                     sort="negative",
-                    subCategoryId = variables.subCategoryId
+                    subCategoryId = variables.subCategoryId,
+                    filterRange = variables.filterRange
                 )>
+            </cfif>
+            <cfset variables.filterData = "">
+            <cfif structKeyExists(url,"filterRange")>
+                <cfset variables.filterData =toString(url.filterRange)>
             </cfif>
             <cfinclude  template="./userHeader.cfm">
             <cfif NOT structKeyExists(url, "searchKeyword")>
@@ -54,14 +66,14 @@
                 </div>
                 <div class="p-3 d-flex justify-content-between px-2">
                     <h2>#variables.productsResult.fldSubcategoryName# - All Products</h2>
-                    <form method="POST">
+                    <form method="POST" id="rangeForm">
                         <div class="d-flex align-items-center">
                             <div class="me-3">
                                 <span class="sortText">Sort on price :</span>
-                                <button class="sortArrow text-success"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="Sort in ascending Order" value="ASC" name="highSort">
+                                <button class="sortArrow text-success"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="Sort in ascending Order" name="highSort">
                                     <i class="fa-solid fa-arrow-up"></i>
                                 </button>
-                                <button class="sortArrow text-danger"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="Sort in descending Order" value="DESC" name="lowSort">
+                                <button class="sortArrow text-danger"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="Sort in descending Order" name="lowSort">
                                     <i class="fa-solid fa-arrow-down"></i>
                                 </button>
                             </div>
@@ -73,19 +85,35 @@
                                 <div class="filterInner dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                     <div>Select Price Range :</div>
                                     <div class="d-flex">
-                                        <input type="radio" id="filterRadio1" onclick="disableInputs()" value='["0","1000"]' class="filterInput" name="filter">
+                                        <input type="radio" id="filterRadio1" onclick="disableInputs()" value='["0","1000"]'
+                                        <cfif variables.filterData EQ '["0","1000"]'>
+                                            checked
+                                        </cfif>
+                                        class="filterInput" name="filter">
                                         <label>upto 1000</label>
                                     </div>
                                     <div class="d-flex">
-                                        <input type="radio" id="filterRadio2" onclick="disableInputs()" value='["1000","10000"]'class="filterInput" name="filter">
+                                        <input type="radio" id="filterRadio2" onclick="disableInputs()" value='["1000","10000"]'
+                                        <cfif variables.filterData EQ '["1000","10000"]'>
+                                            checked
+                                        </cfif>
+                                        class="filterInput" name="filter">
                                         <label>1000 to 10000</label>
                                     </div>
                                     <div class="d-flex">
-                                        <input type="radio" id="filterRadio3" onclick="disableInputs()" value='["10000","25000"]' class="filterInput" name="filter">
+                                        <input type="radio" id="filterRadio3" onclick="disableInputs()" value='["10000","25000"]' 
+                                        <cfif variables.filterData EQ '["10000","25000"]'>
+                                            checked
+                                        </cfif>
+                                        class="filterInput" name="filter">
                                         <label>10000 to 25000</label>
                                     </div>
                                     <div class="d-flex">
-                                        <input type="radio" id="filterRadio4" onclick="disableInputs()" value='["25000","200000"]' class="filterInput" name="filter">
+                                        <input type="radio" id="filterRadio4" onclick="disableInputs()" value='["25000","200000"]'
+                                        <cfif variables.filterData EQ '["25000","200000"]'>
+                                            checked
+                                        </cfif>
+                                         class="filterInput" name="filter">
                                         <label>25000 to 200000</label>
                                     </div>
                                     <div class="d-flex">
@@ -99,6 +127,7 @@
                                             <input type="text" disabled id="maxVal" placeholder="MAX" class="selectRange form-control border-success">
                                         </div>
                                         <button type="button" class="btn btn-primary mt-2" onclick="getFilterResult(#variables.subCategoryId#)">Show result</button>
+                                        <button type="button" class="btn btn-danger mt-2" onclick="clearRangeForm()">Clear Result</button>
                                     </div>
                                 </div>
                             </div>

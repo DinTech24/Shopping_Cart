@@ -109,14 +109,14 @@
             <cfif queryRecordCount(local.findSameCategoryQuery)>
                 <cfreturn true>
             <cfelse>
-                    <cfquery name="local.editCategoryQuery">
-                        UPDATE
-                            tblcategory
-                        SET
-                            fldCategoryName = <cfqueryparam value = '#arguments.newCategory#' cfsqltype = "varchar">
-                        WHERE
-                            fldCategory_ID = <cfqueryparam value = '#arguments.categoryId#' cfsqltype = "integer">
-                    </cfquery>
+                <cfquery name="local.editCategoryQuery">
+                    UPDATE
+                        tblcategory
+                    SET
+                        fldCategoryName = <cfqueryparam value = '#arguments.newCategory#' cfsqltype = "varchar">
+                    WHERE
+                        fldCategory_ID = <cfqueryparam value = '#arguments.categoryId#' cfsqltype = "integer">
+                </cfquery>
                 <cfreturn false>
             </cfif>
             <cfcatch>
@@ -195,19 +195,15 @@
         <cftry>
             <cfset local.exceptionStruct = structNew()>
             <cfset local.exceptionStruct["flag"] = true>
-            <cffile action="uploadall"
-            destination="#expandPath('../Assets/ProductImages')#"
-            result="local.productImages"
-            nameconflict="makeunique">
             <cfset productResult = getProducts(
                 productName = arguments.dataStructure.productname,
                 subCategoryId = arguments.dataStructure.subcategoryname
             )>
             <cfif trim(arguments.dataStructure.productname) EQ ""
-            OR trim(arguments.dataStructure.brandname) EQ ""
-            OR trim(arguments.dataStructure.descriptionname) EQ ""
-            OR trim(arguments.dataStructure.pricename) EQ ""
-            OR trim(arguments.dataStructure.taxname) EQ "">
+                OR trim(arguments.dataStructure.brandname) EQ ""
+                OR trim(arguments.dataStructure.descriptionname) EQ ""
+                OR trim(arguments.dataStructure.pricename) EQ ""
+                OR trim(arguments.dataStructure.taxname) EQ "">
                 <cfset local.exceptionStruct["exception"] ="Empty fileds are not allowed">
                 <cfset local.exceptionStruct["flag"] = false>
             <cfelseif arguments.dataStructure.taxname GT 100>
@@ -243,6 +239,10 @@
                                     <cfqueryparam value = '#session.adminUserId#' cfsqltype = "integer">
                                 )
                         </cfquery>
+                        <cffile action="uploadall"
+                        destination="#expandPath('../Assets/ProductImages')#"
+                        result="local.productImages"
+                        nameconflict="makeunique">
                         <cfloop array="#local.productImages#" item="item" index="index">
                             <cfquery name="local.insertImages">
                                 INSERT INTO 
@@ -278,10 +278,10 @@
             <cfset local.exceptionStruct = structNew()>
             <cfset local.exceptionStruct["flag"] = true>
             <cfif trim(arguments.editDataStructure.productname) EQ ""
-            OR trim(arguments.editDataStructure.brandname) EQ ""
-            OR trim(arguments.editDataStructure.descriptionname) EQ ""
-            OR trim(arguments.editDataStructure.pricename) EQ ""
-            OR trim(arguments.editDataStructure.taxname) EQ "">
+                OR trim(arguments.editDataStructure.brandname) EQ ""
+                OR trim(arguments.editDataStructure.descriptionname) EQ ""
+                OR trim(arguments.editDataStructure.pricename) EQ ""
+                OR trim(arguments.editDataStructure.taxname) EQ "">
                 <cfset local.exceptionStruct["exception"] ="Empty fileds are not allowed">
                 <cfset local.exceptionStruct["flag"] = false>
             <cfelseif arguments.editDataStructure.taxname GT 100>
@@ -307,25 +307,25 @@
                     WHERE 
                         fldProduct_ID = <cfqueryparam value = '#arguments.editDataStructure.productEdit#' cfsqltype = "integer">
                 </cfquery>
+                <cffile action="uploadall"
+                destination="#expandPath('../Assets/ProductImages')#"
+                result="local.productImages"
+                nameconflict="makeunique">
+                <cfloop array="#local.productImages#" item="item">
+                    <cfquery name="local.insertImages">
+                        INSERT INTO 
+                            tblProductImages(
+                                fldProductId,
+                                fldImageFileName,
+                                fldCreatedBy
+                            )VALUES(
+                                <cfqueryparam value = '#arguments.editDataStructure.productEdit#' cfsqltype = "integer">,
+                                <cfqueryparam value = '#item.serverfile#' cfsqltype = "varchar">,
+                                <cfqueryparam value = '#session.adminUserId#' cfsqltype = "integer">
+                            )
+                    </cfquery>
+                </cfloop>
             </cfif>
-            <cffile action="uploadall"
-            destination="#expandPath('../Assets/ProductImages')#"
-            result="local.productImages"
-            nameconflict="makeunique">
-            <cfloop array="#local.productImages#" item="item">
-                <cfquery name="local.insertImages">
-                    INSERT INTO 
-                        tblProductImages(
-                            fldProductId,
-                            fldImageFileName,
-                            fldCreatedBy
-                        )VALUES(
-                            <cfqueryparam value = '#arguments.editDataStructure.productEdit#' cfsqltype = "integer">,
-                            <cfqueryparam value = '#item.serverfile#' cfsqltype = "varchar">,
-                            <cfqueryparam value = '#session.adminUserId#' cfsqltype = "integer">
-                        )
-                </cfquery>
-            </cfloop>
             <cfcatch>
                 <cfset sendErrorMail(errorStruct = cfcatch)>
             </cfcatch>
@@ -367,13 +367,13 @@
                     </cfif>
             </cfquery>
             <cfif structKeyExists(arguments, "returnStruct")>
-                <cfset local.newStructure["productid"] =local.getproductsQuery.fldProduct_ID>
-                <cfset local.newStructure["productname"] =local.getproductsQuery.fldProductName>
-                <cfset local.newStructure["productdesc"] =local.getproductsQuery.fldDescription>
-                <cfset local.newStructure["brandid"] =local.getproductsQuery.fldBrandId>
-                <cfset local.newStructure["productprice"] =local.getproductsQuery.fldPrice>
-                <cfset local.newStructure["fldtax"] =local.getproductsQuery.fldTax>
-                <cfset local.newStructure["fldimage"] =local.getproductsQuery.fldImageFileName>
+                <cfset local.newStructure["productid"] = local.getproductsQuery.fldProduct_ID>
+                <cfset local.newStructure["productname"] = local.getproductsQuery.fldProductName>
+                <cfset local.newStructure["productdesc"] = local.getproductsQuery.fldDescription>
+                <cfset local.newStructure["brandid"] = local.getproductsQuery.fldBrandId>
+                <cfset local.newStructure["productprice"] = local.getproductsQuery.fldPrice>
+                <cfset local.newStructure["fldtax"] = local.getproductsQuery.fldTax>
+                <cfset local.newStructure["fldimage"] = local.getproductsQuery.fldImageFileName>
                 <cfreturn local.newStructure>
                 <cfelse>
                     <cfreturn local.getproductsQuery>
@@ -512,7 +512,9 @@
                             fldSubcategoryId = <cfqueryparam value = '#arguments.subcategoryId#' cfsqltype = "integer">
                     </cfif>
             </cfquery>
-            <cfset deleteProductImage(productId = arguments.productId)>
+            <cfif structKeyExists(arguments,"productId")>
+                <cfset deleteProductImage(productId = arguments.productId)>
+            </cfif>
             <cfcatch>
                 <cfset sendErrorMail(errorStruct = cfcatch)>
             </cfcatch>
@@ -556,7 +558,7 @@
                         fldProductId = <cfqueryparam value = '#arguments.productId#' cfsqltype = "integer">
                         AND fldDefaultImage = 0;
                     <cfelse>
-                        fldProductImage_ID = <cfqueryparam value = '#arguments.imageId#' cfsqltype = "integer">
+                        fldProductImage_ID = <cfqueryparam value = '#arguments.imageId#' cfsqltype = "integer">;
                     </cfif>
             </cfquery>
             <cfcatch>

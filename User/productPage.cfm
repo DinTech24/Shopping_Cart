@@ -16,11 +16,11 @@
         <body>
             <cfinclude  template="./userHeader.cfm">
             <cfset variables.productObject = new Component.userComponent()>
-            <cfset variables.resultProductDetails = variables.productObject.getRandomProducts(
+            <cfset variables.resultProductDetails = variables.productObject.getProducts(
                 productId = url.productId,
                 imageType = "all"
             )>
-            <cfset variables.productsResult = variables.productObject.getRandomProducts(
+            <cfset variables.productsResult = variables.productObject.getProducts(
                 sort = "negative",
                 subCategoryId = variables.resultProductDetails.fldSubCategoryId
             )>
@@ -86,8 +86,7 @@
                     </div>
                     <div class="productName">#variables.resultProductDetails.fldProductName#</div>
                     <div class="productBrand">#variables.resultProductDetails.fldBrandName#</div>
-                    <span class="specialPriceSpan">#variables.randomLabels[randRange(1, 7)]#</span>
-                    
+                    <span class="specialPriceSpan">#variables.randomLabels[randRange(1,variables.randomLabels.len())]#</span>
                     <div>
                         <div class="mt-1">
                             #variables.resultProductDetails.fldDescription#
@@ -112,10 +111,8 @@
             </div>
             <h3 class="m-3 mt-5">Related Products</h3>
             <div class="randomProductsMainDiv">
-                <cfset variables.productsCount = 0>
                 <cfloop query="variables.productsResult">
                     <cfif variables.productsResult.fldProduct_ID NEQ url.productId>
-                        <cfset variables.productsCount = variables.productsCount + 1>
                         <div class="card randomProductCard" style="width: 13rem;">
                             <a class='text-decoration-none' href="./productPage.cfm?productId=#variables.productsResult.fldProduct_ID#">
                                 <img src="../Assets/ProductImages/#variables.productsResult.fldImageFileName#" class="card-img-top randProductImage" alt="Product Image">
@@ -132,7 +129,7 @@
                     </cfif>
                 </cfloop>
             </div>
-            <cfif variables.productsCount EQ 0>
+            <cfif queryRecordCount(variables.productsResult) EQ 1>
                 <div class="text-secondary ms-3">
                     No Related products to display
                 </div>

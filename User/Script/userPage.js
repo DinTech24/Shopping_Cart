@@ -49,6 +49,13 @@ function getFilterResult(subCategoryId){
         }
     }
     if(flag==true){
+        let currentUrl = window.location.href;
+        let url = new URL(currentUrl);
+        let params = new URLSearchParams(url.search);
+        params.set('filterRange', filterRangeVal);
+        let newUrl = url.origin + url.pathname + '?' + params.toString();
+        newUrl = newUrl.replace(/%5B/g, '[').replace(/%5D/g, ']').replace(/%22/g, '"').replace(/%2C/g, ',');
+        window.history.pushState({}, "New Page", newUrl);
         $.ajax({
             type:"POST",
             url:"Component/userComponent.cfc?method=selectPriceRange",
@@ -87,6 +94,19 @@ function getFilterResult(subCategoryId){
     }
     document.getElementById("minVal").value = ""
     document.getElementById("maxVal").value = ""
+}
+
+function clearRangeForm(){
+    document.getElementById("rangeForm").reset();
+    document.getElementById("minVal").disabled = true;
+    document.getElementById("maxVal").disabled = true;
+    let currentUrl = window.location.href;
+    let url = new URL(currentUrl);
+    let params = new URLSearchParams(url.search);
+    params.delete('filterRange');
+    let newUrl = url.origin + url.pathname + '?' + params.toString();
+    window.history.pushState({}, "New Page", newUrl);
+    location.reload();
 }
 
 function addProductQuantity(cartId){
@@ -251,7 +271,7 @@ function removeAddress(addressId){
         showDenyButton: true,
         confirmButtonText: "Yes",
         denyButtonText: `No`
-      }).then((result) => {
+    }).then((result) => {
         if (result.isConfirmed) {
           Swal.fire("Removed!", "", "success");
           $.ajax({
@@ -265,7 +285,7 @@ function removeAddress(addressId){
         } else if (result.isDenied) {
           Swal.fire("Address is not removed", "", "info");
         }
-      });
+    });
 }
 
 function editUserProfile(userId){

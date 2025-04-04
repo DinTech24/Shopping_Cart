@@ -89,7 +89,7 @@
             </div>
             <cfinclude  template="./userHeader.cfm">
             <cfif structKeyExists(url, "productId")>
-                <cfset productResult = userOrderObject.getRandomProducts(productId = url.productId)>
+                <cfset productResult = userOrderObject.getProducts(productId = url.productId)>
             </cfif>
             <cfif structKeyExists(form, "addressButton")>
                 <cfset variables.userOrderObject.saveAddress(addressStructure = form)>
@@ -107,14 +107,14 @@
                                 <img class="confirmationImage" src="../Assets/SiteImages/Order-Confirmation-Email.png" alt="successImg">
                             </div>
                             <div class="orderText">Order Placed Successfully</div>
-                            <div class="orderTextEmail">you have recieved an email with the orderId</div>
+                            <div class="orderTextEmail">You have recieved an email with the orderId</div>
                             <div>
                                 <button name="orderAcknowledgeButton" class="orderAcknowledge">Okay</button>
                             </div>
                         </div>
                         <cfelse>
                             <div class="fs-3 fw-bold m-3 text-danger">
-                                Oops! Your order is cancelled due to some unusual act
+                                Oops! Your order is cancelled due to some Unusual Act
                                 <a href="./userhomePage.cfm">
                                     Back to HomePage
                                 </a>

@@ -17,10 +17,6 @@
             <cfset variables.userCategoryObject = new Component.userComponent()>
             <cfset variables.encryptionString = variables.userCategoryObject.getSecretKey()>
             <cfset variables.categoryId = decrypt(url.categoryId,variables.encryptionString,"AES","Base64")>
-            <cfset variables.productsResult = variables.userCategoryObject.getRandomProducts(
-                sort="negative",
-                categoryId = variables.categoryId
-            )>
             <cfset variables.subCategoryResult = variables.userCategoryObject.listSubCategories(categoryId = variables.categoryId)>
             <cfinclude  template="./userHeader.cfm">
             <div class="pageFullPath ms-3 mt-2">
@@ -28,7 +24,7 @@
                 <i class="fa-solid fa-chevron-right fa-xs"></i> 
             </div>
             <div class="p-3">
-                <h2>#variables.productsResult.fldCategoryName# - All Products</h2>
+                <h2>#variables.subCategoryResult.fldCategoryName# - All Products</h2>
             </div>
             <div>
                 <div>
@@ -39,6 +35,9 @@
                                 #variables.subCategoryResult.fldSubcategoryName#
                             </a>
                         </div>
+                        <cfset variables.productsResult = variables.userCategoryObject.getProducts(
+                            subCategoryId = subCategoryResult.fldSubCategory_ID
+                        )>
                         <div class="randomProductsMainDiv">
                             <cfloop query="variables.productsResult">
                                 <cfif variables.productsResult.fldSubCategoryId EQ variables.subCategoryResult.fldsubCategory_ID AND variables.rowCount LT 12>

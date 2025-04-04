@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,10 +16,10 @@
 <body>
     <body class="hideScroll">
         <cfoutput>
-            <div class="d-flex accessPageHead justify-content-between py-2">
+            <div class="d-flex accessPageHead align-items-center justify-content-between py-2">
                 <div class="ms-5">
-                    <i class="fa-brands fa-shopify fs-1 text-dark"></i>
-                    <span>ecart</span>
+                    <img src="../Assets/SiteImages/LogoImage.png" height="50">
+                    <span class="fs-3 fw-bold">eCart</span>
                 </div>
                 <div class="d-flex me-5">
                     <div class="me-4"><a class="accessNames" href="./userSignUp.cfm"><img src=""> Sign Up</a></div>

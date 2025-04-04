@@ -16,7 +16,7 @@
         <cfoutput>
             <cfset variables.userHomeObject = new Component.userComponent()>
             <cfset variables.categoryResult = variables.userHomeObject.listCategories()>
-            <cfset variables.randomProductsResult = variables.userHomeObject.getRandomProducts()>
+            <cfset variables.randomProductsResult = variables.userHomeObject.getProducts()>
             <cfset variables.subCategoryResult = variables.userHomeObject.listSubCategories()>
             <cfset variables.encryptionString = variables.userHomeObject.getSecretKey()>
             <cfinclude  template="./userHeader.cfm">
@@ -61,7 +61,6 @@
                             </div>
                         </cfloop>
                     </div>
-                    
                 </div>
             </div>
             <cfinclude  template="./footer.cfm">

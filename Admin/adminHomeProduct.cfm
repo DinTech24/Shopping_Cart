@@ -30,7 +30,7 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="staticBackdropHead">Product Images</h5>
+                                <h3 class="modal-title" id="staticBackdropHead">Product Images</h3>
                             </div>
                             <div class="modal-body">
                                 <div id="carouselControls" class="carousel slide" data-bs-ride="carousel">
@@ -134,7 +134,7 @@
                 </div>
                 <div class="productDivision  mx-auto">
                     <div class="my-2">
-                        <span>Products Page</span>
+                        <span class="fs-3 fw-bold">Products Page</span>
                         <button class="categoriesAdd" onclick="openProductModal(#url.categoryId#,#url.subCategoryId#)" data-bs-toggle="modal" data-bs-target="##staticBackdropModal">Add +</button>
                         <cfif variables.createErrorVar["flag"] EQ false>
                             <span class="text-danger ms-2 fw-bold" id="serverErrorSpan">#variables.createErrorVar["exception"]#</span>
@@ -147,17 +147,19 @@
                                     <div class="productName">#variables.getProductData.fldProductName#</div>
                                     <div class="productBrand">#variables.getProductData.fldBrandName#</div>
                                     <div class="productPrice">#variables.getProductData.fldPrice#</div>
+                                    <div>
+                                        <button value="#variables.getProductData.fldProduct_ID#" class="categoriesButton" onclick="updateProductFunction(this,#url.categoryId#,#url.subCategoryId#)" data-bs-toggle="modal" data-bs-target="##staticBackdropModal">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                                        <button value="#variables.getProductData.fldProduct_ID#" class="categoriesButton" onclick="deleteProduct(this)">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </div>
                                 </div>
                                 <div class="imagePoint">
                                     <button class="carousalimageButton " onclick="addcarousalImage(this)" value="#variables.getProductData.fldProduct_ID#">
-                                        <img height="100"   src="../Assets/ProductImages/#variables.getProductData.fldImageFileName#" alt="ProductImage" data-bs-toggle="modal" data-bs-target="##staticProductImageModal">
+                                        <img height="120" width="120"  src="../Assets/ProductImages/#variables.getProductData.fldImageFileName#" alt="ProductImage" data-bs-toggle="modal" data-bs-target="##staticProductImageModal">
                                     </button>
-                                </div>
-                                <div>
-                                    <button value="#variables.getProductData.fldProduct_ID#" class="categoriesButton" onclick="updateProductFunction(this,#url.categoryId#,#url.subCategoryId#)" data-bs-toggle="modal" data-bs-target="##staticBackdropModal">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </button>
-                                    <button value="#variables.getProductData.fldProduct_ID#" class="categoriesButton" onclick="deleteProduct(this)"><i class="fa-solid fa-trash"></i></button>
                                 </div>
                             </div>
                         </cfloop>
